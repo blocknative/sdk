@@ -123,7 +123,7 @@ The callback that is registered for events on the emitter will be called with th
   counterParty: String, // address of the counterparty of the transaction when watching an account
   direction: String, // the direction of the transaction in relation to the account that is being watched ("incoming" or "outgoing")
   watchedAddress: String, // the address of the account being watched
-  replaceHash: String, // if a speedup or cancel status, this will be the hash of the original transaction
+  originalHash: String, // if a speedup or cancel status, this will be the hash of the original transaction
   asset: String, // the asset that was transfered
   contractCall: { // if transaction was a contract call otherwise undefined
     contractAddress: String,
