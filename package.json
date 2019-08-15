@@ -1,8 +1,8 @@
 {
-  "name": "@flexdapps/blocknative-api",
-  "version": "0.0.5",
-  "description": "API to connect to the blocknative backend",
-  "main": "dist/blocknative.js",
+  "name": "bn-api-client",
+  "version": "0.0.1",
+  "description": "Clientside API to connect to the blocknative backend via a websocket",
+  "main": "dist/bn-api-client.js",
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c -w"

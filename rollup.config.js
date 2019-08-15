@@ -7,7 +7,8 @@ import { terser } from "rollup-plugin-terser"
 
 let plugins = [
   resolve({
-    preferBuiltins: true
+    preferBuiltins: true,
+    browser: true
   }),
   babel({
     exclude: "node_modules/**"
@@ -22,8 +23,8 @@ export default {
   output: {
     sourcemap: true,
     format: "cjs",
-    name: "Blocknative",
-    file: "dist/blocknative.js"
+    name: "bn-api-client",
+    file: "dist/bn-api-client.js"
   },
   plugins: plugins
 }
