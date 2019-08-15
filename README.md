@@ -2,13 +2,10 @@
 
 ## Install
 
-### yarn
-
-`yarn add bn-api-client`
-
-### npm
-
-`npm install bn-api-client`
+- Clone the repo
+- Run `yarn` or `npm i`
+- Run `yarn build` or `npm run build`
+- Copy `dist/bn-api-client.js` and drop it in to your project
 
 ## Usage
 
@@ -29,14 +26,14 @@ The function defined for the `transactionCallback` parameter will be called once
 ```javascript
 {
   transaction, // transaction object - see below for details
-    emitterResult // data that is returned from the event listener defined on the emitter
+  emitterResult // data that is returned from the event listener defined on the emitter
 }
 ```
 
 ### Initialize and Connect
 
 ```javascript
-import blocknativeApi from "bn-api-client"
+import blocknativeApi from "./bn-api-client"
 
 // initialize and connect to the api
 const blocknative = blocknativeApi(options)
@@ -54,7 +51,7 @@ The return object from `transaction`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
 }
 ```
 
@@ -70,7 +67,7 @@ The return object from `account`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-    details // initial account details which are useful for internal tracking: address
+  details // initial account details which are useful for internal tracking: address
 }
 ```
 
@@ -116,7 +113,7 @@ The callback that is registered for events on the emitter will be called with th
   blockHash: String,
   blockNumber: Number,
   input: String,
-  transactionIndex: 0
+  transactionIndex: Number,
   r: String,
   s: String,
   v: String,
