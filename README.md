@@ -29,14 +29,14 @@ The function defined for the `transactionCallback` parameter will be called once
 ```javascript
 {
   transaction, // transaction object - see below for details
-  emitterResult // data that is returned from the event listener defined on the emitter
+    emitterResult // data that is returned from the event listener defined on the emitter
 }
 ```
 
 ### Initialize and Connect
 
 ```javascript
-import blocknativeApi from 'bn-api-client'
+import blocknativeApi from "bn-api-client"
 
 // initialize and connect to the api
 const blocknative = blocknativeApi(options)
@@ -54,7 +54,7 @@ The return object from `transaction`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
 }
 ```
 
@@ -70,7 +70,7 @@ The return object from `account`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-  details // initial account details which are useful for internal tracking: address
+    details // initial account details which are useful for internal tracking: address
 }
 ```
 
@@ -123,7 +123,16 @@ The callback that is registered for events on the emitter will be called with th
   counterParty: String, // address of the counterparty of the transaction when watching an account
   direction: String, // the direction of the transaction in relation to the account that is being watched ("incoming" or "outgoing")
   watchedAddress: String, // the address of the account being watched
-  replaceHash: String // if a speedup or cancel status, this will be the hash of the original transaction
+  replaceHash: String, // if a speedup or cancel status, this will be the hash of the original transaction
+  asset: String, // the asset that was transfered
+  contractCall: { // if transaction was a contract call otherwise undefined
+    contractAddress: String,
+    contractType: String,
+    methodName: String,
+    params: {
+      // params that the contract method was called with
+    }
+  }
 }
 ```
 
