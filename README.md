@@ -142,3 +142,4 @@ The following is a list of event codes that are valid, and the events that they 
 - `txFailed`: Transaction has failed
 - `txSpeedUp`: A new transaction has been submitted with the same nonce and a higher gas price, replacing the original transaction
 - `txCancel`: A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
+- `txDropped`: Transaction was dropped from the mempool without being added to a block
