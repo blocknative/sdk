@@ -23,8 +23,8 @@ export default {
   output: {
     sourcemap: true,
     format: "cjs",
-    name: "bn-api-client",
-    file: "dist/bn-api-client.js"
+    name: "bn-client-sdk",
+    file: "dist/bn-client-sdk.js"
   },
   plugins: plugins
 }
