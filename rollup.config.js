@@ -30,7 +30,7 @@ export default [
   {
     input: "lib/index.js",
     external: ["ethereumjs-util", "sturdy-websocket", "ow"],
-    plugins: [json()],
+    plugins: [json(), commonjs(), babel({ exclude: "node_modules/**" })],
     output: [
       {
         dir: "dist/esm",
