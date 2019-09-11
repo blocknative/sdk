@@ -6,11 +6,13 @@ import commonjs from "rollup-plugin-commonjs"
 import { terser } from "rollup-plugin-terser"
 
 let plugins = [
+  resolve({
+    preferBuiltins: true
+  }),
   babel({
     exclude: "node_modules/**"
   }),
   json(),
-  resolve(),
   commonjs(),
   builtins()
 ]
@@ -19,10 +21,9 @@ export default [
     input: "lib/index-iife.js",
     output: {
       sourcemap: true,
-      format: "umd",
+      format: "iife",
       name: "blocknative",
-      file: "dist/umd/bn-sdk.js",
-      esModule: false
+      file: "dist/iife/bn-sdk.js"
     },
     plugins: [...plugins, terser()]
   },
@@ -30,9 +31,15 @@ export default [
     input: "lib/index.js",
     external: ["ethereumjs-util", "sturdy-websocket", "ws"],
     plugins,
-    output: {
-      file: "dist/esm/index.js",
-      format: "esm"
-    }
+    output: [
+      {
+        dir: "dist/esm",
+        format: "esm"
+      },
+      {
+        dir: "dist/cjs",
+        format: "cjs"
+      }
+    ]
   }
 ]
