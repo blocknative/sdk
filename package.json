@@ -2,14 +2,16 @@
   "name": "bn-sdk",
   "version": "0.0.1",
   "description": "SDK to connect to the blocknative backend via a websocket",
-  "main": "dist/umd/bn-sdk.js",
+  "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "browser": "dist/iife/bn-sdk.js",
   "scripts": {
     "prepare": "rollup -c"
   },
   "files": [
     "dist/esm/*",
-    "dist/umd/*"
+    "dist/umd/*",
+    "dist/iife/*"
   ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -28,7 +30,6 @@
   },
   "dependencies": {
     "ethereumjs-util": "^6.1.0",
-    "sturdy-websocket": "^0.1.12",
-    "ws": "^7.1.1"
+    "sturdy-websocket": "^0.1.12"
   }
 }

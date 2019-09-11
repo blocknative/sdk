@@ -18,7 +18,7 @@ let plugins = [
 ]
 export default [
   {
-    input: "lib/index-iife.js",
+    input: "lib/index.js",
     output: {
       sourcemap: true,
       format: "iife",
@@ -29,7 +29,7 @@ export default [
   },
   {
     input: "lib/index.js",
-    external: ["ethereumjs-util", "sturdy-websocket", "ws"],
+    external: ["ethereumjs-util", "sturdy-websocket"],
     plugins,
     output: [
       {
