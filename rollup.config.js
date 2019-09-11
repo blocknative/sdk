@@ -6,14 +6,11 @@ import commonjs from "rollup-plugin-commonjs"
 import { terser } from "rollup-plugin-terser"
 
 let plugins = [
-  resolve({
-    preferBuiltins: true,
-    browser: true
-  }),
   babel({
     exclude: "node_modules/**"
   }),
   json(),
+  resolve(),
   commonjs(),
   builtins()
 ]
