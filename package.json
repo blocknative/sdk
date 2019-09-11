@@ -1,12 +1,17 @@
 {
-  "name": "bn-api-client",
+  "name": "bn-sdk",
   "version": "0.0.1",
-  "description": "Clientside API to connect to the blocknative backend via a websocket",
-  "main": "dist/bn-api-client.js",
+  "description": "SDK to connect to the blocknative backend via a websocket",
+  "main": "dist/umd/bn-sdk.js",
+  "module": "dist/esm/index.js",
+  "browser": "dist/iife/bn-sdk.js",
   "scripts": {
-    "build": "rollup -c --environment BUILD:production",
-    "watch": "rollup -c -w"
+    "prepare": "rollup -c"
   },
+  "files": [
+    "dist/esm/*",
+    "dist/umd/*"
+  ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -24,6 +29,7 @@
   },
   "dependencies": {
     "ethereumjs-util": "^6.1.0",
-    "sturdy-websocket": "^0.1.12"
+    "sturdy-websocket": "^0.1.12",
+    "ws": "^7.1.1"
   }
 }

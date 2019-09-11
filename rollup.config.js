@@ -15,16 +15,27 @@ let plugins = [
   }),
   json(),
   commonjs(),
-  builtins(),
-  terser()
+  builtins()
 ]
-export default {
-  input: "lib/index.js",
-  output: {
-    sourcemap: true,
-    format: "cjs",
-    name: "bn-client-sdk",
-    file: "dist/bn-client-sdk.js"
+export default [
+  {
+    input: "lib/index-iife.js",
+    output: {
+      sourcemap: true,
+      format: "umd",
+      name: "blocknative",
+      file: "dist/umd/bn-sdk.js",
+      esModule: false
+    },
+    plugins: [...plugins, terser()]
   },
-  plugins: plugins
-}
+  {
+    input: "lib/index.js",
+    external: ["ethereumjs-util", "sturdy-websocket", "ws"],
+    plugins,
+    output: {
+      file: "dist/esm/index.js",
+      format: "esm"
+    }
+  }
+]
