@@ -7,7 +7,7 @@ import { terser } from "rollup-plugin-terser"
 
 export default [
   {
-    input: "lib/index.js",
+    input: "src/index.js",
     output: {
       sourcemap: true,
       format: "iife",
@@ -28,7 +28,7 @@ export default [
     ]
   },
   {
-    input: "lib/index.js",
+    input: "src/index.js",
     external: ["ethereumjs-util", "sturdy-websocket", "ow"],
     plugins: [json(), commonjs(), babel({ exclude: "node_modules/**" })],
     output: [
