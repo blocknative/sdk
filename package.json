@@ -9,7 +9,7 @@
   },
   "files": [
     "dist/esm/*",
-    "dist/umd/*",
+    "dist/cjs/*",
     "dist/iife/*"
   ],
   "devDependencies": {
