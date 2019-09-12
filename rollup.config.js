@@ -9,10 +9,10 @@ export default [
   {
     input: "src/index.js",
     output: {
-      sourcemap: true,
       format: "iife",
       name: "blocknative",
-      file: "dist/iife/bn-sdk.js"
+      file: "dist/iife/bn-sdk.js",
+      esModule: false
     },
     plugins: [
       builtins(),

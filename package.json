@@ -1,16 +1,16 @@
 {
   "name": "bn-sdk",
   "version": "0.0.1",
-  "description": "SDK to connect to the blocknative backend via a websocket",
+  "description": "SDK to connect to the blocknative backend via a websocket connection",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
-    "prepare": "rollup -c"
+    "prepare": "rollup -c",
+    "build": "npm run prepare"
   },
   "files": [
     "dist/esm/*",
-    "dist/cjs/*",
-    "dist/iife/*"
+    "dist/cjs/*"
   ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
