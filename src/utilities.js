@@ -30,7 +30,6 @@ export function createEmitter() {
 }
 
 export function createEventLog(msg, dappId, networkId) {
-  console.log({ dappId, networkId })
   return JSON.stringify({
     timeStamp: new Date(),
     dappId,
