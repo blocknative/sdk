@@ -1,5 +1,4 @@
 import { version } from "../package.json"
-import { session } from "./state"
 
 export function createEmitter() {
   return {
@@ -30,9 +29,8 @@ export function createEmitter() {
   }
 }
 
-export function createEventLog(msg) {
-  const { dappId, networkId } = session
-
+export function createEventLog(msg, dappId, networkId) {
+  console.log({ dappId, networkId })
   return JSON.stringify({
     timeStamp: new Date(),
     dappId,

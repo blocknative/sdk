@@ -1,8 +1,7 @@
-import { session } from "./state"
 import { createEventLog, networkName } from "./utilities"
 
 export function sendMessage(msg) {
-  session.socket.send(createEventLog(msg))
+  this.socket.send(createEventLog(msg, this.dappId, this.networkId))
 }
 
 export function handleMessage(msg) {
@@ -14,9 +13,9 @@ export function handleMessage(msg) {
   if (
     nodeSyncStatus !== undefined &&
     nodeSyncStatus.blockchain === "ethereum" &&
-    nodeSyncStatus.network === networkName(session.networkId)
+    nodeSyncStatus.network === networkName(this.networkId)
   ) {
-    session.status.nodeSynced = nodeSyncStatus.synced
+    this.status.nodeSynced = nodeSyncStatus.synced
   }
 
   // handle any errors from the server
@@ -46,7 +45,7 @@ export function handleMessage(msg) {
     let notifier
 
     if (eventCode === "txSpeedUp" || eventCode === "txCancel") {
-      session.transactions = session.transactions.map(tx => {
+      this.transactions = this.transactions.map(tx => {
         if (tx.hash === transaction.originalHash) {
           tx.hash = transaction.hash
         }
@@ -56,12 +55,12 @@ export function handleMessage(msg) {
 
     // check if this transaction is for a watched address or not
     if (transaction.watchedAddress) {
-      notifier = session.accounts.find(
+      notifier = this.accounts.find(
         a =>
           a.address.toLowerCase() === transaction.watchedAddress.toLowerCase()
       )
     } else {
-      notifier = session.transactions.find(
+      notifier = this.transactions.find(
         t => t.id === transaction.id || t.hash === transaction.hash
       )
     }
@@ -72,15 +71,15 @@ export function handleMessage(msg) {
     const emitterResult =
       listener && notifier.emitter.listeners[eventCode](newState)
 
-    session.transactionCallback &&
-      session.transactionCallback({ transaction: newState, emitterResult })
+    this.transactionCallback &&
+      this.transactionCallback({ transaction: newState, emitterResult })
   }
 
   if (connectionId) {
     if (window) {
       window.localStorage.setItem("connectionId", connectionId)
     } else {
-      session.connectionId = connectionId
+      this.connectionId = connectionId
     }
   }
 }

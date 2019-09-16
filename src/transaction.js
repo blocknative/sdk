@@ -1,7 +1,5 @@
 import { validateHash, validateId } from "./validation"
 import { createEmitter } from "./utilities"
-import { session } from "./state"
-import { sendMessage } from "./messages"
 
 function transaction(hash, id) {
   validateHash(hash)
@@ -20,13 +18,13 @@ function transaction(hash, id) {
   const eventCode = "txSent"
 
   // put in queue
-  session.transactions.push({
+  this.transactions.push({
     hash,
     emitter
   })
 
   // logEvent to server
-  sendMessage({
+  this.sendMessage({
     eventCode,
     categoryCode: "activeTransaction",
     transaction: {
