@@ -11,7 +11,7 @@ export default [
     output: {
       format: "iife",
       name: "blocknativeSdk",
-      file: "dist/iife/bn-sdk.js",
+      file: "dist/iife/sdk.js",
       esModule: false
     },
     plugins: [
