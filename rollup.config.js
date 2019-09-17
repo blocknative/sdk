@@ -5,26 +5,41 @@ import builtins from "rollup-plugin-node-builtins"
 import commonjs from "rollup-plugin-commonjs"
 import { terser } from "rollup-plugin-terser"
 
-let plugins = [
-  resolve({
-    preferBuiltins: true,
-    browser: true
-  }),
-  babel({
-    exclude: "node_modules/**"
-  }),
-  json(),
-  commonjs(),
-  builtins(),
-  terser()
-]
-export default {
-  input: "lib/index.js",
-  output: {
-    sourcemap: true,
-    format: "cjs",
-    name: "bn-client-sdk",
-    file: "dist/bn-client-sdk.js"
+export default [
+  {
+    input: "src/index.js",
+    output: {
+      format: "iife",
+      name: "blocknative",
+      file: "dist/iife/bn-sdk.js",
+      esModule: false
+    },
+    plugins: [
+      builtins(),
+      resolve({
+        preferBuiltins: true
+      }),
+      babel({
+        exclude: "node_modules/**"
+      }),
+      json(),
+      commonjs(),
+      terser()
+    ]
   },
-  plugins: plugins
-}
+  {
+    input: "src/index.js",
+    external: ["ethereumjs-util", "sturdy-websocket", "ow"],
+    plugins: [json(), commonjs(), babel({ exclude: "node_modules/**" })],
+    output: [
+      {
+        dir: "dist/esm",
+        format: "esm"
+      },
+      {
+        dir: "dist/cjs",
+        format: "cjs"
+      }
+    ]
+  }
+]

@@ -1,19 +1,19 @@
 {
-  "name": "bn-api-client",
+  "name": "bn-sdk",
   "version": "0.0.1",
-  "description": "Clientside API to connect to the blocknative backend via a websocket",
-  "main": "dist/bn-api-client.js",
-  "scripts": {
-    "build": "rollup -c --environment BUILD:production",
-    "watch": "rollup -c -w"
-  },
+  "description": "SDK to connect to the blocknative backend via a websocket connection",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": [
+    "dist/esm/*",
+    "dist/cjs/*"
+  ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "babel-eslint": "^7.1.1",
     "babel-plugin-external-helpers": "^6.18.0",
     "eslint": "^4.1.1",
-    "ow": "^0.13.2",
     "rollup": "^1.19.3",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.2",
@@ -23,7 +23,12 @@
     "rollup-plugin-terser": "^5.1.1"
   },
   "dependencies": {
+    "ow": "^0.13.2",
     "ethereumjs-util": "^6.1.0",
     "sturdy-websocket": "^0.1.12"
+  },
+  "scripts": {
+    "prepare": "rollup -c",
+    "build": "npm run prepare"
   }
 }
