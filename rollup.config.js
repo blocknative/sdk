@@ -10,7 +10,7 @@ export default [
     input: "src/index.js",
     output: {
       format: "iife",
-      name: "blocknative",
+      name: "blocknativeSdk",
       file: "dist/iife/bn-sdk.js",
       esModule: false
     },
