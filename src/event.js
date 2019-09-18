@@ -1,8 +1,9 @@
 import { validateEvent } from "./validation"
+import { sendMessage } from "./messages"
 
 function event(eventObj) {
   validateEvent(eventObj)
-  this.sendMessage(eventObj)
+  sendMessage(eventObj)
 }
 
 export default event

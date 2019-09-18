@@ -6,65 +6,60 @@ import event from "./event"
 
 import { handleMessage, sendMessage } from "./messages"
 import { validateOptions } from "./validation"
+import { session } from "./state"
 
-class sdk {
-  constructor(options) {
-    validateOptions(options)
+function sdk(options) {
+  validateOptions(options)
 
-    this.transactions = []
-    this.accounts = []
-    this.dappId = options.dappId
-    this.networkId = options.networkId
-    this.transactionCallback = options.transactionCallback
+  const { dappId, networkId, transactionCallback, apiUrl, ws } = options
 
-    this.transaction = transaction.bind(this)
-    this.account = account.bind(this)
-    this.event = event.bind(this)
+  session.dappId = dappId
+  session.networkId = networkId
+  session.transactionCallback =
+    session.transactionCallback || transactionCallback
 
-    this.handleMessage = handleMessage.bind(this)
-    this.sendMessage = sendMessage.bind(this)
+  if (ws) {
+    session.socket = new SturdyWebSocket(
+      apiUrl || "wss://api.blocknative.com/v0",
+      {
+        wsConstructor: ws
+      }
+    )
+  } else {
+    session.socket = new SturdyWebSocket(
+      apiUrl || "wss://api.blocknative.com/v0"
+    )
+  }
 
-    this.status = {
-      connected: false,
-      nodeSynced: true
-    }
+  session.socket.onopen = () => {
+    session.status.connected = true
+  }
 
-    this.connectionId =
-      (window && window.localStorage.getItem("connectionId")) ||
-      options.connectionId
+  session.socket.ondown = () => {
+    session.status.connected = false
+  }
 
-    if (options.ws) {
-      this.socket = new SturdyWebSocket(
-        options.apiUrl || "wss://api.blocknative.com/v0",
-        {
-          wsConstructor: options.ws
-        }
-      )
-    } else {
-      this.socket = new SturdyWebSocket(
-        options.apiUrl || "wss://api.blocknative.com/v0"
-      )
-    }
+  session.socket.onreopen = () => {
+    session.status.connected = true
+  }
 
-    this.socket.onopen = () => {
-      this.status.connected = true
-    }
+  session.socket.onmessage = handleMessage
 
-    this.socket.ondown = () => {
-      this.status.connected = false
-    }
+  const connectionId =
+    (window && window.localStorage.getItem("connectionId")) ||
+    session.connectionId
 
-    this.socket.onreopen = () => {
-      this.status.connected = true
-    }
+  sendMessage({
+    categoryCode: "initialize",
+    eventCode: "checkDappId",
+    connectionId
+  })
 
-    this.socket.onmessage = this.handleMessage
-
-    this.sendMessage({
-      categoryCode: "initialize",
-      eventCode: "checkDappId",
-      connectionId: this.connectionId
-    })
+  return {
+    transaction,
+    account,
+    event,
+    status: session.status
   }
 }
 

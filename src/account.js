@@ -1,5 +1,7 @@
 import { validateAddress } from "./validation"
 import { createEmitter } from "./utilities"
+import { session } from "./state"
+import { sendMessage } from "./messages"
 
 function account(address) {
   validateAddress(address)
@@ -11,13 +13,13 @@ function account(address) {
   const eventCode = "accountAddress"
 
   // put in queue
-  this.accounts.push({
+  session.accounts.push({
     address,
     emitter
   })
 
   // logEvent to server
-  this.sendMessage({
+  sendMessage({
     eventCode,
     categoryCode: "watch",
     account: {
