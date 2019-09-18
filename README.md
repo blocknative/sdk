@@ -17,7 +17,7 @@ const options = {
 
 #### transactionCallback parameter
 
-The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
+The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 ```javascript
 {
