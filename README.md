@@ -28,7 +28,7 @@ The function defined for the `transactionCallback` parameter will be called once
 
 #### ws parameter
 
-If you are running the sdk on a server then there will not be a websocket instance available for the sdk to use so you will need to pass one in. You can use any websocket library that you prefer as long as it matched the websocket specifications. We recommend [this library](https://github.com/websockets/ws)
+If you are running the sdk on a server then there will not be a websocket instance available for the sdk to use so you will need to pass one in. You can use any websocket library that you prefer as long as it matches the websocket specifications. We recommend [this library](https://github.com/websockets/ws)
 
 ### Initialize and Connect
 
@@ -51,7 +51,7 @@ The return object from `transaction`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
 }
 ```
 
@@ -67,7 +67,7 @@ The return object from `account`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-    details // initial account details which are useful for internal tracking: address
+  details // initial account details which are useful for internal tracking: address
 }
 ```
 
