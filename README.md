@@ -1,12 +1,5 @@
 # Blocknative API
 
-## Install
-
-- Clone the repo
-- Run `yarn` or `npm i`
-- Run `yarn build` or `npm run build`
-- Copy `dist/bn-api-client.js` and drop it in to your project
-
 ## Usage
 
 ### Options
@@ -18,25 +11,32 @@ const options = {
   dappId: String, // [REQUIRED] - Sign up for an account at blocknative.com
   networkId: String, // [REQUIRED] - The id of the ethereum network your app runs on
   transactionCallback: Function // [OPTIONAL] - See below for details
+  ws: Function // [OPTIONAL] - A valid websocket instance. Pass this in if you are running the sdk on a server
 }
 ```
+
+#### transactionCallback parameter
 
 The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 ```javascript
 {
   transaction, // transaction object - see below for details
-  emitterResult // data that is returned from the event listener defined on the emitter
+    emitterResult // data that is returned from the event listener defined on the emitter
 }
 ```
+
+#### ws parameter
+
+If you are running the sdk on a server then there will not be a websocket instance available for the sdk to use so you will need to pass one in. You can use any websocket library that you prefer as long as it matched the websocket specifications. We recommend [this library](https://github.com/websockets/ws)
 
 ### Initialize and Connect
 
 ```javascript
-import blocknativeApi from "./bn-api-client"
+import BlocknativeSdk from "./bn-sdk"
 
 // initialize and connect to the api
-const blocknative = blocknativeApi(options)
+const blocknative = new BlocknativeSdk(options)
 ```
 
 ### Register a Transaction
@@ -51,7 +51,7 @@ The return object from `transaction`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
 }
 ```
 
@@ -67,7 +67,7 @@ The return object from `account`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates (see below for details)
-  details // initial account details which are useful for internal tracking: address
+    details // initial account details which are useful for internal tracking: address
 }
 ```
 
