@@ -12,38 +12,41 @@ function sdk(options) {
   validateOptions(options)
 
   const { dappId, networkId, transactionCallback, apiUrl, ws } = options
+  const alreadyConnected = !!session.socket
 
   session.dappId = dappId
   session.networkId = networkId
   session.transactionCallback =
     session.transactionCallback || transactionCallback
 
-  if (ws) {
-    session.socket = new SturdyWebSocket(
-      apiUrl || "wss://api.blocknative.com/v0",
-      {
-        wsConstructor: ws
-      }
-    )
-  } else {
-    session.socket = new SturdyWebSocket(
-      apiUrl || "wss://api.blocknative.com/v0"
-    )
-  }
+  if (!alreadyConnected) {
+    if (ws) {
+      session.socket = new SturdyWebSocket(
+        apiUrl || "wss://api.blocknative.com/v0",
+        {
+          wsConstructor: ws
+        }
+      )
+    } else {
+      session.socket = new SturdyWebSocket(
+        apiUrl || "wss://api.blocknative.com/v0"
+      )
+    }
 
-  session.socket.onopen = () => {
-    session.status.connected = true
-  }
+    session.socket.onopen = () => {
+      session.status.connected = true
+    }
 
-  session.socket.ondown = () => {
-    session.status.connected = false
-  }
+    session.socket.ondown = () => {
+      session.status.connected = false
+    }
 
-  session.socket.onreopen = () => {
-    session.status.connected = true
-  }
+    session.socket.onreopen = () => {
+      session.status.connected = true
+    }
 
-  session.socket.onmessage = handleMessage
+    session.socket.onmessage = handleMessage
+  }
 
   const connectionId =
     (window && window.localStorage.getItem("connectionId")) ||
@@ -52,7 +55,7 @@ function sdk(options) {
   sendMessage({
     categoryCode: "initialize",
     eventCode: "checkDappId",
-    connectionId
+    connectionId: alreadyConnected ? undefined : connectionId
   })
 
   return {
