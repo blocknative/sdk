@@ -25,7 +25,8 @@
   "dependencies": {
     "ow": "^0.13.2",
     "ethereumjs-util": "^6.1.0",
-    "sturdy-websocket": "^0.1.12"
+    "sturdy-websocket": "^0.1.12",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "prepare": "rollup -c",
