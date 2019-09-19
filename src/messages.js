@@ -6,7 +6,9 @@ export function sendMessage(msg) {
 }
 
 export function handleMessage(msg) {
-  const { status, reason, event, nodeSyncStatus } = JSON.parse(msg.data)
+  const { status, reason, event, nodeSyncStatus, connectionId } = JSON.parse(
+    msg.data
+  )
 
   // handle node sync status change
   if (
@@ -72,5 +74,18 @@ export function handleMessage(msg) {
 
     session.transactionCallback &&
       session.transactionCallback({ transaction: newState, emitterResult })
+
+    if (connectionId) {
+      if (session.status.dropped) {
+        // set it back to false
+        session.status.dropped = false
+      } else {
+        if (window) {
+          window.localStorage.setItem("connectionId", connectionId)
+        } else {
+          session.connectionId = connectionId
+        }
+      }
+    }
   }
 }

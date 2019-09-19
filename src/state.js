@@ -6,7 +6,8 @@ export let session = {
   transactionCallback: null,
   status: {
     nodeSynced: true,
-    connected: null
+    connected: null,
+    dropped: false
   },
   transactions: [],
   accounts: []

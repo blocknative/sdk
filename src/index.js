@@ -1,5 +1,4 @@
 import SturdyWebSocket from "sturdy-websocket"
-import uuid from "uuid/v4"
 
 import transaction from "./transaction"
 import account from "./account"
@@ -23,34 +22,33 @@ function sdk(options) {
   if (!alreadyConnected) {
     const connectionId =
       (window && window.localStorage.getItem("connectionId")) ||
-      session.connectionId ||
-      uuid()
-
-    if (window) {
-      window.localStorage.setItem("connectionId", connectionId)
-    } else {
-      session.connectionId = connectionId
-    }
+      session.connectionId
 
     if (ws) {
       session.socket = new SturdyWebSocket(
-        apiUrl || `wss://api.blocknative.com/v0?connectionId=${connectionId}`,
+        apiUrl || "wss://api.blocknative.com/v0",
         {
           wsConstructor: ws
         }
       )
     } else {
       session.socket = new SturdyWebSocket(
-        apiUrl || `wss://api.blocknative.com/v0?connectionId=${connectionId}`
+        apiUrl || "wss://api.blocknative.com/v0"
       )
     }
 
     session.socket.onopen = () => {
       session.status.connected = true
+      sendMessage({
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
+        connectionId
+      })
     }
 
     session.socket.ondown = () => {
       session.status.connected = false
+      session.status.dropped = true
     }
 
     session.socket.onreopen = () => {
@@ -59,11 +57,6 @@ function sdk(options) {
 
     session.socket.onmessage = handleMessage
   }
-
-  sendMessage({
-    categoryCode: "initialize",
-    eventCode: "checkDappId"
-  })
 
   return {
     transaction,
