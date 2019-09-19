@@ -77,15 +77,10 @@ export function handleMessage(msg) {
   }
 
   if (connectionId) {
-    if (session.status.dropped) {
-      // set it back to false
-      session.status.dropped = false
+    if (window) {
+      window.localStorage.setItem("connectionId", connectionId)
     } else {
-      if (window) {
-        window.localStorage.setItem("connectionId", connectionId)
-      } else {
-        session.connectionId = connectionId
-      }
+      session.connectionId = connectionId
     }
   }
 }

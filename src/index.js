@@ -38,7 +38,6 @@ function sdk(options) {
     }
 
     session.socket.ondown = () => {
-      session.status.dropped = true
       session.status.connected = false
     }
 
