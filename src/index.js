@@ -1,11 +1,8 @@
-import SturdyWebSocket from "sturdy-websocket"
-import uuid from "uuid/v4"
-
 import transaction from "./transaction"
 import account from "./account"
 import event from "./event"
 
-import { handleMessage, sendMessage } from "./messages"
+import { connect, sendMessage } from "./websockets"
 import { validateOptions } from "./validation"
 import { session } from "./state"
 
@@ -23,8 +20,7 @@ function sdk(options) {
   if (!alreadyConnected) {
     const connectionId =
       (window && window.localStorage.getItem("connectionId")) ||
-      session.connectionId ||
-      uuid()
+      session.connectionId
 
     if (window) {
       window.localStorage.setItem("connectionId", connectionId)
@@ -32,32 +28,10 @@ function sdk(options) {
       session.connectionId = connectionId
     }
 
-    if (ws) {
-      session.socket = new SturdyWebSocket(
-        apiUrl || `wss://api.blocknative.com/v0?connectionId=${connectionId}`,
-        {
-          wsConstructor: ws
-        }
-      )
-    } else {
-      session.socket = new SturdyWebSocket(
-        apiUrl || `wss://api.blocknative.com/v0?connectionId=${connectionId}`
-      )
-    }
-
-    session.socket.onopen = () => {
-      session.status.connected = true
-    }
-
-    session.socket.ondown = () => {
-      session.status.connected = false
-    }
-
-    session.socket.onreopen = () => {
-      session.status.connected = true
-    }
-
-    session.socket.onmessage = handleMessage
+    connect(
+      apiUrl,
+      ws
+    ).catch(console.log)
   }
 
   sendMessage({

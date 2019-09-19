@@ -1,11 +1,70 @@
+import Promise from "promise-polyfill"
 import { session } from "./state"
 import { createEventLog, networkName } from "./utilities"
 
-export function sendMessage(msg) {
-  session.socket.send(createEventLog(msg))
+export function connect(url, ws) {
+  return new Promise((resolve, reject) => {
+    session.pendingSocketConnection = true
+
+    try {
+      session.socket = ws
+        ? new ws(url || "wss://api.blocknative.com/v0")
+        : new WebSocket(url || "wss://api.blocknative.com/v0")
+    } catch (err) {
+      session.pendingSocketConnection = false
+      reject(err)
+    }
+
+    session.socket.addEventListener("message", handleMessage)
+
+    session.socket.addEventListener(
+      "close",
+      () => (session.socketConnection = false)
+    )
+
+    session.socket.addEventListener("error", err => {
+      session.pendingSocketConnection = false
+      reject(err)
+    })
+
+    session.socket.addEventListener("open", () => {
+      session.socketConnection = true
+      session.pendingSocketConnection = false
+      resolve(true)
+    })
+  })
 }
 
-export function handleMessage(msg) {
+export function sendMessage(msg) {
+  const eventLog = createEventLog(msg)
+
+  session.socketConnection && session.socket.send(eventLog)
+
+  // Need to check if connection dropped
+  // as we don't know until after we try to send a message
+  checkForSocketConnection().then(
+    connected => !connected && retrySendMessage(() => sendMessage(msg))
+  )
+}
+
+function checkForSocketConnection() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      if (!session.socketConnection) {
+        resolve(false)
+      }
+      resolve(true)
+    }, 250)
+  })
+}
+
+function retrySendMessage(logFunc) {
+  connect()
+    .then(logFunc)
+    .catch(() => setTimeout(logFunc, 250))
+}
+
+function handleMessage(msg) {
   const { status, reason, event, nodeSyncStatus } = JSON.parse(msg.data)
 
   // handle node sync status change

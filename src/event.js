@@ -1,5 +1,5 @@
 import { validateEvent } from "./validation"
-import { sendMessage } from "./messages"
+import { sendMessage } from "./websockets"
 
 function event(eventObj) {
   validateEvent(eventObj)

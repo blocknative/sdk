@@ -29,7 +29,7 @@ export default [
   },
   {
     input: "src/index.js",
-    external: ["ethereumjs-util", "sturdy-websocket", "ow", "uuid/v4"],
+    external: ["ethereumjs-util", "ow", "promise-polyfill"],
     plugins: [json(), commonjs(), babel({ exclude: "node_modules/**" })],
     output: [
       {
