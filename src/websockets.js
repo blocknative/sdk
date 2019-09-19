@@ -30,21 +30,50 @@ export function connect(url, ws) {
     session.socket.addEventListener("open", () => {
       session.socketConnection = true
       session.pendingSocketConnection = false
+
+      const connectionId =
+        (window && window.localStorage.getItem("connectionId")) ||
+        session.connectionId
+
+      sendMessage({
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
+        connectionId
+      })
+
       resolve(true)
     })
   })
 }
 
 export function sendMessage(msg) {
-  const eventLog = createEventLog(msg)
+  var eventLog = createEventLog(msg)
 
-  session.socketConnection && session.socket.send(eventLog)
+  if (!session.socketConnection) {
+    waitForConnection().then(() => session.socket.send(eventLog))
+  } else {
+    session.socket.send(eventLog)
 
-  // Need to check if connection dropped
-  // as we don't know until after we try to send a message
-  checkForSocketConnection().then(
-    connected => !connected && retrySendMessage(() => sendMessage(msg))
-  )
+    checkForSocketConnection().then(function(connected) {
+      return (
+        !connected &&
+        retrySendMessage(function() {
+          return sendMessage(msg)
+        })
+      )
+    })
+  }
+}
+
+function waitForConnection() {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (!session.pendingSocketConnection && session.socketConnection) {
+        clearInterval(interval)
+        resolve
+      }
+    }, 250)
+  })
 }
 
 function checkForSocketConnection() {
@@ -65,7 +94,9 @@ function retrySendMessage(logFunc) {
 }
 
 function handleMessage(msg) {
-  const { status, reason, event, nodeSyncStatus } = JSON.parse(msg.data)
+  const { status, reason, event, nodeSyncStatus, connectionId } = JSON.parse(
+    msg.data
+  )
 
   // handle node sync status change
   if (
@@ -131,5 +162,13 @@ function handleMessage(msg) {
 
     session.transactionCallback &&
       session.transactionCallback({ transaction: newState, emitterResult })
+
+    if (connectionId) {
+      if (window) {
+        window.localStorage.setItem("connectionId", connectionId)
+      } else {
+        session.connectionId = connectionId
+      }
+    }
   }
 }
