@@ -20,10 +20,6 @@ function sdk(options) {
     session.transactionCallback || transactionCallback
 
   if (!alreadyConnected) {
-    const connectionId =
-      (window && window.localStorage.getItem("connectionId")) ||
-      session.connectionId
-
     if (ws) {
       session.socket = new SturdyWebSocket(
         apiUrl || "wss://api.blocknative.com/v0",
@@ -39,16 +35,11 @@ function sdk(options) {
 
     session.socket.onopen = () => {
       session.status.connected = true
-      sendMessage({
-        categoryCode: "initialize",
-        eventCode: "checkDappId",
-        connectionId
-      })
     }
 
     session.socket.ondown = () => {
-      session.status.connected = false
       session.status.dropped = true
+      session.status.connected = false
     }
 
     session.socket.onreopen = () => {
@@ -57,6 +48,16 @@ function sdk(options) {
 
     session.socket.onmessage = handleMessage
   }
+
+  const connectionId =
+    (window && window.localStorage.getItem("connectionId")) ||
+    session.connectionId
+
+  sendMessage({
+    categoryCode: "initialize",
+    eventCode: "checkDappId",
+    connectionId: alreadyConnected ? undefined : connectionId
+  })
 
   return {
     transaction,
