@@ -1,8 +1,10 @@
+import SturdyWebSocket from "sturdy-websocket"
+
 import transaction from "./transaction"
 import account from "./account"
 import event from "./event"
 
-import { connect } from "./websockets"
+import { sendMessage, handleMessage } from "./messages"
 import { validateOptions } from "./validation"
 import { session } from "./state"
 
@@ -18,10 +20,42 @@ function sdk(options) {
     session.transactionCallback || transactionCallback
 
   if (!alreadyConnected) {
-    connect(
-      apiUrl,
-      ws
-    ).catch(console.log)
+    const connectionId =
+      (window && window.localStorage.getItem("connectionId")) ||
+      session.connectionId
+
+    if (ws) {
+      session.socket = new SturdyWebSocket(
+        apiUrl || "wss://api.blocknative.com/v0",
+        {
+          wsConstructor: ws
+        }
+      )
+    } else {
+      session.socket = new SturdyWebSocket(
+        apiUrl || "wss://api.blocknative.com/v0"
+      )
+    }
+
+    session.socket.onopen = () => {
+      session.status.connected = true
+      sendMessage({
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
+        connectionId
+      })
+    }
+
+    session.socket.ondown = () => {
+      session.status.connected = false
+      session.status.dropped = true
+    }
+
+    session.socket.onreopen = () => {
+      session.status.connected = true
+    }
+
+    session.socket.onmessage = handleMessage
   }
 
   return {

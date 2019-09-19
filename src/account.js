@@ -1,7 +1,7 @@
 import { validateAddress } from "./validation"
 import { createEmitter } from "./utilities"
 import { session } from "./state"
-import { sendMessage } from "./websockets"
+import { sendMessage } from "./messages"
 
 function account(address) {
   validateAddress(address)
