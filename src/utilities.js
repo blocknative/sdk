@@ -7,6 +7,7 @@ export function createEmitter() {
     on: function(eventCode, listener) {
       // check if valid eventCode
       switch (eventCode) {
+        case "txSent":
         case "txPool":
         case "txConfirmed":
         case "txSpeedUp":
