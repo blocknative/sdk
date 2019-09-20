@@ -22,7 +22,7 @@ The function defined for the `transactionCallback` parameter will be called once
 ```javascript
 {
   transaction, // transaction object - see below for details
-    emitterResult // data that is returned from the event listener defined on the emitter
+  emitterResult // data that is returned from the event listener defined on the emitter
 }
 ```
 
@@ -33,10 +33,10 @@ If you are running the sdk on a server then there will not be a websocket instan
 ### Initialize and Connect
 
 ```javascript
-import BlocknativeSdk from "./bn-sdk"
+import blocknativeSdk from "./bn-sdk"
 
 // initialize and connect to the api
-const blocknative = new BlocknativeSdk(options)
+const blocknative = blocknativeSdk(options)
 ```
 
 ### Register a Transaction
