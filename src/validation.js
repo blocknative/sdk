@@ -9,7 +9,8 @@ export function validateOptions(options) {
       networkId: ow.number,
       dappId: ow.string,
       transactionListeners: ow.optional.array.ofType(ow.function),
-      apiUrl: ow.optional.string
+      apiUrl: ow.optional.string,
+      ws: ow.optional.function
     })
   )
 }

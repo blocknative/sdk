@@ -5,7 +5,7 @@ export let session = {
   networkId: null,
   dappId: null,
   connectionId: undefined,
-  transactionCallback: null,
+  transactionListeners: null,
   status: {
     nodeSynced: true,
     connected: null
