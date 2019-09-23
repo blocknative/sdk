@@ -72,8 +72,10 @@ export function handleMessage(msg) {
     const emitterResult =
       listener && notifier.emitter.listeners[eventCode](newState)
 
-    session.transactionCallback &&
-      session.transactionCallback({ transaction: newState, emitterResult })
+    session.transactionListeners &&
+      session.transactionListeners.forEach(listener =>
+        listener({ transaction: newState, emitterResult })
+      )
   }
 
   if (connectionId) {

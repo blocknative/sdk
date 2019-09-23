@@ -8,7 +8,7 @@ export function validateOptions(options) {
     ow.object.exactShape({
       networkId: ow.number,
       dappId: ow.string,
-      transactionCallback: ow.optional.function,
+      transactionListeners: ow.optional.array.ofType(ow.function),
       apiUrl: ow.optional.string
     })
   )

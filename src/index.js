@@ -11,13 +11,13 @@ import { session } from "./state"
 function sdk(options) {
   validateOptions(options)
 
-  const { dappId, networkId, transactionCallback, apiUrl, ws } = options
+  const { dappId, networkId, transactionListeners, apiUrl, ws } = options
   const alreadyConnected = !!session.socket
 
   session.dappId = dappId
   session.networkId = networkId
-  session.transactionCallback =
-    session.transactionCallback || transactionCallback
+  session.transactionListeners =
+    session.transactionListeners || transactionListeners
 
   if (!alreadyConnected) {
     if (ws) {
