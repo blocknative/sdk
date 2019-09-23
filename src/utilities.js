@@ -13,10 +13,11 @@ export function createEmitter() {
         case "txSpeedUp":
         case "txCancel":
         case "txFailed":
+        case "all":
           break
         default:
           throw new Error(
-            `${eventCode} is not a valid event code, for a list of valid event codes see: https://github.com/blocknative/bn-api-client#event-codes`
+            `${eventCode} is not a valid event code, for a list of valid event codes see: https://github.com/blocknative/sdk`
           )
       }
 

@@ -67,10 +67,11 @@ export function handleMessage(msg) {
     }
 
     const listener =
-      notifier && notifier.emitter && notifier.emitter.listeners[eventCode]
+      notifier &&
+      notifier.emitter &&
+      (notifier.emitter.listeners[eventCode] || notifier.emitter.listeners.all)
 
-    const emitterResult =
-      listener && notifier.emitter.listeners[eventCode](newState)
+    const emitterResult = listener && listener(newState)
 
     session.transactionListeners &&
       session.transactionListeners.forEach(listener =>
