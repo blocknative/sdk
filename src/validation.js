@@ -24,7 +24,7 @@ export function validateEvent(event) {
       categoryCode: ow.string,
       transaction: ow.optional.object.exactShape({
         id: ow.optional.string,
-        to: ow.string,
+        to: ow.optional.string,
         from: ow.optional.string,
         value: ow.optional.string,
         gas: ow.optional.string,
