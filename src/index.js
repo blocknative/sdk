@@ -35,6 +35,16 @@ function sdk(options) {
 
     session.socket.onopen = () => {
       session.status.connected = true
+
+      const connectionId =
+        (window && window.localStorage.getItem("connectionId")) ||
+        session.connectionId
+
+      sendMessage({
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
+        connectionId
+      })
     }
 
     session.socket.ondown = () => {
@@ -43,20 +53,20 @@ function sdk(options) {
 
     session.socket.onreopen = () => {
       session.status.connected = true
+
+      const connectionId =
+        (window && window.localStorage.getItem("connectionId")) ||
+        session.connectionId
+
+      sendMessage({
+        categoryCode: "initialize",
+        eventCode: "checkDappId",
+        connectionId
+      })
     }
 
     session.socket.onmessage = handleMessage
   }
-
-  const connectionId =
-    (window && window.localStorage.getItem("connectionId")) ||
-    session.connectionId
-
-  sendMessage({
-    categoryCode: "initialize",
-    eventCode: "checkDappId",
-    connectionId: alreadyConnected ? undefined : connectionId
-  })
 
   return {
     transaction,
