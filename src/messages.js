@@ -80,7 +80,9 @@ export function handleMessage(msg) {
       (hashNotifier.emitter.listeners[eventCode] ||
         hashNotifier.emitter.listeners.all)
 
-    const emitterResult = hashListener && hashListener(newState)
+    const emitterResult = hashNotifier
+      ? hashListener && hashListener(newState)
+      : false
 
     session.transactionListeners &&
       session.transactionListeners.forEach(listener =>
