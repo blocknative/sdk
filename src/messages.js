@@ -43,7 +43,6 @@ export function handleMessage(msg) {
   if (event && event.transaction) {
     const { transaction, eventCode, contractCall } = event
     const newState = { ...transaction, eventCode, contractCall }
-    let notifier
 
     if (eventCode === "txSpeedUp" || eventCode === "txCancel") {
       session.transactions = session.transactions.map(tx => {
@@ -54,24 +53,34 @@ export function handleMessage(msg) {
       })
     }
 
-    // check if this transaction is for a watched address or not
-    if (transaction.watchedAddress) {
-      notifier = session.accounts.find(
-        a =>
-          a.address.toLowerCase() === transaction.watchedAddress.toLowerCase()
+    const addressNotifier = session.accounts.find(function(a) {
+      return (
+        a.address.toLowerCase() ===
+          (transaction.from && transaction.from.toLowerCase()) ||
+        a.address.toLowerCase() ===
+          (transaction.to && transaction.to.toLowerCase())
       )
-    } else {
-      notifier = session.transactions.find(
-        t => t.id === transaction.id || t.hash === transaction.hash
-      )
-    }
+    })
 
-    const listener =
-      notifier &&
-      notifier.emitter &&
-      (notifier.emitter.listeners[eventCode] || notifier.emitter.listeners.all)
+    const addressListener =
+      addressNotifier &&
+      addressNotifier.emitter &&
+      (addressNotifier.emitter.listeners[eventCode] ||
+        addressNotifier.emitter.listeners.all)
 
-    const emitterResult = listener && listener(newState)
+    addressListener && addressListener(newState)
+
+    const hashNotifier = session.transactions.find(function(t) {
+      return t.id === transaction.id || t.hash === transaction.hash
+    })
+
+    const hashListener =
+      hashNotifier &&
+      hashNotifier.emitter &&
+      (hashNotifier.emitter.listeners[eventCode] ||
+        hashNotifier.emitter.listeners.all)
+
+    const emitterResult = hashListener && hashListener(newState)
 
     session.transactionListeners &&
       session.transactionListeners.forEach(listener =>
