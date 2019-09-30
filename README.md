@@ -1,6 +1,6 @@
-# Blocknative API
+# Blocknative sdk
 
-A lightweight library to connect to the Blocknative backend Ethereum node infrastructure via a websocket connection for realtime transaction updates.
+A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node infrastructure via a websocket connection for realtime transaction updates.
 
 ## Usage
 
