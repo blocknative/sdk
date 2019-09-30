@@ -37,7 +37,8 @@ function sdk(options) {
       session.status.connected = true
 
       const connectionId =
-        (window && window.localStorage.getItem("connectionId")) ||
+        (typeof window !== "undefined" &&
+          window.localStorage.getItem("connectionId")) ||
         session.connectionId
 
       sendMessage({
@@ -55,7 +56,8 @@ function sdk(options) {
       session.status.connected = true
 
       const connectionId =
-        (window && window.localStorage.getItem("connectionId")) ||
+        (typeof window !== "undefined" &&
+          window.localStorage.getItem("connectionId")) ||
         session.connectionId
 
       sendMessage({

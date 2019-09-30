@@ -91,7 +91,7 @@ export function handleMessage(msg) {
   }
 
   if (connectionId) {
-    if (window) {
+    if (typeof window !== "undefined") {
       window.localStorage.setItem("connectionId", connectionId)
     } else {
       session.connectionId = connectionId
