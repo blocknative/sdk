@@ -75,9 +75,14 @@ The Ethereum network id that your application runs on. The following values are 
 The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 ```javascript
-{
-  transaction, // transaction object
-    emitterResult // data that is returned from the transaction event listener defined on the emitter
+const options = {
+  // other options
+  transactionCallback: event => {
+    const {
+      transaction, // transaction object
+      emitterResult // data that is returned from the transaction event listener defined on the emitter
+    } = event
+  }
 }
 ```
 
@@ -132,21 +137,15 @@ Now that your application is successfully connected via a websocket connection t
 const hash = await web3.eth.sendTransaction(txOptions)
 
 // call with the transaction hash of the transaction that you would like to receive status updates for
-const transaction = blocknative.transaction(hash)
-```
-
-This will tell the Blocknative backend to watch for status updates for that transaction hash. The return object from successful calls to `transaction` will include an event emitter that you can use to listen for particular events for that transaction and the initial details of that transaction:
-
-The return object from `transaction`:
-
-```javascript
-{
+const {
   emitter, // emitter object to listen for status updates
-    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
-}
+  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+} = blocknative.transaction(hash)
 ```
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object
+
+This will tell the Blocknative backend to watch for status updates for that transaction hash. The return object from successful calls to `transaction` will include an event emitter that you can use to listen for particular events for that transaction and the initial details of that transaction:
 
 ### Register a Account
 
@@ -160,19 +159,15 @@ const accounts = await web3.eth.getAccounts()
 const address = accounts[0]
 
 // call with the address of the account that you would like to receive status updates for
-const account = blocknative.account(address)
-```
-
-This will tell the Blocknative backend to watch for any transactions that occur involving this address and any updates to the transaction status over time. The return object from successful calls to `account` will include an event emitter that you can use to listen for those events and a details object which includes the `address` that is being watched:
-
-```javascript
-{
+const {
   emitter, // emitter object to listen for status updates
-    details // initial account details which are useful for internal tracking: address
-}
+  details // initial account details which are useful for internal tracking: address
+} = blocknative.account(address)
 ```
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object
+
+This will tell the Blocknative backend to watch for any transactions that occur involving this address and any updates to the transaction status over time. The return object from successful calls to `account` will include an event emitter that you can use to listen for those events and a details object which includes the `address` that is being watched:
 
 ### Log an Event
 
