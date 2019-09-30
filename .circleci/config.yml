@@ -36,7 +36,7 @@ jobs:
       - run: mkdir /home/circleci/project/deploy-temp
       - run: mkdir /home/circleci/project/deploy-temp/${VERSION}
       - run: mv /home/circleci/project/dist/iife/*.js /home/circleci/project/deploy-temp/${VERSION}/
-      - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
+      # - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
       # - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://staging.sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   deploy_prod:
     docker:
@@ -58,7 +58,7 @@ jobs:
       - run: mkdir /home/circleci/project/deploy-temp
       - run: mkdir /home/circleci/project/deploy-temp/${VERSION}
       - run: mv /home/circleci/project/dist/iife/*.js /home/circleci/project/deploy-temp/${VERSION}/
-      - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
+      # - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
       - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
 workflows:
   version: 2
