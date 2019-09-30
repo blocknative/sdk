@@ -56,9 +56,7 @@ export function handleMessage(msg) {
     const addressNotifier = session.accounts.find(function(a) {
       return (
         a.address.toLowerCase() ===
-          (transaction.from && transaction.from.toLowerCase()) ||
-        a.address.toLowerCase() ===
-          (transaction.to && transaction.to.toLowerCase())
+        (transaction.watchedAddress && transaction.watchedAddress.toLowerCase())
       )
     })
 
