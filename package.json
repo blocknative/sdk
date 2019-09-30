@@ -1,6 +1,6 @@
 {
   "name": "bnc-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -29,6 +29,7 @@
   },
   "scripts": {
     "prepare": "rollup -c",
-    "build": "npm run prepare"
+    "build": "npm run prepare",
+    "test": "echo \"TBD\" && exit 0"
   }
 }
