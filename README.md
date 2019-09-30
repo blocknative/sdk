@@ -105,7 +105,7 @@ The return object from `transaction`:
 }
 ```
 
-Check out the [Emitter Section](###emitter) for details on the `emitter` object
+Check out the [Emitter Section](#emitter) for details on the `emitter` object
 
 ### Register a Account
 
@@ -131,7 +131,7 @@ This will tell the Blocknative backend to watch for any transactions that occur 
 }
 ```
 
-Check out the [Emitter Section](###emitter) for details on the `emitter` object
+Check out the [Emitter Section](#emitter) for details on the `emitter` object
 
 ### Log an Event
 
@@ -155,9 +155,9 @@ emitter.on("txPool", transaction => {
 })
 ```
 
-The first parameter is the `eventCode` string of the event that you would like to register a callback for. For a list of the valid event codes, see the section on [event codes](####event-codes).
+The first parameter is the `eventCode` string of the event that you would like to register a callback for. For a list of the valid event codes, see the section on [event codes](#event-codes).
 
-The second parameter is the callback that you would like to register to handle that event and will be called with a transaction object that includes all of the relevant details for that transaction. See the [Transaction Object](####transaction-object) section for more info on what is included.
+The second parameter is the callback that you would like to register to handle that event and will be called with a transaction object that includes all of the relevant details for that transaction. See the [Transaction Object](#transaction-object) section for more info on what is included.
 
 Any data that is returned from the listener callback for `transaction` emitters will be included in the object that the global `transactionCallback` is called with under the `emitterResult` property.
 
