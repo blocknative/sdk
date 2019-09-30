@@ -1,7 +1,7 @@
 import babel from "rollup-plugin-babel"
 import resolve from "rollup-plugin-node-resolve"
 import json from "rollup-plugin-json"
-import builtins from "rollup-plugin-node-builtins"
+import builtins from "@joseph184/rollup-plugin-node-builtins"
 import commonjs from "rollup-plugin-commonjs"
 import { terser } from "rollup-plugin-terser"
 
