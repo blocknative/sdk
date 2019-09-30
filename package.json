@@ -1,5 +1,5 @@
 {
-  "name": "bn-sdk",
+  "name": "bnc-sdk",
   "version": "0.0.1",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "main": "dist/cjs/index.js",
