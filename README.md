@@ -37,10 +37,12 @@ The function defined for the `transactionCallback` parameter will be called once
 
 ```javascript
 {
-  transaction, // transaction object - see below for details
+  transaction, // transaction object
   emitterResult // data that is returned from the transaction event listener defined on the emitter
 }
 ```
+
+See the [Transaction Object](#transaction-object) section for more info on what is included in the `transaction` parameter.
 
 #### `ws` - [OPTIONAL]
 
