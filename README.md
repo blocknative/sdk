@@ -4,6 +4,45 @@ A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node
 
 ## Usage
 
+### Quick Start
+
+```javascript
+import blocknativeSdk from "bn-sdk"
+
+// create options object
+const options = {
+  dappId: "Your dappId here",
+  networkId: "1",
+  transactionCallback: event => console.log(event.transaction)
+}
+
+// initialize and connect to the api
+const blocknative = blocknativeSdk(options)
+
+// initiate a transaction via web3.js
+const hash = await web3.eth.sendTransaction(txOptions)
+
+// call with the transaction hash of the transaction that you would like to receive status updates for
+const transaction = blocknative.transaction(hash)
+
+// grab the emitter
+const emitter = transaction.emitter
+
+// listen to some events
+emitter.on("txPool", transaction => {
+  console.log(`Sending ${transaction.value} wei to ${transaction.to}`)
+})
+
+emitter.on("txConfirmed", transaction => {
+  console.log("Transaction is confirmed!")
+})
+
+// catch every other event that occurs and log it
+emitter.on("all", transaction => {
+  console.log(`Transaction event: ${transaction.eventCode}`)
+})
+```
+
 ### Options
 
 The following options object needs to be passed when initializing and connecting
@@ -38,7 +77,7 @@ The function defined for the `transactionCallback` parameter will be called once
 ```javascript
 {
   transaction, // transaction object
-  emitterResult // data that is returned from the transaction event listener defined on the emitter
+    emitterResult // data that is returned from the transaction event listener defined on the emitter
 }
 ```
 
@@ -103,7 +142,7 @@ The return object from `transaction`:
 ```javascript
 {
   emitter, // emitter object to listen for status updates
-  details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
+    details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
 }
 ```
 
@@ -129,7 +168,7 @@ This will tell the Blocknative backend to watch for any transactions that occur 
 ```javascript
 {
   emitter, // emitter object to listen for status updates
-  details // initial account details which are useful for internal tracking: address
+    details // initial account details which are useful for internal tracking: address
 }
 ```
 
@@ -153,7 +192,7 @@ The emitter object is returned from calls to `account` and `transaction` and is 
 ```javascript
 // register a callback for a txPool event
 emitter.on("txPool", transaction => {
-  console.log('Transaction is pending')
+  console.log("Transaction is pending")
 })
 ```
 
@@ -212,42 +251,3 @@ The following is a list of event codes that are valid, and the events that they 
 - `txSpeedUp`: A new transaction has been submitted with the same nonce and a higher gas price, replacing the original transaction
 - `txCancel`: A new transaction has been submitted with the same nonce, a higher gas price, a value of zero and sent to an external address (not a contract)
 - `txDropped`: Transaction was dropped from the mempool without being added to a block
-
-### Putting It All Together
-
-```javascript
-import blocknativeSdk from "bn-sdk"
-
-// create options object
-const options = {
-  dappId: "Your dappId here",
-  networkId: "1",
-  transactionCallback: event => console.log(event.transaction)
-}
-
-// initialize and connect to the api
-const blocknative = blocknativeSdk(options)
-
-// initiate a transaction via web3.js
-const hash = await web3.eth.sendTransaction(txOptions)
-
-// call with the transaction hash of the transaction that you would like to receive status updates for
-const transaction = blocknative.transaction(hash)
-
-// grab the emitter
-const emitter = transaction.emitter
-
-// listen to some events
-emitter.on("txPool", transaction => {
-  console.log(`Sending ${transaction.value} wei to ${transaction.to}`)
-})
-
-emitter.on("txConfirmed", transaction => {
-  console.log("Transaction is confirmed!")
-})
-
-// catch every other event that occurs and log it
-emitter.on("all", transaction => {
-  console.log(`Transaction event: ${transaction.eventCode}`)
-})
-```
