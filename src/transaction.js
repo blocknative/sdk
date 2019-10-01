@@ -37,14 +37,6 @@ function transaction(hash, id) {
     eventCode
   }
 
-  const emitterResult =
-    emitter.listeners[eventCode] && emitter.listeners[eventCode](newState)
-
-  session.transactionListeners &&
-    session.transactionListeners.forEach(listener =>
-      listener({ transaction: newState, emitterResult })
-    )
-
   // logEvent to server
   sendMessage({
     eventCode,
@@ -56,6 +48,17 @@ function transaction(hash, id) {
     details: newState,
     emitter
   }
+
+  // emit after delay to allow for listener to be registered
+  setTimeout(() => {
+    const emitterResult =
+      emitter.listeners[eventCode] && emitter.listeners[eventCode](newState)
+
+    session.transactionListeners &&
+      session.transactionListeners.forEach(listener =>
+        listener({ transaction: newState, emitterResult })
+      )
+  }, 5)
 
   return transactionObj
 }
