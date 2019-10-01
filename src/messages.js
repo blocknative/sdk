@@ -1,5 +1,5 @@
 import { session } from "./state"
-import { createEventLog, networkName } from "./utilities"
+import { createEventLog, networkName, serverEcho } from "./utilities"
 
 export function sendMessage(msg) {
   session.socket.send(createEventLog(msg))
@@ -9,6 +9,14 @@ export function handleMessage(msg) {
   const { status, reason, event, nodeSyncStatus, connectionId } = JSON.parse(
     msg.data
   )
+
+  if (connectionId) {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("connectionId", connectionId)
+    } else {
+      session.connectionId = connectionId
+    }
+  }
 
   // handle node sync status change
   if (
@@ -44,6 +52,12 @@ export function handleMessage(msg) {
     const { transaction, eventCode, contractCall } = event
     const newState = { ...transaction, eventCode, contractCall }
 
+    // ignore server echo messages
+    if (serverEcho(eventCode)) {
+      return
+    }
+
+    //handle change of hash in speedup and cancel events
     if (eventCode === "txSpeedUp" || eventCode === "txCancel") {
       session.transactions = session.transactions.map(tx => {
         if (tx.hash === transaction.originalHash) {
@@ -86,13 +100,5 @@ export function handleMessage(msg) {
       session.transactionListeners.forEach(listener =>
         listener({ transaction: newState, emitterResult })
       )
-  }
-
-  if (connectionId) {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("connectionId", connectionId)
-    } else {
-      session.connectionId = connectionId
-    }
   }
 }

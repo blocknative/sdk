@@ -65,3 +65,20 @@ export function networkName(id) {
       return "local"
   }
 }
+
+export function serverEcho(eventCode) {
+  switch (eventCode) {
+    case "txRequest":
+    case "nsfFail":
+    case "txRepeat":
+    case "txAwaitingApproval":
+    case "txConfirmReminder":
+    case "txSendFail":
+    case "txError":
+    case "txUnderPriced":
+    case "txSent":
+      return true
+    default:
+      return false
+  }
+}
