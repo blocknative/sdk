@@ -74,26 +74,14 @@ export function handleMessage(msg) {
       )
     })
 
-    const addressListener =
-      addressNotifier &&
-      addressNotifier.emitter &&
-      (addressNotifier.emitter.listeners[eventCode] ||
-        addressNotifier.emitter.listeners.all)
-
-    addressListener && addressListener(newState)
+    addressNotifier && addressNotifier.emitter.emit(newState)
 
     const hashNotifier = session.transactions.find(function(t) {
       return t.id === transaction.id || t.hash === transaction.hash
     })
 
-    const hashListener =
-      hashNotifier &&
-      hashNotifier.emitter &&
-      (hashNotifier.emitter.listeners[eventCode] ||
-        hashNotifier.emitter.listeners.all)
-
     const emitterResult = hashNotifier
-      ? hashListener && hashListener(newState)
+      ? hashNotifier.emitter.emit(newState)
       : false
 
     session.transactionListeners &&

@@ -51,8 +51,7 @@ function transaction(hash, id) {
 
   // emit after delay to allow for listener to be registered
   setTimeout(() => {
-    const emitterResult =
-      emitter.listeners[eventCode] && emitter.listeners[eventCode](newState)
+    const emitterResult = emitter.emit(newState)
 
     session.transactionListeners &&
       session.transactionListeners.forEach(listener =>
