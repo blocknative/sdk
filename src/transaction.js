@@ -25,26 +25,39 @@ function transaction(hash, id) {
     emitter
   })
 
+  const transaction = {
+    hash,
+    id: id || hash,
+    startTime,
+    status: "sent"
+  }
+
+  const newState = {
+    ...transaction,
+    eventCode
+  }
+
   // logEvent to server
   sendMessage({
     eventCode,
     categoryCode: "activeTransaction",
-    transaction: {
-      hash,
-      id: id || hash,
-      startTime,
-      status: "sent"
-    }
+    transaction
   })
 
   const transactionObj = {
-    details: {
-      hash,
-      startTime,
-      eventCode
-    },
+    details: newState,
     emitter
   }
+
+  // emit after delay to allow for listener to be registered
+  setTimeout(() => {
+    const emitterResult = emitter.emit(newState)
+
+    session.transactionListeners &&
+      session.transactionListeners.forEach(listener =>
+        listener({ transaction: newState, emitterResult })
+      )
+  }, 5)
 
   return transactionObj
 }

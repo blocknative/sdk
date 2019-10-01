@@ -28,6 +28,16 @@ export function createEmitter() {
 
       // add listener for the eventCode
       this.listeners[eventCode] = listener
+    },
+    emit: function(state) {
+      if (this.listeners[state.eventCode]) {
+        this.listeners[state.eventCode](state)
+        return
+      }
+
+      if (this.listeners.all) {
+        this.listeners.all(state)
+      }
     }
   }
 }
@@ -63,5 +73,22 @@ export function networkName(id) {
       return "localhost"
     default:
       return "local"
+  }
+}
+
+export function serverEcho(eventCode) {
+  switch (eventCode) {
+    case "txRequest":
+    case "nsfFail":
+    case "txRepeat":
+    case "txAwaitingApproval":
+    case "txConfirmReminder":
+    case "txSendFail":
+    case "txError":
+    case "txUnderPriced":
+    case "txSent":
+      return true
+    default:
+      return false
   }
 }
