@@ -28,6 +28,16 @@ export function createEmitter() {
 
       // add listener for the eventCode
       this.listeners[eventCode] = listener
+    },
+    emit: function(state) {
+      if (this.listeners[state.eventCode]) {
+        this.listeners[state.eventCode](state)
+        return
+      }
+
+      if (this.listeners.all) {
+        this.listeners.all(state)
+      }
     }
   }
 }
