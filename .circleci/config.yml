@@ -28,16 +28,13 @@ jobs:
       - run: NPM_USER=$NPM_USERNAME NPM_EMAIL=$NPM_EMAIL NPM_PASS=$NPM_PASSWORD npm-cli-login
       - run: npm publish --dry-run
       - run: gzip -9 /home/circleci/project/dist/iife/sdk.js
-      # - run: gzip -9 /home/circleci/project/dist/iife/sdk.min.js
       - run: mv /home/circleci/project/dist/iife/sdk.js.gz /home/circleci/project/dist/iife/sdk.js
-      # - run: mv /home/circleci/project/dist/iife/sdk.min.js.gz /home/circleci/project/dist/iife/sdk.min.js
       - run: ls -al
       - run: echo export VERSION=`awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json | sed 's/\./-/g'` >> $BASH_ENV
       - run: mkdir /home/circleci/project/deploy-temp
       - run: mkdir /home/circleci/project/deploy-temp/${VERSION}
       - run: mv /home/circleci/project/dist/iife/*.js /home/circleci/project/deploy-temp/${VERSION}/
-      # - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
-      # - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://staging.sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
+      - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://staging.sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   deploy_prod:
     docker:
       - image: circleci/node:8.15-browsers
@@ -50,15 +47,12 @@ jobs:
       - run: NPM_USER=$NPM_USERNAME NPM_EMAIL=$NPM_EMAIL NPM_PASS=$NPM_PASSWORD npm-cli-login
       - run: npm publish
       - run: gzip -9 /home/circleci/project/dist/iife/sdk.js
-      # - run: gzip -9 /home/circleci/project/dist/iife/sdk.min.js
-      - run: mv /home/circleci/project/dist/iife/sdk.js.gz /home/circleci/project/dist/iife/sdk.js
-      # - run: mv /home/circleci/project/dist/iife/sdk.min.js.gz /home/circleci/project/dist/iife/sdk.min.js
+      - run: mv /home/circleci/project/dist/iife/sdk.js.gz /home/circleci/project/dist/iife/sdk.js      # - run: mv /home/circleci/project/dist/iife/sdk.min.js.gz /home/circleci/project/dist/iife/sdk.min.js
       - run: ls -al
       - run: echo export VERSION=`awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json | sed 's/\./-/g'` >> $BASH_ENV
       - run: mkdir /home/circleci/project/deploy-temp
       - run: mkdir /home/circleci/project/deploy-temp/${VERSION}
       - run: mv /home/circleci/project/dist/iife/*.js /home/circleci/project/deploy-temp/${VERSION}/
-      # - run: mv /home/circleci/project/dist/iife/* /home/circleci/project/deploy-temp/
       - run: aws s3 sync /home/circleci/project/deploy-temp/${VERSION}/ s3://sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
 workflows:
   version: 2
