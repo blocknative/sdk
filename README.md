@@ -4,10 +4,14 @@ A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node
 
 ## Usage
 
+### Installation
+
+```npm i bnc-sdk```
+
 ### Quick Start
 
 ```javascript
-import blocknativeSdk from "bn-sdk"
+import blocknativeSdk from "bnc-sdk"
 
 // create options object
 const options = {
