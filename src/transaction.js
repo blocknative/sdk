@@ -25,24 +25,35 @@ function transaction(hash, id) {
     emitter
   })
 
+  const transaction = {
+    hash,
+    id: id || hash,
+    startTime,
+    status: "sent"
+  }
+
+  const newState = {
+    ...transaction,
+    eventCode
+  }
+
+  const emitterResult =
+    emitter.listeners[eventCode] && emitter.listeners[eventCode](newState)
+
+  session.transactionListeners &&
+    session.transactionListeners.forEach(listener =>
+      listener({ transaction: newState, emitterResult })
+    )
+
   // logEvent to server
   sendMessage({
     eventCode,
     categoryCode: "activeTransaction",
-    transaction: {
-      hash,
-      id: id || hash,
-      startTime,
-      status: "sent"
-    }
+    transaction
   })
 
   const transactionObj = {
-    details: {
-      hash,
-      startTime,
-      eventCode
-    },
+    details: newState,
     emitter
   }
 
