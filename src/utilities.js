@@ -91,3 +91,7 @@ export function serverEcho(eventCode) {
       return false
   }
 }
+
+export function last(arr) {
+  return arr && arr.reverse()[0]
+}
