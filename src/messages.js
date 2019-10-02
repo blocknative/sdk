@@ -91,12 +91,7 @@ export function handleMessage(msg) {
         tx => tx.id === transaction.id || tx.hash === transaction.hash
       )
 
-      const results =
-        hashNotifier &&
-        hashNotifier.emitters.map(emitter => emitter.emit(newState))
-
-      // the emitter result that affects notifications in notify is the result from the latest emitter
-      emitterResult = last(results)
+      emitterResult = hashNotifier && hashNotifier.emitter.emit(newState)
     }
 
     session.transactionListeners &&
