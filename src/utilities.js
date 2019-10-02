@@ -31,12 +31,11 @@ export function createEmitter() {
     },
     emit: function(state) {
       if (this.listeners[state.eventCode]) {
-        this.listeners[state.eventCode](state)
-        return
+        return this.listeners[state.eventCode](state)
       }
 
       if (this.listeners.all) {
-        this.listeners.all(state)
+        return this.listeners.all(state)
       }
     }
   }
