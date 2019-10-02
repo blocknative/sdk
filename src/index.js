@@ -65,6 +65,19 @@ function sdk(options) {
         eventCode: "checkDappId",
         connectionId
       })
+
+      // re-register all accounts to be watched by server upon
+      // re-connection as they don't get transferred over automatically
+      // to the new connection like tx hashes do
+      session.accounts.forEach(account => {
+        sendMessage({
+          eventCode: "accountAddress",
+          categoryCode: "watch",
+          account: {
+            address: account.address
+          }
+        })
+      })
     }
 
     session.socket.onmessage = handleMessage
