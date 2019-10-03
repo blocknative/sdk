@@ -8,7 +8,7 @@ export let session = {
   transactionListeners: null,
   status: {
     nodeSynced: true,
-    connected: null
+    connected: false
   },
   transactions: [],
   accounts: []
