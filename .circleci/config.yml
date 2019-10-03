@@ -47,7 +47,7 @@ jobs:
       - run: NPM_USER=$NPM_USERNAME NPM_EMAIL=$NPM_EMAIL NPM_PASS=$NPM_PASSWORD npm-cli-login
       - run: npm publish
       - run: gzip -9 /home/circleci/project/dist/iife/sdk.js
-      - run: mv /home/circleci/project/dist/iife/sdk.js.gz /home/circleci/project/dist/iife/sdk.js      # - run: mv /home/circleci/project/dist/iife/sdk.min.js.gz /home/circleci/project/dist/iife/sdk.min.js
+      - run: mv /home/circleci/project/dist/iife/sdk.js.gz /home/circleci/project/dist/iife/sdk.js
       - run: ls -al
       - run: echo export VERSION=`awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json | sed 's/\./-/g'` >> $BASH_ENV
       - run: mkdir /home/circleci/project/deploy-temp

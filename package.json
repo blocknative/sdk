@@ -1,6 +1,6 @@
 {
   "name": "bnc-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -8,6 +8,7 @@
     "dist/esm/*",
     "dist/cjs/*"
   ],
+  "types": "./types.d.ts",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
