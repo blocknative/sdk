@@ -17,7 +17,7 @@ import blocknativeSdk from "bnc-sdk"
 const options = {
   dappId: "Your dappId here",
   networkId: "1",
-  transactionCallback: event => console.log(event.transaction)
+  transactionListeners: event => console.log(event.transaction)
 }
 
 // initialize and connect to the api
@@ -55,7 +55,7 @@ The following options object needs to be passed when initializing and connecting
 const options = {
   dappId: String,
   networkId: String,
-  transactionCallback: Function,
+  transactionListeners: Function,
   ws: Function
 }
 ```
@@ -74,14 +74,14 @@ The Ethereum network id that your application runs on. The following values are 
 - `'5'` Goerli Test Network
 - `'42'` Kovan Test Network
 
-#### `transactionCallback` - [OPTIONAL]
+#### `transactionListeners` - [OPTIONAL]
 
-The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
+The function defined for the `transactionListeners` parameter will be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
 
 ```javascript
 const options = {
   // other options
-  transactionCallback: event => {
+  transactionListeners: event => {
     const {
       transaction, // transaction object
       emitterResult // data that is returned from the transaction event listener defined on the emitter
@@ -107,7 +107,7 @@ import blocknativeSdk from "bn-sdk"
 const options = {
   dappId: "Your dappId here",
   networkId: "1",
-  transactionCallback: event => console.log(event.transaction)
+  transactionListeners: event => console.log(event.transaction)
 }
 
 // initialize and connect to the api
@@ -124,7 +124,7 @@ import ws from "ws"
 const options = {
   dappId: "Your dappId here",
   networkId: "1",
-  transactionCallback: event => console.log(event.transaction),
+  transactionListeners: event => console.log(event.transaction),
   ws: ws
 }
 
