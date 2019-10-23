@@ -29,8 +29,7 @@ jobs:
       - run: NPM_USER=$NPM_USERNAME NPM_EMAIL=$NPM_EMAIL NPM_PASS=$NPM_PASSWORD npm-cli-login
       - run: npm publish --dry-run
       - run: ls -al
-      - run: ls ./dist/
-      - run: ls /home/circleci/project/dist/
+      - run: pwd
       - run: gzip -9 /home/circleci/project/dist/bnc-sdk.js
       - run: mv /home/circleci/project/dist/bnc-sdk.js.gz /home/circleci/project/dist/bnc-sdk.js
       - run: ls -al
