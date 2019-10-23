@@ -23,11 +23,14 @@ const options = {
 // initialize and connect to the api
 const blocknative = blocknativeSdk(options)
 
+// get the client index from initialization
+const { clientIndex } = blocknative
+
 // initiate a transaction via web3.js
 const hash = await web3.eth.sendTransaction(txOptions)
 
 // call with the transaction hash of the transaction that you would like to receive status updates for
-const transaction = blocknative.transaction(hash)
+const transaction = blocknative.transaction(clientIndex, hash)
 
 // grab the emitter
 const emitter = transaction.emitter
@@ -54,7 +57,7 @@ The following options object needs to be passed when initializing and connecting
 ```javascript
 const options = {
   dappId: String,
-  networkId: String,
+  networkId: Number,
   transactionHandlers: Array,
   ws: Function
 }
@@ -68,11 +71,11 @@ Your unique apiKey that identifies your application. You can generate a dappId b
 
 The Ethereum network id that your application runs on. The following values are valid:
 
-- `'1'` Main Network
-- `'3'` Ropsten Test Network
-- `'4'` Rinkeby Test Network
-- `'5'` Goerli Test Network
-- `'42'` Kovan Test Network
+- `1` Main Network
+- `3` Ropsten Test Network
+- `4` Rinkeby Test Network
+- `5` Goerli Test Network
+- `42` Kovan Test Network
 
 #### `transactionHandlers` - [OPTIONAL]
 
@@ -108,7 +111,7 @@ import blocknativeSdk from 'bn-sdk'
 // create options object
 const options = {
   dappId: 'Your dappId here',
-  networkId: '1',
+  networkId: 1,
   transactionHandlers: [event => console.log(event.transaction)]
 }
 
@@ -125,7 +128,7 @@ import ws from 'ws'
 // create options object
 const options = {
   dappId: 'Your dappId here',
-  networkId: '1',
+  networkId: 1,
   transactionHandlers: [event => console.log(event.transaction)],
   ws: ws
 }
@@ -136,7 +139,7 @@ const blocknative = blocknativeSdk(options)
 
 ### Register a Transaction
 
-Now that your application is successfully connected via a websocket connection to the Blocknative backend, you can now register transactions that you would like updates for. Once you have initiated a transaction and have received the transaction hash, you can pass it in to the `transaction` function:
+Now that your application is successfully connected via a websocket connection to the Blocknative backend, you can now register transactions that you would like updates for. Once you have initiated a transaction and have received the transaction hash, you can pass it in to the `transaction` function. The transaction function requires the `clientIndex` that is a parameter on the instantiated `blocknative` object as the first parameter. This is needed to make sure that the `sdk` instance gets the correct notifications.
 
 ```javascript
 // initiate a transaction via web3.js
@@ -146,16 +149,16 @@ const hash = await web3.eth.sendTransaction(txOptions)
 const {
   emitter, // emitter object to listen for status updates
   details // initial transaction details which are useful for internal tracking: hash, timestamp, eventCode
-} = blocknative.transaction(hash)
+} = blocknative.transaction(blocknative.clientIndex, hash)
 ```
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object
 
-This will tell the Blocknative backend to watch for status updates for that transaction hash. The return object from successful calls to `transaction` will include an event emitter that you can use to listen for particular events for that transaction and the initial details of that transaction:
+This will tell the Blocknative backend to watch for status updates for that transaction hash. The return object from successful calls to `transaction` will include an event emitter that you can use to listen for particular events for that transaction and the initial details of that transaction.
 
 ### Register a Account
 
-You can also register an account address to listen to any incoming and outgoing transactions that occur on that address:
+You can also register an account address to listen to any incoming and outgoing transactions that occur on that address. The address function requires the `clientIndex` that is a parameter on the instantiated `blocknative` object as the first parameter. This is needed to make sure that the `sdk` instance gets the correct notifications.
 
 ```javascript
 // get the current accounts list of the user via web3.js
@@ -168,7 +171,7 @@ const address = accounts[0]
 const {
   emitter, // emitter object to listen for status updates
   details // initial account details which are useful for internal tracking: address
-} = blocknative.account(address)
+} = blocknative.account(blocknative.clientIndex, address)
 ```
 
 Check out the [Emitter Section](#emitter) for details on the `emitter` object
