@@ -8,7 +8,7 @@
     "blocknative",
     "notifications"
   ],
-  "main": "dist/bnc-sdk.umd.js",
+  "main": "dist/bnc-sdk.js",
   "module": "dist/bnc-sdk.es5.js",
   "typings": "dist/types/bnc-sdk.d.ts",
   "files": [
