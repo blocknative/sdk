@@ -6,18 +6,18 @@ A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node
 
 ### Installation
 
-```npm i bnc-sdk```
+`npm i bnc-sdk`
 
 ### Quick Start
 
 ```javascript
-import blocknativeSdk from "bnc-sdk"
+import blocknativeSdk from 'bnc-sdk'
 
 // create options object
 const options = {
-  dappId: "Your dappId here",
-  networkId: "1",
-  transactionCallback: event => console.log(event.transaction)
+  dappId: 'Your dappId here',
+  networkId: '1',
+  transactionHandlers: [event => console.log(event.transaction)]
 }
 
 // initialize and connect to the api
@@ -33,16 +33,16 @@ const transaction = blocknative.transaction(hash)
 const emitter = transaction.emitter
 
 // listen to some events
-emitter.on("txPool", transaction => {
+emitter.on('txPool', transaction => {
   console.log(`Sending ${transaction.value} wei to ${transaction.to}`)
 })
 
-emitter.on("txConfirmed", transaction => {
-  console.log("Transaction is confirmed!")
+emitter.on('txConfirmed', transaction => {
+  console.log('Transaction is confirmed!')
 })
 
 // catch every other event that occurs and log it
-emitter.on("all", transaction => {
+emitter.on('all', transaction => {
   console.log(`Transaction event: ${transaction.eventCode}`)
 })
 ```
@@ -55,7 +55,7 @@ The following options object needs to be passed when initializing and connecting
 const options = {
   dappId: String,
   networkId: String,
-  transactionCallback: Function,
+  transactionHandlers: Array,
   ws: Function
 }
 ```
@@ -74,19 +74,21 @@ The Ethereum network id that your application runs on. The following values are 
 - `'5'` Goerli Test Network
 - `'42'` Kovan Test Network
 
-#### `transactionCallback` - [OPTIONAL]
+#### `transactionHandlers` - [OPTIONAL]
 
-The function defined for the `transactionCallback` parameter will be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. The callback is called with the following object:
+An array of functions that will each be called once for every status update for _every_ transaction that is associated with this connection on a watched address _or_ a watched transaction. This is useful as a global handler for all transactions and status updates. Each callback is called with the following object:
 
 ```javascript
 const options = {
   // other options
-  transactionCallback: event => {
-    const {
-      transaction, // transaction object
-      emitterResult // data that is returned from the transaction event listener defined on the emitter
-    } = event
-  }
+  transactionHandlers: [
+    event => {
+      const {
+        transaction, // transaction object
+        emitterResult // data that is returned from the transaction event listener defined on the emitter
+      } = event
+    }
+  ]
 }
 ```
 
@@ -101,13 +103,13 @@ If you are running the sdk in a server environment, there won't be a native webs
 #### (Client/Browser Environment)
 
 ```javascript
-import blocknativeSdk from "bn-sdk"
+import blocknativeSdk from 'bn-sdk'
 
 // create options object
 const options = {
-  dappId: "Your dappId here",
-  networkId: "1",
-  transactionCallback: event => console.log(event.transaction)
+  dappId: 'Your dappId here',
+  networkId: '1',
+  transactionHandlers: [event => console.log(event.transaction)]
 }
 
 // initialize and connect to the api
@@ -117,14 +119,14 @@ const blocknative = blocknativeSdk(options)
 #### (Server/Node.js Environment)
 
 ```javascript
-import blocknativeSdk from "bn-sdk"
-import ws from "ws"
+import blocknativeSdk from 'bn-sdk'
+import ws from 'ws'
 
 // create options object
 const options = {
-  dappId: "Your dappId here",
-  networkId: "1",
-  transactionCallback: event => console.log(event.transaction),
+  dappId: 'Your dappId here',
+  networkId: '1',
+  transactionHandlers: [event => console.log(event.transaction)],
   ws: ws
 }
 
@@ -190,8 +192,8 @@ The emitter object is returned from calls to `account` and `transaction` and is 
 
 ```javascript
 // register a callback for a txPool event
-emitter.on("txPool", transaction => {
-  console.log("Transaction is pending")
+emitter.on('txPool', transaction => {
+  console.log('Transaction is pending')
 })
 ```
 
@@ -199,7 +201,7 @@ The first parameter is the `eventCode` string of the event that you would like t
 
 The second parameter is the callback that you would like to register to handle that event and will be called with a transaction object that includes all of the relevant details for that transaction. See the [Transaction Object](#transaction-object) section for more info on what is included.
 
-Any data that is returned from the listener callback for `transaction` emitters will be included in the object that the global `transactionCallback` is called with under the `emitterResult` property.
+Any data that is returned from the listener callback for `transaction` emitters will be included in the object that the global `transactionHandlers` functions will be called with under the `emitterResult` property.
 
 #### Transaction Object
 
