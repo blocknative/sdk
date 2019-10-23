@@ -56,7 +56,7 @@ jobs:
       - run: echo export VERSION=`awk '/version/{gsub(/("|",)/,"",$2);print $2};' package.json | sed 's/\./-/g'` >> $BASH_ENV
       - run: mkdir /root/project/deploy-temp
       - run: mkdir /root/project/deploy-temp/${VERSION}
-      - run: mv /root/project/dist/iife/*.js /root/project/deploy-temp/${VERSION}/
+      - run: mv /root/project/dist/*.js /root/project/deploy-temp/${VERSION}/
       - run: aws s3 sync /root/project/deploy-temp/${VERSION}/ s3://sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
 workflows:
   version: 2
