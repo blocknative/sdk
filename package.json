@@ -1,6 +1,6 @@
 {
   "name": "bnc-sdk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "keywords": [
     "ethereum",
@@ -10,7 +10,7 @@
   ],
   "main": "dist/bnc-sdk.js",
   "module": "dist/bnc-sdk.es5.js",
-  "typings": "dist/types/bnc-sdk.d.ts",
+  "typings": "dist/types/src/bnc-sdk.d.ts",
   "files": [
     "dist"
   ],
