@@ -1,7 +1,9 @@
 export interface NotificationObject {
   type?: string
   message?: string
-  autoDismiss?: number | boolean
+  autoDismiss?: number
+  onclick?: (event: any) => void
+  eventCode?: string
 }
 
 interface ContractObject {
@@ -36,7 +38,7 @@ export interface TransactionData {
   startTime?: number
   watchedAddress?: string
   originalHash?: string
-  counterParty?: string
+  counterparty?: string
   direction?: string
 }
 
