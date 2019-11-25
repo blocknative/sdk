@@ -15,7 +15,7 @@ function waitForConnectionOpen() {
   return new Promise(resolve => {
     const interval = setInterval(() => {
       if (session.status.connected) {
-        resolve()
+        setTimeout(resolve, 100)
         clearInterval(interval)
       }
     })
