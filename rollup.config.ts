@@ -30,7 +30,7 @@ export default [
   {
     input: `src/${libraryName}.ts`,
     output: { file: pkg.module, format: 'es', sourcemap: true },
-    external: ['sturdy-websocket', 'typescript-is'],
+    external: ['sturdy-websocket'],
     watch: {
       include: 'src/**'
     },
