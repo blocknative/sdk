@@ -3,8 +3,23 @@ import { createEventLog, networkName, serverEcho, last } from './utilities'
 
 import { Ac, Tx, Emitter, EventObject, TransactionHandler, Client } from './interfaces'
 
-export function sendMessage(msg: EventObject) {
+export async function sendMessage(msg: EventObject) {
+  if (!session.status.connected) {
+    await waitForConnectionOpen()
+  }
+
   session.socket.send(createEventLog(msg))
+}
+
+function waitForConnectionOpen() {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (session.status.connected) {
+        resolve()
+        clearInterval(interval)
+      }
+    })
+  })
 }
 
 export function handleMessage(msg: { data: string }): void {
