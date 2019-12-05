@@ -89,14 +89,10 @@ export function handleMessage(msg: { data: string }): void {
     if (watchedAddress) {
       session.clients.forEach((client: Client) => {
         const { transactionHandlers, accounts } = client
-
         const accountObj = accounts.find((ac: Ac) => ac.address === watchedAddress)
-
-        // no accountObj then this client isn't concerned with this notification
-        if (!accountObj) return
-
-        let emitterResult =
-          accountObj && last(accountObj.emitters.map((emitter: Emitter) => emitter.emit(newState)))
+        const emitterResult = accountObj
+          ? last(accountObj.emitters.map((emitter: Emitter) => emitter.emit(newState)))
+          : false
 
         transactionHandlers.forEach((handler: TransactionHandler) =>
           handler({ transaction: newState, emitterResult })
@@ -105,13 +101,8 @@ export function handleMessage(msg: { data: string }): void {
     } else {
       session.clients.forEach((client: Client) => {
         const { transactionHandlers, transactions } = client
-
         const transactionObj = transactions.find((tx: Tx) => tx.hash === transaction.hash)
-
-        // no transactionObj then this client isn't concerned with this notification
-        if (!transactionObj) return
-
-        let emitterResult = transactionObj && transactionObj.emitter.emit(newState)
+        const emitterResult = transactionObj && transactionObj.emitter.emit(newState)
 
         transactionHandlers.forEach((handler: TransactionHandler) =>
           handler({ transaction: newState, emitterResult })

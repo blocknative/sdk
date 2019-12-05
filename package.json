@@ -14,7 +14,7 @@
   "files": [
     "dist"
   ],
-  "author": "Aaron Barnard <abarnard@protonmail.com>",
+  "author": "Aaron Barnard <aaron@blocknative.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/blocknative/sdk"
