@@ -1,4 +1,4 @@
-import { EventObject } from './interfaces'
+import { EventObject, TransactionHandler } from './interfaces'
 
 export function validateType(options: {
   name: string
@@ -30,16 +30,23 @@ export function validateType(options: {
 export function validateOptions(options: any): never | void {
   validateType({ name: 'sdk options', value: options, type: 'object' })
 
-  const { dappId, networkId, transactionHandler, apiUrl, ws } = options
+  const { dappId, networkId, transactionHandlers, apiUrl, ws } = options
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({
     name: 'transactionHandler',
-    value: transactionHandler,
-    type: 'function',
+    value: transactionHandlers,
+    type: 'array',
     optional: true
   })
+
+  if (transactionHandlers) {
+    transactionHandlers.forEach((handler: TransactionHandler) =>
+      validateType({ name: 'transactionHandler', value: handler, type: 'function' })
+    )
+  }
+
   validateType({ name: 'apiUrl', value: apiUrl, type: 'string', optional: true })
   validateType({ name: 'ws', value: ws, type: 'function', optional: true })
 }
