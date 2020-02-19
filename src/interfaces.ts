@@ -76,7 +76,7 @@ export interface Tx {
 export interface TransactionLog {
   hash: string
   id: string
-  startTime: number
+  startTime?: number
   status: string
   from?: string
   to?: string
@@ -137,6 +137,10 @@ interface Event {
   (eventObj: EventObject): void
 }
 
+interface Unsubscribe {
+  (addressOrHash: string): void
+}
+
 interface Status {
   nodeSynced: boolean
   connected: boolean
@@ -146,6 +150,7 @@ export interface API {
   transaction: Transaction
   account: Account
   event: Event
+  unsubscribe: Unsubscribe
   status: Status
   clientIndex: number
 }
