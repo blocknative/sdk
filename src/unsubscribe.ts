@@ -3,7 +3,7 @@ import { removeAccount, removeTransaction } from './utilities'
 
 import { validateUnsubscribe, isAddress, validTxHash } from './validation'
 
-function unsubscribe(addressOrHash: string, clientIndex: number = 0) {
+function unsubscribe(clientIndex: number, addressOrHash: string) {
   validateUnsubscribe(clientIndex, addressOrHash)
 
   if (isAddress(addressOrHash)) {

@@ -138,7 +138,7 @@ interface Event {
 }
 
 interface Unsubscribe {
-  (addressOrHash: string): void
+  (clientIndex: number, addressOrHash: string): void
 }
 
 interface Status {

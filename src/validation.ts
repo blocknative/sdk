@@ -59,7 +59,7 @@ export function validateTransaction(clientIndex: number, hash: string, id?: stri
 
 export function validateAccount(clientIndex: number, address: string): never | void {
   validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
-  validateType({ name: 'address', value: address, type: 'string', customValidation: isAddress })
+  validateType({ name: 'address', value: address, type: 'string' })
 }
 
 export function validateUnsubscribe(clientIndex: number, addressOrHash: string): never | void {
