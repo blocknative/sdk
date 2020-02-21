@@ -13,7 +13,7 @@ function unsubscribe(addressOrHash: string, clientIndex: number = 0) {
 
     // logEvent to server
     sendMessage({
-      eventCode: 'watchedAddress',
+      eventCode: 'accountAddress',
       categoryCode: 'unwatch',
       account: {
         address: normalizedAddress
