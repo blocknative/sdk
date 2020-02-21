@@ -6,8 +6,8 @@ import { Emitter, Ac } from './interfaces'
 import { validateAccount } from './validation'
 
 function account(
-  address: string,
-  clientIndex: number = 0
+  clientIndex: number,
+  address: string
 ): { emitter: Emitter; details: { address: string } } {
   validateAccount(clientIndex, address)
 

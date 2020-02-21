@@ -126,11 +126,11 @@ export interface Session {
 }
 
 interface Transaction {
-  (hash: string, clientIndex: number, id?: string): { details: TransactionLog; emitter: Emitter }
+  (clientIndex: number, hash: string, id?: string): { details: TransactionLog; emitter: Emitter }
 }
 
 interface Account {
-  (address: string, clientIndex: number): { details: { address: string }; emitter: Emitter }
+  (clientIndex: number, address: string): { details: { address: string }; emitter: Emitter }
 }
 
 interface Event {
