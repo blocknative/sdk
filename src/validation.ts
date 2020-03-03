@@ -1,4 +1,4 @@
-import { EventObject } from './interfaces'
+import { EventObject, TransactionHandler } from './interfaces'
 
 export function validateType(options: {
   name: string
@@ -30,16 +30,23 @@ export function validateType(options: {
 export function validateOptions(options: any): never | void {
   validateType({ name: 'sdk options', value: options, type: 'object' })
 
-  const { dappId, networkId, transactionHandler, apiUrl, ws } = options
+  const { dappId, networkId, transactionHandlers, apiUrl, ws } = options
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({
     name: 'transactionHandler',
-    value: transactionHandler,
-    type: 'function',
+    value: transactionHandlers,
+    type: 'array',
     optional: true
   })
+
+  if (transactionHandlers) {
+    transactionHandlers.forEach((handler: TransactionHandler) =>
+      validateType({ name: 'transactionHandler', value: handler, type: 'function' })
+    )
+  }
+
   validateType({ name: 'apiUrl', value: apiUrl, type: 'string', optional: true })
   validateType({ name: 'ws', value: ws, type: 'function', optional: true })
 }
@@ -52,7 +59,12 @@ export function validateTransaction(clientIndex: number, hash: string, id?: stri
 
 export function validateAccount(clientIndex: number, address: string): never | void {
   validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
-  validateType({ name: 'address', value: address, type: 'string', customValidation: isAddress })
+  validateType({ name: 'address', value: address, type: 'string' })
+}
+
+export function validateUnsubscribe(clientIndex: number, addressOrHash: string): never | void {
+  validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
+  validateType({ name: 'addressOrHash', value: addressOrHash, type: 'string' })
 }
 
 export function validateEvent(eventObj: EventObject): never | void {
@@ -107,10 +119,10 @@ export function validateEvent(eventObj: EventObject): never | void {
   }
 }
 
-function isAddress(address: string): boolean {
+export function isAddress(address: string): boolean {
   return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
 }
 
-function validTxHash(hash: string): boolean {
+export function validTxHash(hash: string): boolean {
   return /^0x([A-Fa-f0-9]{64})$/.test(hash)
 }

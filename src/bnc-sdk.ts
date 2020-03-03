@@ -3,6 +3,7 @@ import SturdyWebSocket from 'sturdy-websocket'
 import transaction from './transaction'
 import account from './account'
 import event from './event'
+import unsubscribe from './unsubscribe'
 
 import { sendMessage, handleMessage } from './messages'
 import { session } from './state'
@@ -88,6 +89,7 @@ export default function sdk(options: InitializationOptions): API {
     transaction,
     account,
     event,
+    unsubscribe,
     status: session.status,
     clientIndex: clientIndex++
   }

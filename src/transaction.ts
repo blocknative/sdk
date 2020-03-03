@@ -5,7 +5,7 @@ import { sendMessage } from './messages'
 import { Emitter, TransactionLog, TransactionHandler } from './interfaces'
 import { validateTransaction } from './validation'
 
-function transaction(clientIndex: number, hash: string, id: undefined | string) {
+function transaction(clientIndex: number, hash: string, id?: string) {
   validateTransaction(clientIndex, hash, id)
 
   // create startTime for transaction
