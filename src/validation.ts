@@ -59,7 +59,12 @@ export function validateTransaction(clientIndex: number, hash: string, id?: stri
 
 export function validateAccount(clientIndex: number, address: string): never | void {
   validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
-  validateType({ name: 'address', value: address, type: 'string', customValidation: isAddress })
+  validateType({ name: 'address', value: address, type: 'string' })
+}
+
+export function validateUnsubscribe(clientIndex: number, addressOrHash: string): never | void {
+  validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
+  validateType({ name: 'addressOrHash', value: addressOrHash, type: 'string' })
 }
 
 export function validateEvent(eventObj: EventObject): never | void {
@@ -114,10 +119,10 @@ export function validateEvent(eventObj: EventObject): never | void {
   }
 }
 
-function isAddress(address: string): boolean {
+export function isAddress(address: string): boolean {
   return /^(0x)?[0-9a-fA-F]{40}$/.test(address)
 }
 
-function validTxHash(hash: string): boolean {
+export function validTxHash(hash: string): boolean {
   return /^0x([A-Fa-f0-9]{64})$/.test(hash)
 }

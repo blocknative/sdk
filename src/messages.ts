@@ -66,8 +66,8 @@ export function handleMessage(msg: { data: string }): void {
     // flatten in to one object
     const newState = { ...transaction, eventCode, contractCall }
 
-    // ignore server echo messages
-    if (serverEcho(eventCode)) {
+    // ignore server echo and unsubscribe messages
+    if (serverEcho(eventCode) || transaction.status === 'unsubscribed') {
       return
     }
 

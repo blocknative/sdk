@@ -1,7 +1,20 @@
 import { version } from '../package.json'
 import { session } from './state'
+import { Ac, Tx } from './interfaces'
 
 import { Emitter, EventObject, NotificationObject } from './interfaces'
+
+export function removeAccount(clientIndex: number, address: string) {
+  session.clients[clientIndex].accounts = session.clients[clientIndex].accounts.filter(
+    (ac: Ac) => ac.address !== address
+  )
+}
+
+export function removeTransaction(clientIndex: number, hash: string) {
+  session.clients[clientIndex].transactions = session.clients[clientIndex].transactions.filter(
+    (tx: Tx) => tx.hash !== hash
+  )
+}
 
 export function createEmitter(): Emitter {
   return {
