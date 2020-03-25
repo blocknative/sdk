@@ -24,15 +24,12 @@ const options = {
 }
 
 // initialize and connect to the api
-const blocknative = blocknativeSdk(options)
-
-// get the client index from initialized sdk
-const { clientIndex } = blocknative
+const blocknative = new BlocknativeSdk(options)
 
 // initiate a transaction via web3.js
 web3.eth.sendTransaction(txOptions).on('transactionHash', hash => {
   // call with the transaction hash of the transaction that you would like to receive status updates for
-  const { emitter } = blocknative.transaction(clientIndex, hash)
+  const { emitter } = blocknative.transaction(hash)
 
   // listen to some events
   emitter.on('txPool', transaction => {
