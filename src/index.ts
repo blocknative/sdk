@@ -50,7 +50,7 @@ class Blocknative {
       apiUrl,
       ws
     } = options
-    
+
     const socket = new SturdyWebSocket(
       apiUrl || 'wss://staging.api.blocknative.com/v0',
       ws
