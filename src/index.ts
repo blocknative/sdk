@@ -51,7 +51,6 @@ class Blocknative {
       ws
     } = options
     
-    console.log('LOCAL SDK', name)
     const socket = new SturdyWebSocket(
       apiUrl || 'wss://staging.api.blocknative.com/v0',
       ws
@@ -61,11 +60,14 @@ class Blocknative {
         : {}
     )
 
+    socket.onopen = onOpen.bind(this)
+    socket.ondown = onDown.bind(this)
+    socket.onreopen = onReopen.bind(this)
+    socket.onmessage = handleMessage.bind(this)
+
     const storageKey = CryptoEs.SHA1(`${dappId} - ${name}`).toString()
     const storedConnectionId =
       typeof window !== 'undefined' && window.localStorage.getItem(storageKey)
-
-    console.log({ storageKey, storedConnectionId })
 
     this._storageKey = storageKey
     this._connectionId = storedConnectionId || undefined
@@ -83,11 +85,6 @@ class Blocknative {
     this.account = account.bind(this)
     this.event = event.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
-
-    socket.onopen = onOpen.bind(this)
-    socket.ondown = onDown.bind(this)
-    socket.onreopen = onReopen.bind(this)
-    socket.onmessage = handleMessage.bind(this)
   }
 }
 
