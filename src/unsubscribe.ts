@@ -1,18 +1,16 @@
-import { sendMessage } from './messages'
-import { removeAccount, removeTransaction } from './utilities'
-
 import { validateUnsubscribe, isAddress, validTxHash } from './validation'
+import { Ac, Tx } from './interfaces'
 
-function unsubscribe(clientIndex: number, addressOrHash: string) {
-  validateUnsubscribe(clientIndex, addressOrHash)
+function unsubscribe(this: any, addressOrHash: string) {
+  validateUnsubscribe(addressOrHash)
 
   if (isAddress(addressOrHash)) {
     const normalizedAddress = addressOrHash.toLowerCase()
     // remove address from accounts
-    removeAccount(clientIndex, normalizedAddress)
+    this._watchedAccounts = this._watchedAccounts.filter((ac: Ac) => ac.address !== addressOrHash)
 
     // logEvent to server
-    sendMessage({
+    this._sendMessage({
       eventCode: 'accountAddress',
       categoryCode: 'unwatch',
       account: {
@@ -21,10 +19,12 @@ function unsubscribe(clientIndex: number, addressOrHash: string) {
     })
   } else if (validTxHash(addressOrHash)) {
     // remove transaction from transactions
-    removeTransaction(clientIndex, addressOrHash)
+    this._watchedTransactions = this._watchedTransactions.filter(
+      (tx: Tx) => tx.hash !== addressOrHash
+    )
 
     // logEvent to server
-    sendMessage({
+    this._sendMessage({
       eventCode: 'activeTransaction',
       categoryCode: 'unwatch',
       transaction: {

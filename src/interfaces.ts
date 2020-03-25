@@ -50,6 +50,7 @@ export interface TransactionEvent {
 export interface InitializationOptions {
   networkId: number
   dappId: string
+  name?: string
   transactionHandlers?: TransactionHandler[]
   apiUrl?: string
   ws?: any
@@ -111,39 +112,20 @@ export interface EmitterListener {
   (state: TransactionData): boolean | undefined | NotificationObject
 }
 
-export interface Session {
-  socket: any
-  pendingSocketConnection: boolean
-  socketConnection: boolean
-  networkId: number
-  dappId: string
-  connectionId: string
-  clients: Client[]
-  status: {
-    nodeSynced: boolean
-    connected: boolean
-  }
+export interface Transaction {
+  (hash: string, id?: string): { details: TransactionLog; emitter: Emitter }
 }
 
-interface Transaction {
-  (clientIndex: number, hash: string, id?: string): { details: TransactionLog; emitter: Emitter }
+export interface Account {
+  (address: string): { details: { address: string }; emitter: Emitter }
 }
 
-interface Account {
-  (clientIndex: number, address: string): { details: { address: string }; emitter: Emitter }
-}
-
-interface Event {
+export interface Event {
   (eventObj: EventObject): void
 }
 
-interface Unsubscribe {
-  (clientIndex: number, addressOrHash: string): void
-}
-
-interface Status {
-  nodeSynced: boolean
-  connected: boolean
+export interface Unsubscribe {
+  (addressOrHash: string): void
 }
 
 export interface API {
@@ -151,12 +133,4 @@ export interface API {
   account: Account
   event: Event
   unsubscribe: Unsubscribe
-  status: Status
-  clientIndex: number
-}
-
-export interface Client {
-  transactionHandlers: TransactionHandler[]
-  accounts: Ac[]
-  transactions: Tx[]
 }

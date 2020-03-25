@@ -1,20 +1,4 @@
-import { version } from '../package.json'
-import { session } from './state'
-import { Ac, Tx } from './interfaces'
-
-import { Emitter, EventObject, NotificationObject } from './interfaces'
-
-export function removeAccount(clientIndex: number, address: string) {
-  session.clients[clientIndex].accounts = session.clients[clientIndex].accounts.filter(
-    (ac: Ac) => ac.address !== address
-  )
-}
-
-export function removeTransaction(clientIndex: number, hash: string) {
-  session.clients[clientIndex].transactions = session.clients[clientIndex].transactions.filter(
-    (tx: Tx) => tx.hash !== hash
-  )
-}
+import { Emitter, NotificationObject } from './interfaces'
 
 export function createEmitter(): Emitter {
   return {
@@ -54,21 +38,6 @@ export function createEmitter(): Emitter {
       }
     }
   }
-}
-
-export function createEventLog(msg: EventObject): string {
-  const { dappId, networkId } = session
-
-  return JSON.stringify({
-    timeStamp: new Date(),
-    dappId,
-    version,
-    blockchain: {
-      system: 'ethereum',
-      network: networkName(networkId)
-    },
-    ...msg
-  })
 }
 
 export function networkName(id: number): string {

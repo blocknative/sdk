@@ -1,20 +1,19 @@
-import { session } from './state'
-import { createEventLog, networkName, serverEcho, last } from './utilities'
+import { serverEcho, last, networkName } from './utilities'
+import { version } from '../package.json'
+import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
 
-import { Ac, Tx, Emitter, EventObject, TransactionHandler, Client } from './interfaces'
-
-export async function sendMessage(msg: EventObject) {
-  if (!session.status.connected) {
-    await waitForConnectionOpen()
+export async function sendMessage(this: any, msg: EventObject) {
+  if (!this._connected) {
+    await waitForConnectionOpen.bind(this)()
   }
 
-  session.socket.send(createEventLog(msg))
+  this._socket.send(createEventLog.bind(this)(msg))
 }
 
-function waitForConnectionOpen() {
+function waitForConnectionOpen(this: any) {
   return new Promise(resolve => {
     const interval = setInterval(() => {
-      if (session.status.connected) {
+      if (this._connected) {
         setTimeout(resolve, 100)
         clearInterval(interval)
       }
@@ -22,24 +21,15 @@ function waitForConnectionOpen() {
   })
 }
 
-export function handleMessage(msg: { data: string }): void {
-  const { status, reason, event, nodeSyncStatus, connectionId } = JSON.parse(msg.data)
+export function handleMessage(this: any, msg: { data: string }): void {
+  const { status, reason, event, connectionId } = JSON.parse(msg.data)
 
   if (connectionId) {
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem('connectionId', connectionId)
-    } else {
-      session.connectionId = connectionId
+      window.localStorage.setItem(this._storageKey, connectionId)
     }
-  }
 
-  // handle node sync status change
-  if (
-    nodeSyncStatus !== undefined &&
-    nodeSyncStatus.blockchain === 'ethereum' &&
-    nodeSyncStatus.network === networkName(session.networkId)
-  ) {
-    session.status.nodeSynced = nodeSyncStatus.synced
+    this._connectionId = connectionId
   }
 
   // handle any errors from the server
@@ -73,41 +63,56 @@ export function handleMessage(msg: { data: string }): void {
 
     // handle change of hash in speedup and cancel events
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
-      session.clients.forEach((client: Client) => {
-        client.transactions = client.transactions.map((tx: Tx) => {
-          if (tx.hash === transaction.originalHash) {
-            // reassign hash parameter in transaction queue to new hash
-            tx.hash = transaction.hash
-          }
-          return tx
-        })
+      this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
+        if (tx.hash === transaction.originalHash) {
+          // reassign hash parameter in transaction queue to new hash
+          tx.hash = transaction.hash
+        }
+        return tx
       })
     }
 
-    const watchedAddress = transaction.watchedAddress && transaction.watchedAddress.toLowerCase()
+    const watchedAddress =
+      transaction.watchedAddress && transaction.watchedAddress.toLowerCase()
 
     if (watchedAddress) {
-      session.clients.forEach((client: Client) => {
-        const { transactionHandlers, accounts } = client
-        const accountObj = accounts.find((ac: Ac) => ac.address === watchedAddress)
-        const emitterResult = accountObj
-          ? last(accountObj.emitters.map((emitter: Emitter) => emitter.emit(newState)))
-          : false
+      const accountObj = this._watchedAccounts.find(
+        (ac: Ac) => ac.address === watchedAddress
+      )
+      const emitterResult = accountObj
+        ? last(
+            accountObj.emitters.map((emitter: Emitter) =>
+              emitter.emit(newState)
+            )
+          )
+        : false
 
-        transactionHandlers.forEach((handler: TransactionHandler) =>
-          handler({ transaction: newState, emitterResult })
-        )
-      })
+      this._transactionHandlers.forEach((handler: TransactionHandler) =>
+        handler({ transaction: newState, emitterResult })
+      )
     } else {
-      session.clients.forEach((client: Client) => {
-        const { transactionHandlers, transactions } = client
-        const transactionObj = transactions.find((tx: Tx) => tx.hash === transaction.hash)
-        const emitterResult = transactionObj && transactionObj.emitter.emit(newState)
+      const transactionObj = this._watchedTransactions.find(
+        (tx: Tx) => tx.hash === transaction.hash
+      )
+      const emitterResult =
+        transactionObj && transactionObj.emitter.emit(newState)
 
-        transactionHandlers.forEach((handler: TransactionHandler) =>
-          handler({ transaction: newState, emitterResult })
-        )
-      })
+      this._transactionHandlers.forEach((handler: TransactionHandler) =>
+        handler({ transaction: newState, emitterResult })
+      )
     }
   }
+}
+
+function createEventLog(this: any, msg: EventObject): string {
+  return JSON.stringify({
+    timeStamp: new Date(),
+    dappId: this._dappId,
+    version,
+    blockchain: {
+      system: 'ethereum',
+      network: networkName(this._networkId)
+    },
+    ...msg
+  })
 }
