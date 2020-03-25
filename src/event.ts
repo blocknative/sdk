@@ -1,11 +1,9 @@
-import { sendMessage } from './messages'
-
 import { EventObject } from './interfaces'
 import { validateEvent } from './validation'
 
-function event(eventObj: EventObject): void {
+function event(this: any, eventObj: EventObject): void {
   validateEvent(eventObj)
-  sendMessage(eventObj)
+  this._sendMessage(eventObj)
 }
 
 export default event

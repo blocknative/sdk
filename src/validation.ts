@@ -30,9 +30,10 @@ export function validateType(options: {
 export function validateOptions(options: any): never | void {
   validateType({ name: 'sdk options', value: options, type: 'object' })
 
-  const { dappId, networkId, transactionHandlers, apiUrl, ws } = options
+  const { dappId, name, networkId, transactionHandlers, apiUrl, ws } = options
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
+  validateType({ name: 'name', value: name, type: 'string', optional: true })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
   validateType({
     name: 'transactionHandler',
@@ -51,19 +52,16 @@ export function validateOptions(options: any): never | void {
   validateType({ name: 'ws', value: ws, type: 'function', optional: true })
 }
 
-export function validateTransaction(clientIndex: number, hash: string, id?: string): never | void {
-  validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
+export function validateTransaction(hash: string, id?: string): never | void {
   validateType({ name: 'hash', value: hash, type: 'string', customValidation: validTxHash })
   validateType({ name: 'id', value: id, type: 'string', optional: true })
 }
 
-export function validateAccount(clientIndex: number, address: string): never | void {
-  validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
+export function validateAccount(address: string): never | void {
   validateType({ name: 'address', value: address, type: 'string' })
 }
 
-export function validateUnsubscribe(clientIndex: number, addressOrHash: string): never | void {
-  validateType({ name: 'clientIndex', value: clientIndex, type: 'number' })
+export function validateUnsubscribe(addressOrHash: string): never | void {
   validateType({ name: 'addressOrHash', value: addressOrHash, type: 'string' })
 }
 
