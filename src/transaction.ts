@@ -1,12 +1,9 @@
 import { createEmitter } from './utilities'
-import { session } from './state'
-import { sendMessage } from './messages'
-
 import { Emitter, TransactionLog, TransactionHandler } from './interfaces'
 import { validateTransaction } from './validation'
 
-function transaction(clientIndex: number, hash: string, id?: string) {
-  validateTransaction(clientIndex, hash, id)
+function transaction(this: any, hash: string, id?: string) {
+  validateTransaction(hash, id)
 
   // create startTime for transaction
   const startTime: number = Date.now()
@@ -17,10 +14,8 @@ function transaction(clientIndex: number, hash: string, id?: string) {
   // create eventCode for transaction
   const eventCode: string = 'txSent'
 
-  const client = session.clients[clientIndex]
-
   // put in queue
-  client.transactions.push({
+  this._watchedTransactions.push({
     hash,
     emitter
   })
@@ -38,7 +33,7 @@ function transaction(clientIndex: number, hash: string, id?: string) {
   }
 
   // logEvent to server
-  sendMessage({
+  this._sendMessage({
     eventCode,
     categoryCode: 'activeTransaction',
     transaction
@@ -49,13 +44,15 @@ function transaction(clientIndex: number, hash: string, id?: string) {
     emitter
   }
 
-  // emit after delay to allow for listener to be registered
-  setTimeout(() => {
+  function emitState(this: any) {
     const emitterResult = emitter.emit(newState)
-    client.transactionHandlers.forEach((handler: TransactionHandler) =>
+    this._transactionHandlers.forEach((handler: TransactionHandler) =>
       handler({ transaction: newState, emitterResult })
     )
-  }, 5)
+  }
+
+  // emit after delay to allow for listener to be registered
+  setTimeout(emitState.bind(this), 5)
 
   return transactionObj
 }
