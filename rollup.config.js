@@ -26,13 +26,26 @@ export default [
         format: 'esm',
         dir: 'dist/esm/',
       },
-      { format: 'cjs', dir: 'dist/cjs/' },
     ],
     external: ['sturdy-websocket', 'crypto-es'],
     plugins: [
       json(),
       resolve(),
-      commonjs(),
+      typescript({ useTsconfigDeclarationDir: true, clean: true }),
+    ],
+  },
+  {
+    input: `src/index.ts`,
+    output: [
+      {
+        format: 'cjs',
+        dir: 'dist/cjs/',
+      },
+    ],
+    plugins: [
+      json(),
+      resolve(),
+      commonjs({ include: /node_modules/ }),
       typescript({ useTsconfigDeclarationDir: true, clean: true }),
     ],
   },
