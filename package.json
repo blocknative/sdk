@@ -23,8 +23,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist && rollup -c && babel dist/esm/index.js -o dist/esm/index.js && babel dist/cjs/index.js -o dist/cjs/index.js",
-    "test": "echo \"TBD\" && exit 0",
-    "prepare": "npm run build"
+    "test": "echo \"TBD\" && exit 0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
