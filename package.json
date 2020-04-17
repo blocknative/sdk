@@ -1,6 +1,6 @@
 {
   "name": "bnc-sdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "keywords": [
     "ethereum",
@@ -8,8 +8,8 @@
     "blocknative",
     "notifications"
   ],
-  "main": "dist/bnc-sdk.js",
-  "module": "dist/bnc-sdk.esm.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "typings": "dist/types/src/index.d.ts",
   "files": [
     "dist"
@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "rimraf dist && rollup -c && babel dist/bnc-sdk.esm.js -o dist/bnc-sdk.esm.js && babel dist/bnc-sdk.js -o dist/bnc-sdk.js",
+    "build": "rimraf dist && rollup -c && babel dist/esm/index.js -o dist/esm/index.js && babel dist/cjs/index.js -o dist/cjs/index.js",
     "test": "echo \"TBD\" && exit 0"
   },
   "devDependencies": {

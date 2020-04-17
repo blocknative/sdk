@@ -43,7 +43,7 @@ export interface TransactionData {
 }
 
 export interface TransactionEvent {
-  emitterResult: undefined | boolean | NotificationObject
+  emitterResult: void | boolean | NotificationObject
   transaction: TransactionData
 }
 
@@ -61,7 +61,7 @@ export interface Emitter {
     [key: string]: EmitterListener
   }
   on: (eventCode: string, listener: EmitterListener) => void
-  emit: (state: TransactionData) => boolean | undefined | NotificationObject
+  emit: (state: TransactionData) => boolean | void | NotificationObject
 }
 
 export interface Ac {
@@ -109,7 +109,7 @@ export interface TransactionHandler {
 }
 
 export interface EmitterListener {
-  (state: TransactionData): boolean | undefined | NotificationObject
+  (state: TransactionData): boolean | undefined | NotificationObject | void
 }
 
 export interface Transaction {
