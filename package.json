@@ -10,7 +10,6 @@
   ],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "browser": "dist/iife/index.js",
   "typings": "dist/types/src/index.d.ts",
   "files": [
     "dist"
