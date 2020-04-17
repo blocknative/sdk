@@ -3,32 +3,50 @@ import json from '@rollup/plugin-json'
 import typescript from 'rollup-plugin-typescript2'
 import commonjs from '@rollup/plugin-commonjs'
 
-const pkg = require('./package.json')
-
 export default [
   {
     input: `src/index.ts`,
     output: {
-      file: pkg.main,
+      dir: 'dist/iife/',
+      format: 'iife',
       name: 'bncSdk',
-      format: 'umd',
-      globals: ['SturdyWebSocket']
+      globals: ['SturdyWebSocket', 'crypto-es'],
     },
     plugins: [
       json(),
       resolve(),
       commonjs(),
-      typescript({ useTsconfigDeclarationDir: true })
-    ]
+      typescript({ useTsconfigDeclarationDir: true, clean: true }),
+    ],
   },
   {
     input: `src/index.ts`,
-    output: { file: pkg.module, format: 'esm' },
+    output: [
+      {
+        format: 'esm',
+        dir: 'dist/esm/',
+      },
+    ],
     external: ['sturdy-websocket', 'crypto-es'],
     plugins: [
       json(),
       resolve(),
-      typescript({ useTsconfigDeclarationDir: true })
-    ]
-  }
+      typescript({ useTsconfigDeclarationDir: true, clean: true }),
+    ],
+  },
+  {
+    input: `src/index.ts`,
+    output: [
+      {
+        format: 'cjs',
+        dir: 'dist/cjs/',
+      },
+    ],
+    plugins: [
+      json(),
+      resolve(),
+      commonjs({ include: /node_modules/ }),
+      typescript({ useTsconfigDeclarationDir: true, clean: true }),
+    ],
+  },
 ]
