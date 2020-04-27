@@ -54,6 +54,8 @@ export interface InitializationOptions {
   transactionHandlers?: TransactionHandler[]
   apiUrl?: string
   ws?: any
+  ondown?: (closeEvent: CloseEvent) => void
+  onreopen?: () => void
 }
 
 export interface Emitter {
