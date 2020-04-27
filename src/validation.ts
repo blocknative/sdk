@@ -30,7 +30,7 @@ export function validateType(options: {
 export function validateOptions(options: any): never | void {
   validateType({ name: 'sdk options', value: options, type: 'object' })
 
-  const { dappId, name, networkId, transactionHandlers, apiUrl, ws } = options
+  const { dappId, name, networkId, transactionHandlers, apiUrl, ws, ondown, onreopen } = options
 
   validateType({ name: 'dappId', value: dappId, type: 'string' })
   validateType({ name: 'name', value: name, type: 'string', optional: true })
@@ -50,6 +50,8 @@ export function validateOptions(options: any): never | void {
 
   validateType({ name: 'apiUrl', value: apiUrl, type: 'string', optional: true })
   validateType({ name: 'ws', value: ws, type: 'function', optional: true })
+  validateType({ name: 'ondown', value: ondown, type: 'function', optional: true })
+  validateType({ name: 'onreopen', value: onreopen, type: 'function', optional: true })
 }
 
 export function validateTransaction(hash: string, id?: string): never | void {
