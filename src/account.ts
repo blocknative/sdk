@@ -1,21 +1,18 @@
 import { createEmitter } from './utilities'
 import { Emitter, Ac } from './interfaces'
-import { validateAccount } from './validation'
 
 function account(
   this: any,
   address: string
 ): { emitter: Emitter; details: { address: string } } {
-  validateAccount(address)
-
-  // lowercase the address
-  address = address.toLowerCase()
+  // lowercase the address if Ethereum
+  address = this._system === 'ethereum' ? address.toLowerCase() : address
 
   // create emitter for transaction
   const emitter: Emitter = createEmitter()
 
   // create eventCode for transaction
-  const eventCode = 'accountAddress'
+  const eventCode = 'watch'
 
   const existingAddressWatcher = this._watchedAccounts.find(
     (ac: Ac) => ac.address === address
@@ -35,7 +32,7 @@ function account(
   // logEvent to server
   this._sendMessage({
     eventCode,
-    categoryCode: 'watch',
+    categoryCode: 'accountAddress',
     account: {
       address
     }

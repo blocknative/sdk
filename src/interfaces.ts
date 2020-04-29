@@ -22,7 +22,8 @@ export interface TransactionData {
   from?: string
   gas?: string
   gasPrice?: string
-  hash: string
+  hash?: string
+  txid?: string
   id: string
   input?: string
   monitorId?: string
@@ -50,6 +51,7 @@ export interface TransactionEvent {
 export interface InitializationOptions {
   networkId: number
   dappId: string
+  system?: string
   name?: string
   transactionHandlers?: TransactionHandler[]
   apiUrl?: string
@@ -76,11 +78,14 @@ export interface Tx {
   emitter: Emitter
 }
 
-export interface TransactionLog {
-  hash: string
+export interface BaseTransactionLog {
   id: string
   startTime?: number
   status: string
+}
+
+export interface EthereumTransactionLog extends BaseTransactionLog {
+  hash: string
   from?: string
   to?: string
   value?: number | string
@@ -89,10 +94,14 @@ export interface TransactionLog {
   nonce?: number
 }
 
+export interface BitcoinTransactionLog extends BaseTransactionLog {
+  txid?: string
+}
+
 export interface EventObject {
   eventCode: string
   categoryCode: string
-  transaction?: TransactionLog
+  transaction?: EthereumTransactionLog | BitcoinTransactionLog
   wallet?: {
     balance: string
   }
@@ -115,7 +124,10 @@ export interface EmitterListener {
 }
 
 export interface Transaction {
-  (hash: string, id?: string): { details: TransactionLog; emitter: Emitter }
+  (hash: string, id?: string): {
+    details: BitcoinTransactionLog | EthereumTransactionLog
+    emitter: Emitter
+  }
 }
 
 export interface Account {
