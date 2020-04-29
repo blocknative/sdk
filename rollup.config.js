@@ -10,43 +10,43 @@ export default [
       dir: 'dist/iife/',
       format: 'iife',
       name: 'bncSdk',
-      globals: ['SturdyWebSocket', 'crypto-es'],
+      globals: ['SturdyWebSocket', 'crypto-es']
     },
     plugins: [
       json(),
       resolve(),
       commonjs(),
-      typescript({ useTsconfigDeclarationDir: true, clean: true }),
-    ],
+      typescript({ useTsconfigDeclarationDir: true, clean: true })
+    ]
   },
   {
     input: `src/index.ts`,
     output: [
       {
         format: 'esm',
-        dir: 'dist/esm/',
-      },
+        dir: 'dist/esm/'
+      }
     ],
     external: ['sturdy-websocket', 'crypto-es'],
     plugins: [
       json(),
       resolve(),
-      typescript({ useTsconfigDeclarationDir: true, clean: true }),
-    ],
+      typescript({ useTsconfigDeclarationDir: true, clean: true })
+    ]
   },
   {
     input: `src/index.ts`,
     output: [
       {
         format: 'cjs',
-        dir: 'dist/cjs/',
-      },
+        dir: 'dist/cjs/'
+      }
     ],
     plugins: [
       json(),
       resolve(),
       commonjs({ include: /node_modules/ }),
-      typescript({ useTsconfigDeclarationDir: true, clean: true }),
-    ],
-  },
+      typescript({ useTsconfigDeclarationDir: true, clean: true })
+    ]
+  }
 ]
