@@ -7,6 +7,11 @@ import {
 } from './interfaces'
 
 function transaction(this: any, hash: string, id?: string) {
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
+
   // create startTime for transaction
   const startTime: number = Date.now()
 

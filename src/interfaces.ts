@@ -145,9 +145,14 @@ export interface Unsubscribe {
   (addressOrHash: string): void
 }
 
+export interface Destroy {
+  (): void
+}
+
 export interface API {
   transaction: Transaction
   account: Account
   event: Event
   unsubscribe: Unsubscribe
+  destroy: Destroy
 }

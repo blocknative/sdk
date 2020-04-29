@@ -5,6 +5,11 @@ function account(
   this: any,
   address: string
 ): { emitter: Emitter; details: { address: string } } {
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
+
   // lowercase the address if Ethereum
   address = this._system === 'ethereum' ? address.toLowerCase() : address
 

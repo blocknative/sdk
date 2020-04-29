@@ -2,6 +2,11 @@ import { Ac, Tx } from './interfaces'
 import { isAddress, isTxid } from './utilities'
 
 function unsubscribe(this: any, addressOrHash: string) {
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
+
   const address = isAddress(this._system, addressOrHash)
   const txid = isTxid(this._system, addressOrHash)
 
