@@ -54,8 +54,11 @@ class Blocknative {
       transactionHandlers = [],
       apiUrl,
       ws,
+      onopen,
       ondown,
-      onreopen
+      onreopen,
+      onerror,
+      onclose
     } = options
 
     const socket = new SturdyWebSocket(
@@ -67,11 +70,15 @@ class Blocknative {
         : {}
     )
 
-    socket.onopen = onOpen.bind(this)
+    socket.onopen = onOpen.bind(this, onopen)
     socket.ondown = onDown.bind(this, ondown)
     socket.onreopen = onReopen.bind(this, onreopen)
     socket.onmessage = handleMessage.bind(this)
-    socket.onclose = () => this._pingTimeout && clearInterval(this._pingTimeout)
+    socket.onerror = (error: any) => onerror && onerror(error)
+    socket.onclose = () => {
+      this._pingTimeout && clearInterval(this._pingTimeout)
+      onclose && onclose()
+    }
 
     const storageKey = CryptoEs.SHA1(`${dappId} - ${name}`).toString()
     const storedConnectionId =
@@ -114,7 +121,7 @@ class Blocknative {
   }
 }
 
-function onOpen(this: any) {
+function onOpen(this: any, handler: (() => void) | undefined) {
   this._connected = true
   this._sendMessage({
     categoryCode: 'initialize',
@@ -123,6 +130,7 @@ function onOpen(this: any) {
   })
 
   this._heartbeat && this._heartbeat()
+  handler && handler()
 }
 
 function onDown(
