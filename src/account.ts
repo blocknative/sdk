@@ -2,7 +2,10 @@ import { createEmitter } from './utilities'
 import { Emitter, Ac } from './interfaces'
 import { validateAccount } from './validation'
 
-function account(this: any, address: string): { emitter: Emitter; details: { address: string } } {
+function account(
+  this: any,
+  address: string
+): { emitter: Emitter; details: { address: string } } {
   validateAccount(address)
 
   // lowercase the address
@@ -12,9 +15,11 @@ function account(this: any, address: string): { emitter: Emitter; details: { add
   const emitter: Emitter = createEmitter()
 
   // create eventCode for transaction
-  const eventCode: string = 'accountAddress'
+  const eventCode = 'accountAddress'
 
-  const existingAddressWatcher = this._watchedAccounts.find((ac: Ac) => ac.address === address)
+  const existingAddressWatcher = this._watchedAccounts.find(
+    (ac: Ac) => ac.address === address
+  )
 
   if (existingAddressWatcher) {
     // add to existing emitters array

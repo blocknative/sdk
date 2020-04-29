@@ -12,7 +12,7 @@ function transaction(this: any, hash: string, id?: string) {
   const emitter: Emitter = createEmitter()
 
   // create eventCode for transaction
-  const eventCode: string = 'txSent'
+  const eventCode = 'txSent'
 
   // put in queue
   this._watchedTransactions.push({

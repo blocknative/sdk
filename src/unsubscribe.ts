@@ -7,7 +7,9 @@ function unsubscribe(this: any, addressOrHash: string) {
   if (isAddress(addressOrHash)) {
     const normalizedAddress = addressOrHash.toLowerCase()
     // remove address from accounts
-    this._watchedAccounts = this._watchedAccounts.filter((ac: Ac) => ac.address !== addressOrHash)
+    this._watchedAccounts = this._watchedAccounts.filter(
+      (ac: Ac) => ac.address !== addressOrHash
+    )
 
     // logEvent to server
     this._sendMessage({
