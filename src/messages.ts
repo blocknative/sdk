@@ -90,7 +90,9 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
 
     const watchedAddress =
-      transaction.watchedAddress && transaction.watchedAddress.toLowerCase()
+      transaction.watchedAddress && this._system === 'ethereum'
+        ? transaction.watchedAddress.toLowerCase()
+        : transaction.watchedAddress
 
     if (watchedAddress) {
       const accountObj = this._watchedAccounts.find(
