@@ -22,11 +22,13 @@ import {
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
+const DEFAULT_SYSTEM = 'ethereum'
 
 class Blocknative {
   private _storageKey: string
   private _connectionId: string | undefined
   private _dappId: string
+  private _system: string
   private _networkId: number
   private _transactionHandlers: TransactionHandler[]
   private _socket: any
@@ -46,6 +48,7 @@ class Blocknative {
     validateOptions(options)
     const {
       dappId,
+      system = DEFAULT_SYSTEM,
       name = DEFAULT_NAME,
       networkId,
       transactionHandlers = [],
@@ -77,6 +80,7 @@ class Blocknative {
     this._storageKey = storageKey
     this._connectionId = storedConnectionId || undefined
     this._dappId = dappId
+    this._system = system
     this._networkId = networkId
     this._transactionHandlers = transactionHandlers
     this._socket = socket

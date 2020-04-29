@@ -1,10 +1,12 @@
 import { createEmitter } from './utilities'
-import { Emitter, TransactionLog, TransactionHandler } from './interfaces'
-import { validateTransaction } from './validation'
+import {
+  Emitter,
+  BitcoinTransactionLog,
+  EthereumTransactionLog,
+  TransactionHandler
+} from './interfaces'
 
 function transaction(this: any, hash: string, id?: string) {
-  validateTransaction(hash, id)
-
   // create startTime for transaction
   const startTime: number = Date.now()
 
@@ -20,8 +22,8 @@ function transaction(this: any, hash: string, id?: string) {
     emitter
   })
 
-  const transaction: TransactionLog = {
-    hash,
+  const transaction: BitcoinTransactionLog | EthereumTransactionLog = {
+    [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
     id: id || hash,
     startTime,
     status: 'sent'
