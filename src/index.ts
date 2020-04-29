@@ -18,7 +18,8 @@ import {
   Transaction,
   Account,
   Event,
-  Unsubscribe
+  Unsubscribe,
+  Destroy
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
@@ -38,11 +39,13 @@ class Blocknative {
   private _watchedAccounts: Ac[]
   private _pingTimeout?: NodeJS.Timeout
   private _heartbeat?: () => void
+  private _destroyed: boolean
 
   public transaction: Transaction
   public account: Account
   public event: Event
   public unsubscribe: Unsubscribe
+  public destroy: Destroy
 
   constructor(options: InitializationOptions) {
     validateOptions(options)
@@ -89,6 +92,7 @@ class Blocknative {
     this._watchedTransactions = []
     this._watchedAccounts = []
     this._pingTimeout = undefined
+    this._destroyed = false
 
     if (this._socket.ws.on) {
       this._heartbeat = () => {
@@ -111,6 +115,10 @@ class Blocknative {
     this.account = account.bind(this)
     this.event = event.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
+    this.destroy = () => {
+      this._socket.close()
+      this._destroyed = true
+    }
   }
 }
 
