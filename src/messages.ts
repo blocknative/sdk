@@ -11,7 +11,7 @@ export async function sendMessage(this: any, msg: EventObject) {
 }
 
 function waitForConnectionOpen(this: any) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const interval = setInterval(() => {
       if (this._connected) {
         setTimeout(resolve, 100)
