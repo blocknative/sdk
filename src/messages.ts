@@ -61,6 +61,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle bitcoin txid error
     if (reason.includes('invalid txid')) {
       const reason = `${event.transaction.txid} is an invalid txid`
       if (this._onerror) {
@@ -71,6 +72,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle ethereum transaction hash error
     if (reason.includes('invalid hash')) {
       const reason = `${event.transaction.hash} is an invalid transaction hash`
 
@@ -82,9 +84,30 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle general address error
     if (reason.includes('invalid address')) {
       const reason = `${event.account.address} is an invalid address`
 
+      if (this._onerror) {
+        this._onerror({ message: reason, account: event.account.address })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle bitcoin specific address error
+    if (reason.includes('not a valid Bitcoin')) {
+      if (this._onerror) {
+        this._onerror({ message: reason, account: event.account.address })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle ethereum specific address error
+    if (reason.includes('not a valid Ethereum')) {
       if (this._onerror) {
         this._onerror({ message: reason, account: event.account.address })
         return
