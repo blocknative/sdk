@@ -125,6 +125,10 @@ class Blocknative {
     this.destroy = () => {
       this._socket.close()
       this._destroyed = true
+
+      // call onclose manually here as SturdyWebSocket doesn't currently work as expected
+      // https://github.com/dphilipson/sturdy-websocket/issues/5
+      this._socket.onclose()
     }
   }
 }
