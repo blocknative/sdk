@@ -37,6 +37,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     if (reason.includes('not a valid API key')) {
       if (this._onerror) {
         this._onerror({ message: reason })
+        return
       } else {
         throw new Error(reason)
       }
@@ -45,6 +46,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     if (reason.includes('network not supported')) {
       if (this._onerror) {
         this._onerror({ message: reason })
+        return
       } else {
         throw new Error(reason)
       }
@@ -53,6 +55,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     if (reason.includes('maximum allowed amount')) {
       if (this._onerror) {
         this._onerror({ message: reason })
+        return
       } else {
         throw new Error(reason)
       }
@@ -60,9 +63,9 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     if (reason.includes('invalid txid')) {
       const reason = `${event.transaction.txid} is an invalid txid`
-      console.log('INVALID TX ID')
       if (this._onerror) {
         this._onerror({ message: reason, transaction: event.transaction.txid })
+        return
       } else {
         throw new Error(reason)
       }
@@ -73,6 +76,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
       if (this._onerror) {
         this._onerror({ message: reason, transaction: event.transaction.hash })
+        return
       } else {
         throw new Error(reason)
       }
@@ -83,6 +87,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
       if (this._onerror) {
         this._onerror({ message: reason, account: event.account.address })
+        return
       } else {
         throw new Error(reason)
       }
@@ -91,6 +96,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     // throw error that comes back from the server without formatting the message
     if (this._onerror) {
       this._onerror({ message: reason })
+      return
     } else {
       throw new Error(reason)
     }
