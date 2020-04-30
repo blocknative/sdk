@@ -19,7 +19,8 @@ import {
   Account,
   Event,
   Unsubscribe,
-  Destroy
+  Destroy,
+  SDKError
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
@@ -40,6 +41,7 @@ class Blocknative {
   private _pingTimeout?: NodeJS.Timeout
   private _heartbeat?: () => void
   private _destroyed: boolean
+  private _onerror: ((error: SDKError) => void) | undefined
 
   public transaction: Transaction
   public account: Account
@@ -77,7 +79,8 @@ class Blocknative {
     socket.ondown = onDown.bind(this, ondown)
     socket.onreopen = onReopen.bind(this, onreopen)
     socket.onmessage = handleMessage.bind(this)
-    socket.onerror = (error: any) => onerror && onerror(error)
+    socket.onerror = (error: any) =>
+      onerror && onerror({ message: 'There was a WebSocket error', error })
     socket.onclose = () => {
       this._pingTimeout && clearInterval(this._pingTimeout)
       onclose && onclose()
@@ -100,6 +103,7 @@ class Blocknative {
     this._watchedAccounts = []
     this._pingTimeout = undefined
     this._destroyed = false
+    this._onerror = onerror
 
     if (this._socket.ws.on) {
       this._heartbeat = () => {
