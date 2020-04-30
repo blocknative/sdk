@@ -43,11 +43,35 @@ export function validateOptions(options: any): never | void {
     transactionHandlers,
     apiUrl,
     ws,
+    onopen,
     ondown,
-    onreopen
+    onreopen,
+    onerror,
+    onclose,
+    ...otherParams
   } = options
 
+  invalidParams(
+    otherParams,
+    [
+      'dappId',
+      'system',
+      'name',
+      'networkId',
+      'transactionHandlers',
+      'apiUrl',
+      'ws',
+      'onopen',
+      'ondown',
+      'onreopen',
+      'onerror',
+      'onclose'
+    ],
+    'Initialization Options'
+  )
+
   validateType({ name: 'dappId', value: dappId, type: 'string' })
+
   validateType({
     name: 'system',
     value: system,
@@ -55,8 +79,10 @@ export function validateOptions(options: any): never | void {
     optional: true,
     customValidation: validSystem
   })
+
   validateType({ name: 'name', value: name, type: 'string', optional: true })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
+
   validateType({
     name: 'transactionHandler',
     value: transactionHandlers,
@@ -80,16 +106,40 @@ export function validateOptions(options: any): never | void {
     type: 'string',
     optional: true
   })
+
   validateType({ name: 'ws', value: ws, type: 'function', optional: true })
+
+  validateType({
+    name: 'onopen',
+    value: onopen,
+    type: 'function',
+    optional: true
+  })
+
   validateType({
     name: 'ondown',
     value: ondown,
     type: 'function',
     optional: true
   })
+
   validateType({
     name: 'onreopen',
     value: onreopen,
+    type: 'function',
+    optional: true
+  })
+
+  validateType({
+    name: 'onerror',
+    value: onerror,
+    type: 'function',
+    optional: true
+  })
+
+  validateType({
+    name: 'onclose',
+    value: onclose,
     type: 'function',
     optional: true
   })
@@ -97,4 +147,22 @@ export function validateOptions(options: any): never | void {
 
 export function validSystem(system: string): boolean {
   return !!networks[system]
+}
+
+function invalidParams(
+  params: object,
+  validParams: string[],
+  functionName: string
+): void | never {
+  const invalid = Object.keys(params)
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `${
+        invalid[0]
+      } is not a valid parameter for ${functionName}, must be one of the following valid parameters: ${validParams.join(
+        ', '
+      )}`
+    )
+  }
 }
