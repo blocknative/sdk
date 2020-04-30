@@ -59,8 +59,15 @@ export interface InitializationOptions {
   onopen?: () => void
   ondown?: (closeEvent: CloseEvent) => void
   onreopen?: () => void
-  onerror?: (error: any) => void | undefined
+  onerror?: (error: SDKError) => void
   onclose?: () => void
+}
+
+export interface SDKError {
+  message: string
+  error?: any
+  account?: string
+  transaction?: string
 }
 
 export interface Emitter {
