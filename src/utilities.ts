@@ -1,9 +1,10 @@
 import { Emitter, NotificationObject } from './interfaces'
+import { networks } from './config'
 
 export function createEmitter(): Emitter {
   return {
     listeners: {},
-    on: function(eventCode, listener) {
+    on: function (eventCode, listener) {
       // check if valid eventCode
       switch (eventCode) {
         case 'txSent':
@@ -28,7 +29,7 @@ export function createEmitter(): Emitter {
       // add listener for the eventCode
       this.listeners[eventCode] = listener
     },
-    emit: function(state) {
+    emit: function (state) {
       if (this.listeners[state.eventCode]) {
         return this.listeners[state.eventCode](state)
       }
@@ -40,21 +41,8 @@ export function createEmitter(): Emitter {
   }
 }
 
-export function networkName(id: number): string {
-  switch (id) {
-    case 1:
-      return 'main'
-    case 3:
-      return 'ropsten'
-    case 4:
-      return 'rinkeby'
-    case 5:
-      return 'goerli'
-    case 42:
-      return 'kovan'
-    default:
-      return 'local'
-  }
+export function networkName(blockchain: string, id: number): string {
+  return networks[blockchain][id]
 }
 
 export function serverEcho(eventCode: string): boolean {
@@ -78,4 +66,29 @@ export function last(
   arr: (undefined | boolean | NotificationObject)[]
 ): undefined | boolean | NotificationObject {
   return arr.reverse()[0]
+}
+
+// isAddress and isTxid are not meant to perform real validation,
+// just needs to work out if it is an address or a transaction id
+// the server will do more thorough validation
+export function isAddress(blockchain: string, addressOrHash: string) {
+  switch (blockchain) {
+    case 'ethereum':
+      return addressOrHash.length === 42
+    case 'bitcoin':
+      return addressOrHash.length !== 64
+    default:
+      return false
+  }
+}
+
+export function isTxid(blockchain: string, addressOrHash: string) {
+  switch (blockchain) {
+    case 'ethereum':
+      return addressOrHash.length === 66
+    case 'bitcoin':
+      return addressOrHash.length === 64
+    default:
+      return false
+  }
 }

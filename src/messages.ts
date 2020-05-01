@@ -35,18 +35,93 @@ export function handleMessage(this: any, msg: { data: string }): void {
   // handle any errors from the server
   if (status === 'error') {
     if (reason.includes('not a valid API key')) {
-      const errorObj = new Error(reason)
-      throw errorObj
+      if (this._onerror) {
+        this._onerror({ message: reason })
+        return
+      } else {
+        throw new Error(reason)
+      }
     }
 
     if (reason.includes('network not supported')) {
-      const errorObj = new Error(reason)
-      throw errorObj
+      if (this._onerror) {
+        this._onerror({ message: reason })
+        return
+      } else {
+        throw new Error(reason)
+      }
     }
 
     if (reason.includes('maximum allowed amount')) {
-      const errorObj = new Error(reason)
-      throw errorObj
+      if (this._onerror) {
+        this._onerror({ message: reason })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle bitcoin txid error
+    if (reason.includes('invalid txid')) {
+      const reason = `${event.transaction.txid} is an invalid txid`
+      if (this._onerror) {
+        this._onerror({ message: reason, transaction: event.transaction.txid })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle ethereum transaction hash error
+    if (reason.includes('invalid hash')) {
+      const reason = `${event.transaction.hash} is an invalid transaction hash`
+
+      if (this._onerror) {
+        this._onerror({ message: reason, transaction: event.transaction.hash })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle general address error
+    if (reason.includes('invalid address')) {
+      const reason = `${event.account.address} is an invalid address`
+
+      if (this._onerror) {
+        this._onerror({ message: reason, account: event.account.address })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle bitcoin specific address error
+    if (reason.includes('not a valid Bitcoin')) {
+      if (this._onerror) {
+        this._onerror({ message: reason, account: event.account.address })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // handle ethereum specific address error
+    if (reason.includes('not a valid Ethereum')) {
+      if (this._onerror) {
+        this._onerror({ message: reason, account: event.account.address })
+        return
+      } else {
+        throw new Error(reason)
+      }
+    }
+
+    // throw error that comes back from the server without formatting the message
+    if (this._onerror) {
+      this._onerror({ message: reason })
+      return
+    } else {
+      throw new Error(reason)
     }
   }
 
@@ -54,7 +129,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
     const { transaction, eventCode, contractCall } = event
 
     // flatten in to one object
-    const newState = { ...transaction, eventCode, contractCall }
+    const newState =
+      this._system === 'ethereum'
+        ? { ...transaction, eventCode, contractCall }
+        : { ...transaction, eventCode }
 
     // ignore server echo and unsubscribe messages
     if (serverEcho(eventCode) || transaction.status === 'unsubscribed') {
@@ -65,15 +143,17 @@ export function handleMessage(this: any, msg: { data: string }): void {
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
       this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
         if (tx.hash === transaction.originalHash) {
-          // reassign hash parameter in transaction queue to new hash
-          tx.hash = transaction.hash
+          // reassign hash parameter in transaction queue to new hash or txid
+          tx.hash = transaction.hash || transaction.txid
         }
         return tx
       })
     }
 
     const watchedAddress =
-      transaction.watchedAddress && transaction.watchedAddress.toLowerCase()
+      transaction.watchedAddress && this._system === 'ethereum'
+        ? transaction.watchedAddress.toLowerCase()
+        : transaction.watchedAddress
 
     if (watchedAddress) {
       const accountObj = this._watchedAccounts.find(
@@ -92,8 +172,9 @@ export function handleMessage(this: any, msg: { data: string }): void {
       )
     } else {
       const transactionObj = this._watchedTransactions.find(
-        (tx: Tx) => tx.hash === transaction.hash
+        (tx: Tx) => tx.hash === transaction.hash || transaction.txid
       )
+
       const emitterResult =
         transactionObj && transactionObj.emitter.emit(newState)
 
@@ -110,8 +191,8 @@ function createEventLog(this: any, msg: EventObject): string {
     dappId: this._dappId,
     version,
     blockchain: {
-      system: 'ethereum',
-      network: networkName(this._networkId)
+      system: this._system,
+      network: networkName(this._system, this._networkId)
     },
     ...msg
   })

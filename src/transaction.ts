@@ -1,9 +1,16 @@
 import { createEmitter } from './utilities'
-import { Emitter, TransactionLog, TransactionHandler } from './interfaces'
-import { validateTransaction } from './validation'
+import {
+  Emitter,
+  BitcoinTransactionLog,
+  EthereumTransactionLog,
+  TransactionHandler
+} from './interfaces'
 
 function transaction(this: any, hash: string, id?: string) {
-  validateTransaction(hash, id)
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
 
   // create startTime for transaction
   const startTime: number = Date.now()
@@ -12,7 +19,7 @@ function transaction(this: any, hash: string, id?: string) {
   const emitter: Emitter = createEmitter()
 
   // create eventCode for transaction
-  const eventCode: string = 'txSent'
+  const eventCode = 'txSent'
 
   // put in queue
   this._watchedTransactions.push({
@@ -20,8 +27,8 @@ function transaction(this: any, hash: string, id?: string) {
     emitter
   })
 
-  const transaction: TransactionLog = {
-    hash,
+  const transaction: BitcoinTransactionLog | EthereumTransactionLog = {
+    [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
     id: id || hash,
     startTime,
     status: 'sent'

@@ -1,8 +1,11 @@
 import { EventObject } from './interfaces'
-import { validateEvent } from './validation'
 
 function event(this: any, eventObj: EventObject): void {
-  validateEvent(eventObj)
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
+
   this._sendMessage(eventObj)
 }
 

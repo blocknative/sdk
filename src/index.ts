@@ -18,15 +18,19 @@ import {
   Transaction,
   Account,
   Event,
-  Unsubscribe
+  Unsubscribe,
+  Destroy,
+  SDKError
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
+const DEFAULT_SYSTEM = 'ethereum'
 
 class Blocknative {
   private _storageKey: string
   private _connectionId: string | undefined
   private _dappId: string
+  private _system: string
   private _networkId: number
   private _transactionHandlers: TransactionHandler[]
   private _socket: any
@@ -34,21 +38,32 @@ class Blocknative {
   private _sendMessage: (msg: EventObject) => void
   private _watchedTransactions: Tx[]
   private _watchedAccounts: Ac[]
+  private _pingTimeout?: NodeJS.Timeout
+  private _heartbeat?: () => void
+  private _destroyed: boolean
+  private _onerror: ((error: SDKError) => void) | undefined
 
   public transaction: Transaction
   public account: Account
   public event: Event
   public unsubscribe: Unsubscribe
+  public destroy: Destroy
 
   constructor(options: InitializationOptions) {
     validateOptions(options)
     const {
       dappId,
+      system = DEFAULT_SYSTEM,
       name = DEFAULT_NAME,
       networkId,
       transactionHandlers = [],
       apiUrl,
-      ws
+      ws,
+      onopen,
+      ondown,
+      onreopen,
+      onerror,
+      onclose
     } = options
 
     const socket = new SturdyWebSocket(
@@ -60,10 +75,16 @@ class Blocknative {
         : {}
     )
 
-    socket.onopen = onOpen.bind(this)
-    socket.ondown = onDown.bind(this)
-    socket.onreopen = onReopen.bind(this)
+    socket.onopen = onOpen.bind(this, onopen)
+    socket.ondown = onDown.bind(this, ondown)
+    socket.onreopen = onReopen.bind(this, onreopen)
     socket.onmessage = handleMessage.bind(this)
+    socket.onerror = (error: any) =>
+      onerror && onerror({ message: 'There was a WebSocket error', error })
+    socket.onclose = () => {
+      this._pingTimeout && clearInterval(this._pingTimeout)
+      onclose && onclose()
+    }
 
     const storageKey = CryptoEs.SHA1(`${dappId} - ${name}`).toString()
     const storedConnectionId =
@@ -72,6 +93,7 @@ class Blocknative {
     this._storageKey = storageKey
     this._connectionId = storedConnectionId || undefined
     this._dappId = dappId
+    this._system = system
     this._networkId = networkId
     this._transactionHandlers = transactionHandlers
     this._socket = socket
@@ -79,29 +101,69 @@ class Blocknative {
     this._sendMessage = sendMessage.bind(this)
     this._watchedTransactions = []
     this._watchedAccounts = []
+    this._pingTimeout = undefined
+    this._destroyed = false
+    this._onerror = onerror
+
+    if (this._socket.ws.on) {
+      this._heartbeat = () => {
+        this._pingTimeout && clearTimeout(this._pingTimeout)
+
+        this._pingTimeout = setTimeout(() => {
+          // terminate connection if we haven't heard the server ping after server timeout plus conservative latency delay
+          // Sturdy Websocket will handle the new connection logic
+          this._socket.ws.terminate()
+        }, 30000 + 1000)
+      }
+
+      this._socket.ws.on('ping', () => {
+        this._heartbeat && this._heartbeat()
+      })
+    }
 
     // public API
     this.transaction = transaction.bind(this)
     this.account = account.bind(this)
     this.event = event.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
+    this.destroy = () => {
+      this._socket.close()
+      this._destroyed = true
+
+      // call onclose manually here as SturdyWebSocket doesn't currently work as expected
+      // https://github.com/dphilipson/sturdy-websocket/issues/5
+      this._socket.onclose()
+    }
   }
 }
 
-function onOpen(this: any) {
+function onOpen(this: any, handler: (() => void) | undefined) {
   this._connected = true
   this._sendMessage({
     categoryCode: 'initialize',
     eventCode: 'checkDappId',
     connectionId: this._connectionId
   })
+
+  this._heartbeat && this._heartbeat()
+  handler && handler()
 }
 
-function onDown(this: any) {
+function onDown(
+  this: any,
+  handler: ((closeEvent: CloseEvent) => void) | undefined,
+  closeEvent: CloseEvent
+) {
   this._connected = false
+
+  if (handler) {
+    handler(closeEvent)
+  }
+
+  this._pingTimeout && clearTimeout(this._pingTimeout)
 }
 
-function onReopen(this: any) {
+function onReopen(this: any, handler: (() => void) | undefined) {
   this._connected = true
 
   this._sendMessage({
@@ -122,6 +184,19 @@ function onReopen(this: any) {
       }
     })
   })
+
+  if (handler) {
+    handler()
+  }
+
+  if (this._socket.ws.on) {
+    // need to re-register ping event since new connection
+    this._socket.ws.on('ping', () => {
+      this._heartbeat && this._heartbeat()
+    })
+
+    this._heartbeat()
+  }
 }
 
 export default Blocknative

@@ -1,20 +1,27 @@
 import { createEmitter } from './utilities'
 import { Emitter, Ac } from './interfaces'
-import { validateAccount } from './validation'
 
-function account(this: any, address: string): { emitter: Emitter; details: { address: string } } {
-  validateAccount(address)
+function account(
+  this: any,
+  address: string
+): { emitter: Emitter; details: { address: string } } {
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
 
-  // lowercase the address
-  address = address.toLowerCase()
+  // lowercase the address if Ethereum
+  address = this._system === 'ethereum' ? address.toLowerCase() : address
 
   // create emitter for transaction
   const emitter: Emitter = createEmitter()
 
   // create eventCode for transaction
-  const eventCode: string = 'accountAddress'
+  const eventCode = 'watch'
 
-  const existingAddressWatcher = this._watchedAccounts.find((ac: Ac) => ac.address === address)
+  const existingAddressWatcher = this._watchedAccounts.find(
+    (ac: Ac) => ac.address === address
+  )
 
   if (existingAddressWatcher) {
     // add to existing emitters array
@@ -30,7 +37,7 @@ function account(this: any, address: string): { emitter: Emitter; details: { add
   // logEvent to server
   this._sendMessage({
     eventCode,
-    categoryCode: 'watch',
+    categoryCode: 'accountAddress',
     account: {
       address
     }

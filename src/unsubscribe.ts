@@ -1,23 +1,33 @@
-import { validateUnsubscribe, isAddress, validTxHash } from './validation'
 import { Ac, Tx } from './interfaces'
+import { isAddress, isTxid } from './utilities'
 
 function unsubscribe(this: any, addressOrHash: string) {
-  validateUnsubscribe(addressOrHash)
+  if (this._destroyed)
+    throw new Error(
+      'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
+    )
 
-  if (isAddress(addressOrHash)) {
-    const normalizedAddress = addressOrHash.toLowerCase()
+  const address = isAddress(this._system, addressOrHash)
+  const txid = isTxid(this._system, addressOrHash)
+
+  // check if it is an address or a hash
+  if (address) {
+    const normalizedAddress =
+      this._system === 'ethereum' ? addressOrHash.toLowerCase() : addressOrHash
     // remove address from accounts
-    this._watchedAccounts = this._watchedAccounts.filter((ac: Ac) => ac.address !== addressOrHash)
+    this._watchedAccounts = this._watchedAccounts.filter(
+      (ac: Ac) => ac.address !== normalizedAddress
+    )
 
     // logEvent to server
     this._sendMessage({
-      eventCode: 'accountAddress',
-      categoryCode: 'unwatch',
+      categoryCode: 'accountAddress',
+      eventCode: 'unwatch',
       account: {
         address: normalizedAddress
       }
     })
-  } else if (validTxHash(addressOrHash)) {
+  } else if (txid) {
     // remove transaction from transactions
     this._watchedTransactions = this._watchedTransactions.filter(
       (tx: Tx) => tx.hash !== addressOrHash
@@ -25,17 +35,17 @@ function unsubscribe(this: any, addressOrHash: string) {
 
     // logEvent to server
     this._sendMessage({
-      eventCode: 'activeTransaction',
-      categoryCode: 'unwatch',
+      categoryCode: 'activeTransaction',
+      eventCode: 'unwatch',
       transaction: {
-        hash: addressOrHash,
+        [this._system === 'ethereum' ? 'hash' : 'txid']: addressOrHash,
         id: addressOrHash,
         status: 'unsubscribed'
       }
     })
   } else {
     throw new Error(
-      `Error trying to unsubscribe ${addressOrHash}: not a valid address or transaction hash`
+      `Error trying to unsubscribe ${addressOrHash}: not a valid address or transaction id/hash`
     )
   }
 }
