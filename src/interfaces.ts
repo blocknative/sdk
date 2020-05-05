@@ -41,6 +41,7 @@ export interface TransactionData {
   originalHash?: string
   counterparty?: string
   direction?: string
+  system?: System
 }
 
 export interface TransactionEvent {
@@ -48,10 +49,12 @@ export interface TransactionEvent {
   transaction: TransactionData
 }
 
+export type System = 'bitcoin' | 'ethereum'
+
 export interface InitializationOptions {
   networkId: number
   dappId: string
-  system?: string
+  system?: System
   name?: string
   transactionHandlers?: TransactionHandler[]
   apiUrl?: string
@@ -74,9 +77,26 @@ export interface Emitter {
   listeners: {
     [key: string]: EmitterListener
   }
-  on: (eventCode: string, listener: EmitterListener) => void
+  on: (eventCode: TransactionEventCode, listener: EmitterListener) => void
   emit: (state: TransactionData) => boolean | void | NotificationObject
 }
+
+export type TransactionEventCode =
+  | 'txSent'
+  | 'txPool'
+  | 'txConfirmed'
+  | 'txSpeedUp'
+  | 'txCancel'
+  | 'txFailed'
+  | 'txRequest'
+  | 'nsfFail'
+  | 'txRepeat'
+  | 'txAwaitingApproval'
+  | 'txConfirmReminder'
+  | 'txSendFail'
+  | 'txError'
+  | 'txUnderPriced'
+  | 'all'
 
 export interface Ac {
   address: string
