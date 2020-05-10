@@ -192,7 +192,7 @@ function createEventLog(this: any, msg: EventObject): string {
     version,
     blockchain: {
       system: this._system,
-      network: networkName(this._system, this._networkId)
+      network: networkName(this._system, this._networkId) || 'local'
     },
     ...msg
   })
