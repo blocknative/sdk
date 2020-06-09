@@ -65,7 +65,6 @@ class Blocknative {
       onerror,
       onclose
     } = options
-
     const socket = new SturdyWebSocket(
       apiUrl || 'wss://api.blocknative.com/v0',
       ws
