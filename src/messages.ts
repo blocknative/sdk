@@ -22,7 +22,9 @@ function waitForConnectionOpen(this: any) {
 }
 
 export function handleMessage(this: any, msg: { data: string }): void {
-  const { status, reason, event, connectionId } = JSON.parse(msg.data)
+  const { status, reason, event, connectionId, serverVersion } = JSON.parse(
+    msg.data
+  )
 
   if (connectionId) {
     if (typeof window !== 'undefined') {
@@ -139,13 +141,21 @@ export function handleMessage(this: any, msg: { data: string }): void {
       this._system === 'ethereum'
         ? {
             ...transaction,
+            serverVersion,
             eventCode,
             timeStamp,
             system,
             network,
             contractCall
           }
-        : { ...transaction, eventCode, timeStamp, system, network }
+        : {
+            ...transaction,
+            serverVersion,
+            eventCode,
+            timeStamp,
+            system,
+            network
+          }
 
     // ignore server echo and unsubscribe messages
     if (serverEcho(eventCode) || transaction.status === 'unsubscribed') {
