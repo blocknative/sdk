@@ -6,50 +6,135 @@ export interface NotificationObject {
   eventCode?: string
 }
 
-interface ContractObject {
-  contractAddress: string
-  contractType: string
+export interface ContractCall {
   methodName: string
-  params: object
+  params: {
+    [key: string]: string
+  }
+  contractAddress?: string
+  contractType?: string
+  contractDecimals: number
+  contractName: string
+  decimalValue: string
 }
 
-export interface TransactionData {
-  asset?: string
-  blockHash?: string
-  blockNumber?: number
-  contractCall?: ContractObject
+export interface CommonTransactionData {
+  system: System
+  network: Network
+  status: Status
+  id?: string
   eventCode: string
-  from?: string
-  gas?: string
-  gasPrice?: string
-  hash?: string
-  txid?: string
-  id: string
-  input?: string
-  monitorId?: string
-  monitorVersion?: string
-  nonce?: number
-  r?: string
-  s?: string
-  status: string
-  to?: string
-  transactionIndex?: number
-  v?: string
-  value?: string | number
+  timeStamp: string
+  serverVersion: string
+  monitorId: string
+  monitorVersion: string
+}
+
+export interface BitcoinTransactionData extends CommonTransactionData {
+  txid: string
+  inputs: InputOutput[]
+  outputs: InputOutput[]
+  fee: string
+  netBalanceChanges: BalanceChange[]
+  rawTransaction: BitcoinRawTransaction
+}
+
+export interface EthereumTransactionData extends CommonTransactionData {
+  hash: string
+  asset: string
+  blockHash: string
+  blockNumber: number
+  contractCall: ContractCall
+  to: string
+  from: string
+  gas: string
+  gasPrice: string
+  gasUsed?: string
+  input: string
+  nonce: number
+  v: string
+  r: string
+  s: string
+  transactionIndex: number
+  value: string
   startTime?: number
+  timePending?: string
   watchedAddress?: string
-  originalHash?: string
+  replaceHash?: string
   counterparty?: string
   direction?: string
-  system?: System
 }
+
+export type TransactionData = BitcoinTransactionData | EthereumTransactionData
 
 export interface TransactionEvent {
   emitterResult: void | boolean | NotificationObject
-  transaction: TransactionData
+  transaction: TransactionData | TransactionEventLog
 }
 
 export type System = 'bitcoin' | 'ethereum'
+export type Network =
+  | 'main'
+  | 'testnet'
+  | 'ropsten'
+  | 'rinkeby'
+  | 'goerli'
+  | 'kovan'
+  | 'xdai'
+
+export type Status =
+  | 'pending'
+  | 'confirmed'
+  | 'speedup'
+  | 'cancel'
+  | 'failed'
+  | 'dropped'
+
+export interface InputOutput {
+  address: string
+  value: string
+}
+
+export interface BalanceChange {
+  address: string
+  delta: string
+}
+
+export interface BitcoinRawTransaction {
+  txid: string
+  hash: string
+  version: number
+  size: number
+  vsize: number
+  weight: number
+  locktime: number
+  vin: Vin[]
+  vout: Vout[]
+  hex: string
+}
+
+export interface Vin {
+  txid: string
+  vout: number
+  scriptSig: {
+    asm: string
+    hex: string
+  }
+  txinwitness: string[]
+  sequence: number
+}
+
+export interface Vout {
+  value: number
+  n: number
+  scriptPubKey: {
+    asm: string
+    hex: string
+    reqSigs: number
+    type: string
+    addresses: string[]
+  }
+}
 
 export interface InitializationOptions {
   networkId: number
@@ -78,7 +163,9 @@ export interface Emitter {
     [key: string]: EmitterListener
   }
   on: (eventCode: TransactionEventCode, listener: EmitterListener) => void
-  emit: (state: TransactionData) => boolean | void | NotificationObject
+  emit: (
+    state: TransactionData | TransactionEventLog
+  ) => boolean | void | NotificationObject
 }
 
 export type TransactionEventCode =
@@ -112,6 +199,7 @@ export interface BaseTransactionLog {
   id: string
   startTime?: number
   status: string
+  eventCode: string
 }
 
 export interface EthereumTransactionLog extends BaseTransactionLog {
@@ -126,12 +214,15 @@ export interface EthereumTransactionLog extends BaseTransactionLog {
 
 export interface BitcoinTransactionLog extends BaseTransactionLog {
   txid?: string
+  [key: string]: string | number | undefined
 }
+
+export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
 export interface EventObject {
   eventCode: string
   categoryCode: string
-  transaction?: EthereumTransactionLog | BitcoinTransactionLog
+  transaction?: TransactionEventLog
   wallet?: {
     balance: string
   }
@@ -150,7 +241,11 @@ export interface TransactionHandler {
 }
 
 export interface EmitterListener {
-  (state: TransactionData): boolean | undefined | NotificationObject | void
+  (state: TransactionData | TransactionEventLog):
+    | boolean
+    | undefined
+    | NotificationObject
+    | void
 }
 
 export interface Transaction {

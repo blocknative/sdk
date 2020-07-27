@@ -27,15 +27,11 @@ function transaction(this: any, hash: string, id?: string) {
     emitter
   })
 
-  const transaction: BitcoinTransactionLog | EthereumTransactionLog = {
+  const newState = {
     [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
     id: id || hash,
     startTime,
-    status: 'sent'
-  }
-
-  const newState = {
-    ...transaction,
+    status: 'sent',
     eventCode
   }
 
@@ -47,7 +43,7 @@ function transaction(this: any, hash: string, id?: string) {
   })
 
   const transactionObj = {
-    details: transaction,
+    details: newState,
     emitter
   }
 
