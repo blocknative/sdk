@@ -22,7 +22,9 @@ function waitForConnectionOpen(this: any) {
 }
 
 export function handleMessage(this: any, msg: { data: string }): void {
-  const { status, reason, event, connectionId } = JSON.parse(msg.data)
+  const { status, reason, event, connectionId, serverVersion } = JSON.parse(
+    msg.data
+  )
 
   if (connectionId) {
     if (typeof window !== 'undefined') {
@@ -126,23 +128,60 @@ export function handleMessage(this: any, msg: { data: string }): void {
   }
 
   if (event && event.transaction) {
-    const { transaction, eventCode, contractCall } = event
+    const {
+      transaction,
+      eventCode,
+      contractCall,
+      timeStamp,
+      blockchain: { system, network }
+    } = event
 
     // flatten in to one object
     const newState =
       this._system === 'ethereum'
-        ? { ...transaction, eventCode, contractCall }
-        : { ...transaction, eventCode }
+        ? {
+            ...transaction,
+            serverVersion,
+            eventCode,
+            timeStamp,
+            system,
+            network,
+            contractCall
+          }
+        : {
+            ...transaction,
+            serverVersion,
+            eventCode,
+            timeStamp,
+            system,
+            network
+          }
 
     // ignore server echo and unsubscribe messages
     if (serverEcho(eventCode) || transaction.status === 'unsubscribed') {
       return
     }
 
+    // replace originalHash to match webhook API
+    if (newState.originalHash) {
+      newState.replaceHash = newState.originalHash
+      delete newState.originalHash
+    }
+
+    // replace status to match webhook API
+    if (eventCode === 'txSpeedUp' && newState.status !== 'speedup') {
+      newState.status = 'speedup'
+    }
+
+    // replace status to match webhook API
+    if (eventCode === 'txCancel' && newState.status !== 'cancel') {
+      newState.status = 'cancel'
+    }
+
     // handle change of hash in speedup and cancel events
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
       this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
-        if (tx.hash === transaction.originalHash) {
+        if (tx.hash === transaction.replaceHash) {
           // reassign hash parameter in transaction queue to new hash or txid
           tx.hash = transaction.hash || transaction.txid
         }
