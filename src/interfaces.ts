@@ -81,6 +81,7 @@ export type Network =
   | 'goerli'
   | 'kovan'
   | 'xdai'
+  | 'local'
 
 export type Status =
   | 'pending'
