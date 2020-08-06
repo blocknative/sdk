@@ -186,11 +186,13 @@ function onDown(
 function onReopen(this: any, handler: (() => void) | undefined) {
   this._connected = true
 
-  this._sendMessage({
+  const msg = {
     categoryCode: 'initialize',
     eventCode: 'checkDappId',
     connectionId: this._connectionId
-  })
+  }
+
+  this._socket.send(createEventLog.bind(this)(msg))
 
   // re-register all accounts to be watched by server upon
   // re-connection as they don't get transferred over automatically
