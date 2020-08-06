@@ -12,3 +12,10 @@ export const networks: { [key: string]: { [key: string]: string } } = {
     '100': 'xdai'
   }
 }
+
+export const DEFAULT_RATE_LIMIT_RULES = {
+  points: 150,
+  duration: 1
+}
+
+export const QUEUE_LIMIT = 10000

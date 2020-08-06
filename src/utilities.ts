@@ -92,3 +92,9 @@ export function isTxid(blockchain: string, addressOrHash: string) {
       return false
   }
 }
+
+export function wait(time: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, time)
+  })
+}
