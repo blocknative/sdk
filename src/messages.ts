@@ -1,30 +1,59 @@
-import { serverEcho, last, networkName } from './utilities'
+import { serverEcho, last, networkName, wait } from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './config'
 
-export async function sendMessage(this: any, msg: EventObject) {
+export function sendMessage(this: any, msg: EventObject) {
+  if (this._queuedMessages.length > QUEUE_LIMIT) {
+    throw new Error(`Queue limit of ${QUEUE_LIMIT} messages has been reached.`)
+  }
+
+  this._queuedMessages.push(createEventLog.bind(this)(msg))
+
+  if (!this._processingQueue) {
+    this._processQueue()
+  }
+}
+
+export async function processQueue(this: any) {
+  this._processingQueue = true
+
   if (!this._connected) {
     await waitForConnectionOpen.bind(this)()
   }
 
-  this._socket.send(createEventLog.bind(this)(msg))
-}
+  while (this._queuedMessages.length > 0) {
+    // small wait to allow response from server to take affect
+    await wait(1)
 
-function waitForConnectionOpen(this: any) {
-  return new Promise(resolve => {
-    const interval = setInterval(() => {
-      if (this._connected) {
-        setTimeout(resolve, 100)
-        clearInterval(interval)
-      }
-    })
-  })
+    if (this._waitToRetry !== null) {
+      // have been rate limited so wait
+      await this._waitToRetry
+      this._waitToRetry = null
+    }
+
+    const msg = this._queuedMessages.shift()
+
+    const delay = (this._limitRules.duration / this._limitRules.points) * 1000
+    await wait(delay)
+    this._socket.send(msg)
+  }
+
+  this._processingQueue = false
+  this._limitRules = DEFAULT_RATE_LIMIT_RULES
 }
 
 export function handleMessage(this: any, msg: { data: string }): void {
-  const { status, reason, event, connectionId, serverVersion } = JSON.parse(
-    msg.data
-  )
+  const {
+    status,
+    reason,
+    event,
+    connectionId,
+    serverVersion,
+    retryMs,
+    limitRules,
+    blockedMsg
+  } = JSON.parse(msg.data)
 
   if (connectionId) {
     if (typeof window !== 'undefined') {
@@ -36,6 +65,15 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   // handle any errors from the server
   if (status === 'error') {
+    if (reason.includes('ratelimit')) {
+      this._waitToRetry = wait(retryMs)
+      this._limitRules = limitRules
+
+      // add blocked msg to the front of the queue
+      blockedMsg && this._queuedMessages.unshift(blockedMsg)
+      return
+    }
+
     if (reason.includes('not a valid API key')) {
       if (this._onerror) {
         this._onerror({ message: reason })
@@ -224,7 +262,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
   }
 }
 
-function createEventLog(this: any, msg: EventObject): string {
+export function createEventLog(this: any, msg: EventObject): string {
   return JSON.stringify({
     timeStamp: new Date(),
     dappId: this._dappId,
@@ -234,5 +272,16 @@ function createEventLog(this: any, msg: EventObject): string {
       network: networkName(this._system, this._networkId) || 'local'
     },
     ...msg
+  })
+}
+
+function waitForConnectionOpen(this: any) {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (this._connected) {
+        setTimeout(resolve, 100)
+        clearInterval(interval)
+      }
+    })
   })
 }
