@@ -6,8 +6,14 @@ import account from './account'
 import event from './event'
 import unsubscribe from './unsubscribe'
 
-import { sendMessage, handleMessage } from './messages'
+import {
+  sendMessage,
+  handleMessage,
+  processQueue,
+  createEventLog
+} from './messages'
 import { validateOptions } from './validation'
+import { DEFAULT_RATE_LIMIT_RULES } from './config'
 
 import {
   InitializationOptions,
@@ -20,7 +26,8 @@ import {
   Event,
   Unsubscribe,
   Destroy,
-  SDKError
+  SDKError,
+  LimitRules
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
@@ -42,6 +49,11 @@ class Blocknative {
   private _heartbeat?: () => void
   private _destroyed: boolean
   private _onerror: ((error: SDKError) => void) | undefined
+  private _queuedMessages: EventObject[]
+  private _limitRules: LimitRules
+  private _waitToRetry: null | Promise<void>
+  private _processingQueue: boolean
+  private _processQueue: () => Promise<void>
 
   public transaction: Transaction
   public account: Account
@@ -104,6 +116,11 @@ class Blocknative {
     this._pingTimeout = undefined
     this._destroyed = false
     this._onerror = onerror
+    this._queuedMessages = []
+    this._limitRules = DEFAULT_RATE_LIMIT_RULES
+    this._waitToRetry = null
+    this._processingQueue = false
+    this._processQueue = processQueue.bind(this)
 
     if (this._socket.ws.on) {
       this._heartbeat = () => {
@@ -139,12 +156,15 @@ class Blocknative {
 
 function onOpen(this: any, handler: (() => void) | undefined) {
   this._connected = true
-  this._sendMessage({
+
+  const msg = {
     categoryCode: 'initialize',
     eventCode: 'checkDappId',
     connectionId: this._connectionId
-  })
+  }
 
+  // send this message directly rather than put in queue
+  this._socket.send(createEventLog.bind(this)(msg))
   this._heartbeat && this._heartbeat()
   handler && handler()
 }

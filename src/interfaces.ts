@@ -183,3 +183,8 @@ export interface API {
   unsubscribe: Unsubscribe
   destroy: Destroy
 }
+
+export interface LimitRules {
+  points: number
+  duration: number
+}
