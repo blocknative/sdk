@@ -22,11 +22,15 @@ function transaction(this: any, hash: string, id?: string) {
     emitter
   })
 
-  const newState = {
+  const transaction = {
     [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
     id: id || hash,
     startTime,
-    status: 'sent',
+    status: 'sent'
+  }
+
+  const newState = {
+    ...transaction,
     eventCode
   }
 
@@ -34,7 +38,7 @@ function transaction(this: any, hash: string, id?: string) {
   this._sendMessage({
     eventCode,
     categoryCode: 'activeTransaction',
-    transaction: newState
+    transaction
   })
 
   const transactionObj = {
