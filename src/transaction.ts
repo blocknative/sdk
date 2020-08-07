@@ -1,10 +1,5 @@
 import { createEmitter } from './utilities'
-import {
-  Emitter,
-  BitcoinTransactionLog,
-  EthereumTransactionLog,
-  TransactionHandler
-} from './interfaces'
+import { Emitter, TransactionHandler } from './interfaces'
 
 function transaction(this: any, hash: string, id?: string) {
   if (this._destroyed)
@@ -39,7 +34,7 @@ function transaction(this: any, hash: string, id?: string) {
   this._sendMessage({
     eventCode,
     categoryCode: 'activeTransaction',
-    transaction
+    transaction: newState
   })
 
   const transactionObj = {
