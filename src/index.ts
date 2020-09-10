@@ -5,6 +5,7 @@ import transaction from './transaction'
 import account from './account'
 import event from './event'
 import unsubscribe from './unsubscribe'
+import configuration from './configuration'
 
 import {
   sendMessage,
@@ -13,7 +14,7 @@ import {
   createEventLog
 } from './messages'
 import { validateOptions } from './validation'
-import { DEFAULT_RATE_LIMIT_RULES } from './config'
+import { DEFAULT_RATE_LIMIT_RULES } from './defaults'
 
 import {
   InitializationOptions,
@@ -26,6 +27,7 @@ import {
   Event,
   Unsubscribe,
   Destroy,
+  Configuration,
   SDKError,
   LimitRules
 } from './interfaces'
@@ -60,6 +62,7 @@ class Blocknative {
   public event: Event
   public unsubscribe: Unsubscribe
   public destroy: Destroy
+  public configuration: Configuration
 
   constructor(options: InitializationOptions) {
     validateOptions(options)
@@ -143,6 +146,7 @@ class Blocknative {
     this.account = account.bind(this)
     this.event = event.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
+    this.configuration = configuration.bind(this)
     this.destroy = () => {
       this._socket.close()
       this._destroyed = true

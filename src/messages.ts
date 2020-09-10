@@ -1,7 +1,7 @@
 import { serverEcho, last, networkName, wait } from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
-import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './config'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
 
 export function sendMessage(this: any, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {

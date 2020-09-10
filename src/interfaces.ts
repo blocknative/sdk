@@ -249,6 +249,11 @@ export interface EmitterListener {
     | void
 }
 
+export interface Config {
+  scope: string
+  filters?: string[]
+}
+
 export interface Transaction {
   (hash: string, id?: string): {
     details: BitcoinTransactionLog | EthereumTransactionLog
@@ -272,12 +277,17 @@ export interface Destroy {
   (): void
 }
 
+export interface Configuration {
+  (config: Config): void
+}
+
 export interface API {
   transaction: Transaction
   account: Account
   event: Event
   unsubscribe: Unsubscribe
   destroy: Destroy
+  config: Configuration
 }
 
 export interface LimitRules {

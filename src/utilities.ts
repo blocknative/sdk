@@ -1,5 +1,5 @@
 import { Emitter, NotificationObject } from './interfaces'
-import { networks } from './config'
+import { networks } from './defaults'
 
 export function createEmitter(): Emitter {
   return {
