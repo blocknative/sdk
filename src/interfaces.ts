@@ -252,6 +252,7 @@ export interface EmitterListener {
 export interface Config {
   scope: string
   filters?: string[]
+  abi?: any[]
 }
 
 export interface Transaction {
