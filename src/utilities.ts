@@ -98,3 +98,6 @@ export function wait(time: number) {
     setTimeout(resolve, time)
   })
 }
+
+export const jsonPreserveUndefined = (k: any, v: any) =>
+  v === undefined ? 'undefined' : v

@@ -1,4 +1,10 @@
-import { serverEcho, last, networkName, wait } from './utilities'
+import {
+  serverEcho,
+  last,
+  networkName,
+  wait,
+  jsonPreserveUndefined
+} from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
 import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
@@ -263,16 +269,19 @@ export function handleMessage(this: any, msg: { data: string }): void {
 }
 
 export function createEventLog(this: any, msg: EventObject): string {
-  return JSON.stringify({
-    timeStamp: new Date(),
-    dappId: this._dappId,
-    version,
-    blockchain: {
-      system: this._system,
-      network: networkName(this._system, this._networkId) || 'local'
+  return JSON.stringify(
+    {
+      timeStamp: new Date(),
+      dappId: this._dappId,
+      version,
+      blockchain: {
+        system: this._system,
+        network: networkName(this._system, this._networkId) || 'local'
+      },
+      ...msg
     },
-    ...msg
-  })
+    msg.categoryCode === 'configs' ? jsonPreserveUndefined : undefined
+  )
 }
 
 function waitForConnectionOpen(this: any) {
