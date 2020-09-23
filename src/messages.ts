@@ -71,7 +71,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   // handle any errors from the server
   if (status === 'error') {
-    if (reason.includes('ratelimit')) {
+    if (reason.includes('ratelimit') && !reason.includes('IP ratelimited')) {
       this._waitToRetry = wait(retryMs)
       this._limitRules = limitRules
 
