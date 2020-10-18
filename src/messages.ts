@@ -264,7 +264,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
 export function createEventLog(this: any, msg: EventObject): string {
   return JSON.stringify({
-    timeStamp: new Date(),
+    timeStamp: new Date().toISOString(),
     dappId: this._dappId,
     version,
     blockchain: {
