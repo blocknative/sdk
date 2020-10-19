@@ -48,4 +48,4 @@ web3.eth.sendTransaction(txOptions).on('transactionHash', hash => {
 
 ## Documentation
 
-For detailed documentation head to [docs.blocknative.com](https://docs.blocknative.com/sdk)
+For detailed documentation head to [docs.blocknative.com](https://docs.blocknative.com/notify-sdk)
