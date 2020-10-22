@@ -296,7 +296,8 @@ export function createEventLog(this: any, msg: EventObject): string {
       blockchain: {
         system: this._system,
         network: networkName(this._system, this._networkId) || 'local'
-      }
+      },
+      ...msg
     },
     msg.categoryCode === 'configs' ? jsonPreserveUndefined : undefined
   )
