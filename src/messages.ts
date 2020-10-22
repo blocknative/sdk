@@ -162,6 +162,16 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle config save error
+    if (event && event.config) {
+      const subscription = this._configurationsAwaitingResponse.get(
+        event.config.scope
+      )
+
+      subscription && subscription.error(reason)
+      return
+    }
+
     // throw error that comes back from the server without formatting the message
     if (this._onerror) {
       this._onerror({ message: reason })
@@ -169,6 +179,15 @@ export function handleMessage(this: any, msg: { data: string }): void {
     } else {
       throw new Error(reason)
     }
+  }
+
+  // handle successful config save
+  if (event && event.config) {
+    const subscription = this._configurationsAwaitingResponse.get(
+      event.config.scope
+    )
+    subscription && subscription.next('Success')
+    return
   }
 
   if (event && event.transaction) {

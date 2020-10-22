@@ -1,5 +1,6 @@
 import SturdyWebSocket from 'sturdy-websocket'
 import CryptoEs from 'crypto-es'
+import { Observable } from 'rxjs'
 
 import transaction from './transaction'
 import account from './account'
@@ -56,6 +57,7 @@ class Blocknative {
   private _waitToRetry: null | Promise<void>
   private _processingQueue: boolean
   private _processQueue: () => Promise<void>
+  private _configurationsAwaitingResponse: Map<string, Observable<string>>
 
   public transaction: Transaction
   public account: Account
@@ -124,6 +126,7 @@ class Blocknative {
     this._waitToRetry = null
     this._processingQueue = false
     this._processQueue = processQueue.bind(this)
+    this._configurationsAwaitingResponse = new Map()
 
     if (this._socket.ws.on) {
       this._heartbeat = () => {
