@@ -1,5 +1,5 @@
 import { Emitter, NotificationObject } from './interfaces'
-import { networks } from './config'
+import { networks } from './defaults'
 
 export function createEmitter(): Emitter {
   return {
@@ -98,3 +98,6 @@ export function wait(time: number) {
     setTimeout(resolve, time)
   })
 }
+
+export const jsonPreserveUndefined = (k: any, v: any) =>
+  v === undefined ? 'undefined' : v

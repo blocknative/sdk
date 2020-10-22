@@ -1,7 +1,13 @@
-import { serverEcho, last, networkName, wait } from './utilities'
+import {
+  serverEcho,
+  last,
+  networkName,
+  wait,
+  jsonPreserveUndefined
+} from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
-import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './config'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
 
 export function sendMessage(this: any, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {
@@ -65,7 +71,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   // handle any errors from the server
   if (status === 'error') {
-    if (reason.includes('ratelimit')) {
+    if (reason.includes('ratelimit') && !reason.includes('IP ratelimited')) {
       this._waitToRetry = wait(retryMs)
       this._limitRules = limitRules
 
@@ -156,6 +162,16 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle config save error
+    if (event && event.config) {
+      const subscription = this._configurationsAwaitingResponse.get(
+        event.config.scope
+      )
+
+      subscription && subscription.error(reason)
+      return
+    }
+
     // throw error that comes back from the server without formatting the message
     if (this._onerror) {
       this._onerror({ message: reason })
@@ -163,6 +179,15 @@ export function handleMessage(this: any, msg: { data: string }): void {
     } else {
       throw new Error(reason)
     }
+  }
+
+  // handle successful config save
+  if (event && event.config) {
+    const subscription = this._configurationsAwaitingResponse.get(
+      event.config.scope
+    )
+    subscription && subscription.next('Success')
+    return
   }
 
   if (event && event.transaction) {
@@ -263,16 +288,19 @@ export function handleMessage(this: any, msg: { data: string }): void {
 }
 
 export function createEventLog(this: any, msg: EventObject): string {
-  return JSON.stringify({
-    timeStamp: new Date().toISOString(),
-    dappId: this._dappId,
-    version,
-    blockchain: {
-      system: this._system,
-      network: networkName(this._system, this._networkId) || 'local'
+  return JSON.stringify(
+    {
+      timeStamp: new Date().toISOString(),
+      dappId: this._dappId,
+      version,
+      blockchain: {
+        system: this._system,
+        network: networkName(this._system, this._networkId) || 'local'
+      },
+      ...msg
     },
-    ...msg
-  })
+    msg.categoryCode === 'configs' ? jsonPreserveUndefined : undefined
+  )
 }
 
 function waitForConnectionOpen(this: any) {

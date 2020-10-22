@@ -1,5 +1,5 @@
 import { TransactionHandler } from './interfaces'
-import { networks } from './config'
+import { networks } from './defaults'
 
 export function validateType(options: {
   name: string
