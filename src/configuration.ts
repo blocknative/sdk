@@ -24,7 +24,7 @@ function configuration(this: any, config: Config) {
   this._configurationsAwaitingResponse.set(config.scope, subscription)
 
   return new Promise((resolve, reject) => {
-    subscription.pipe(take(1), timeout(1000)).subscribe({
+    subscription.pipe(take(1), timeout(3000)).subscribe({
       next: resolve,
       error: reject
     })
