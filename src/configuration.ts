@@ -42,13 +42,7 @@ function configuration(
   return new Promise((resolve, reject) => {
     subscription.pipe(take(1), timeout(5000)).subscribe({
       next: () => resolve({ ...emitter, details: { config } }),
-      error: reject,
-      // remove subscription once complete
-      complete: () =>
-        this._configurations.set(config.scope.toLowerCase(), {
-          ...config,
-          ...emitter
-        })
+      error: reject
     })
   })
 }
