@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "crypto-es": "^1.2.2",
-    "rxjs": "^6.6.3",
     "sturdy-websocket": "^0.1.12"
   }
 }

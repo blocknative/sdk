@@ -1,6 +1,5 @@
 import SturdyWebSocket from 'sturdy-websocket'
 import CryptoEs from 'crypto-es'
-import { Observable } from 'rxjs'
 
 import transaction from './transaction'
 import account from './account'
@@ -30,7 +29,8 @@ import {
   Destroy,
   Configuration,
   SDKError,
-  LimitRules
+  LimitRules,
+  ConfigWithEmitter
 } from './interfaces'
 
 const DEFAULT_NAME = 'unknown'
@@ -48,6 +48,7 @@ class Blocknative {
   private _sendMessage: (msg: EventObject) => void
   private _watchedTransactions: Tx[]
   private _watchedAccounts: Ac[]
+  private _configurations: Map<string, ConfigWithEmitter>
   private _pingTimeout?: NodeJS.Timeout
   private _heartbeat?: () => void
   private _destroyed: boolean
@@ -57,7 +58,6 @@ class Blocknative {
   private _waitToRetry: null | Promise<void>
   private _processingQueue: boolean
   private _processQueue: () => Promise<void>
-  private _configurationsAwaitingResponse: Map<string, Observable<string>>
 
   public transaction: Transaction
   public account: Account
@@ -118,6 +118,7 @@ class Blocknative {
     this._sendMessage = sendMessage.bind(this)
     this._watchedTransactions = []
     this._watchedAccounts = []
+    this._configurations = new Map()
     this._pingTimeout = undefined
     this._destroyed = false
     this._onerror = onerror
@@ -126,7 +127,6 @@ class Blocknative {
     this._waitToRetry = null
     this._processingQueue = false
     this._processQueue = processQueue.bind(this)
-    this._configurationsAwaitingResponse = new Map()
 
     if (this._socket.ws.on) {
       this._heartbeat = () => {
@@ -200,6 +200,25 @@ function onReopen(this: any, handler: (() => void) | undefined) {
   }
 
   this._socket.send(createEventLog.bind(this)(msg))
+
+  // re-register all configurations on re-connection
+  const configurations: ConfigWithEmitter[] = Array.from(
+    this._configurations.values()
+  )
+
+  configurations.forEach((configWithEmitter: ConfigWithEmitter) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { emitter, ...config } = configWithEmitter
+
+    this._sendMessage({
+      categoryCode: 'configs',
+      eventCode: 'put',
+      config: {
+        ...config,
+        watchAddress: config.scope !== 'global' ? true : false
+      }
+    })
+  })
 
   // re-register all accounts to be watched by server upon
   // re-connection as they don't get transferred over automatically

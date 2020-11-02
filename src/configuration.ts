@@ -1,6 +1,5 @@
-import { Subject } from 'rxjs'
-import { take, timeout } from 'rxjs/operators'
 import { Config } from './interfaces'
+import { createEmitter } from './utilities'
 
 function configuration(this: any, config: Config) {
   if (this._destroyed) {
@@ -9,32 +8,23 @@ function configuration(this: any, config: Config) {
     )
   }
 
-  const subscription = new Subject()
+  // create emitter for transaction
+  const emitter = createEmitter()
 
-  const existingSubscription = this._configurationsAwaitingResponse.get(
-    config.scope
-  )
-  if (existingSubscription) {
-    // already setting a config for this scope, so resolve the original one
-    existingSubscription.next(
-      `Canceling due to new configuration being set for scope: ${config.scope}`
-    )
-  }
+  this._configurations.set(config.scope.toLowerCase(), { ...config, emitter })
 
-  this._configurationsAwaitingResponse.set(config.scope, subscription)
-
-  return new Promise((resolve, reject) => {
-    subscription.pipe(take(1), timeout(3000)).subscribe({
-      next: resolve,
-      error: reject
-    })
-
-    this._sendMessage({
-      categoryCode: 'configs',
-      eventCode: 'put',
-      config
-    })
+  this._sendMessage({
+    categoryCode: 'configs',
+    eventCode: 'put',
+    config
   })
+
+  return {
+    emitter,
+    details: {
+      config
+    }
+  }
 }
 
 export default configuration

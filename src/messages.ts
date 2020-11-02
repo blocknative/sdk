@@ -162,14 +162,14 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
-    // handle config save error
+    // handle config error
     if (event && event.config) {
-      const subscription = this._configurationsAwaitingResponse.get(
-        event.config.scope
-      )
-
-      subscription && subscription.error(reason)
-      return
+      if (this._onerror) {
+        this._onerror({ message: reason, configuration: event.config })
+        return
+      } else {
+        throw new Error(reason)
+      }
     }
 
     // throw error that comes back from the server without formatting the message
@@ -179,15 +179,6 @@ export function handleMessage(this: any, msg: { data: string }): void {
     } else {
       throw new Error(reason)
     }
-  }
-
-  // handle successful config save
-  if (event && event.config) {
-    const subscription = this._configurationsAwaitingResponse.get(
-      event.config.scope
-    )
-    subscription && subscription.next('Success')
-    return
   }
 
   if (event && event.transaction) {
@@ -261,7 +252,8 @@ export function handleMessage(this: any, msg: { data: string }): void {
       const accountObj = this._watchedAccounts.find(
         (ac: Ac) => ac.address === watchedAddress
       )
-      const emitterResult = accountObj
+
+      const accountEmitterResult = accountObj
         ? last(
             accountObj.emitters.map((emitter: Emitter) =>
               emitter.emit(newState)
@@ -269,8 +261,16 @@ export function handleMessage(this: any, msg: { data: string }): void {
           )
         : false
 
+      const configuration = this._configurations.get(watchedAddress)
+
+      const configurationEmitterResult =
+        configuration && configuration.emitter.emit(newState)
+
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
-        handler({ transaction: newState, emitterResult })
+        handler({
+          transaction: newState,
+          emitterResult: accountEmitterResult || configurationEmitterResult
+        })
       )
     } else {
       const transactionObj = this._watchedTransactions.find(

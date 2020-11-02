@@ -253,6 +253,11 @@ export interface Config {
   scope: string
   filters?: string[]
   abi?: any[]
+  watchAddress?: boolean
+}
+
+export interface ConfigWithEmitter extends Config {
+  emitter: Emitter
 }
 
 export interface Transaction {
@@ -279,7 +284,7 @@ export interface Destroy {
 }
 
 export interface Configuration {
-  (config: Config): void
+  (config: Config): { details: { config: Config }; emitter: Emitter }
 }
 
 export interface API {
