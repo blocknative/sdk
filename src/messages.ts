@@ -164,12 +164,13 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     // handle config error
     if (event && event.config) {
-      if (this._onerror) {
-        this._onerror({ message: reason, configuration: event.config })
-        return
-      } else {
-        throw new Error(reason)
+      const configuration = this._configurations.get(event.config.scope)
+
+      if (configuration && configuration.subscription) {
+        configuration.subscription.error(reason)
       }
+
+      return
     }
 
     // throw error that comes back from the server without formatting the message
@@ -178,6 +179,14 @@ export function handleMessage(this: any, msg: { data: string }): void {
       return
     } else {
       throw new Error(reason)
+    }
+  }
+
+  if (event && event.config) {
+    const configuration = this._configurations.get(event.config.scope)
+
+    if (configuration && configuration.subscription) {
+      configuration.subscription.next()
     }
   }
 
@@ -264,7 +273,9 @@ export function handleMessage(this: any, msg: { data: string }): void {
       const configuration = this._configurations.get(watchedAddress)
 
       const configurationEmitterResult =
-        configuration && configuration.emitter.emit(newState)
+        configuration &&
+        configuration.emitter &&
+        configuration.emitter.emit(newState)
 
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
         handler({
