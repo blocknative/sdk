@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs'
+
 export interface NotificationObject {
   type?: 'pending' | 'success' | 'error' | 'hint'
   message?: string
@@ -253,6 +255,12 @@ export interface Config {
   scope: string
   filters?: string[]
   abi?: any[]
+  watchAddress?: boolean
+}
+
+export interface EnhancedConfig extends Config {
+  emitter?: Emitter
+  subscription?: Subject<string>
 }
 
 export interface Transaction {
@@ -279,7 +287,9 @@ export interface Destroy {
 }
 
 export interface Configuration {
-  (config: Config): void
+  (config: Config): Promise<
+    { details: { config: Config }; emitter?: Emitter } | string
+  >
 }
 
 export interface API {

@@ -162,13 +162,14 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
-    // handle config save error
+    // handle config error
     if (event && event.config) {
-      const subscription = this._configurationsAwaitingResponse.get(
-        event.config.scope
-      )
+      const configuration = this._configurations.get(event.config.scope)
 
-      subscription && subscription.error(reason)
+      if (configuration && configuration.subscription) {
+        configuration.subscription.error(reason)
+      }
+
       return
     }
 
@@ -181,13 +182,12 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
   }
 
-  // handle successful config save
   if (event && event.config) {
-    const subscription = this._configurationsAwaitingResponse.get(
-      event.config.scope
-    )
-    subscription && subscription.next('Success')
-    return
+    const configuration = this._configurations.get(event.config.scope)
+
+    if (configuration && configuration.subscription) {
+      configuration.subscription.next()
+    }
   }
 
   if (event && event.transaction) {
@@ -261,7 +261,8 @@ export function handleMessage(this: any, msg: { data: string }): void {
       const accountObj = this._watchedAccounts.find(
         (ac: Ac) => ac.address === watchedAddress
       )
-      const emitterResult = accountObj
+
+      const accountEmitterResult = accountObj
         ? last(
             accountObj.emitters.map((emitter: Emitter) =>
               emitter.emit(newState)
@@ -269,8 +270,18 @@ export function handleMessage(this: any, msg: { data: string }): void {
           )
         : false
 
+      const configuration = this._configurations.get(watchedAddress)
+
+      const configurationEmitterResult =
+        configuration &&
+        configuration.emitter &&
+        configuration.emitter.emit(newState)
+
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
-        handler({ transaction: newState, emitterResult })
+        handler({
+          transaction: newState,
+          emitterResult: accountEmitterResult || configurationEmitterResult
+        })
       )
     } else {
       const transactionObj = this._watchedTransactions.find(
