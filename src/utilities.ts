@@ -29,6 +29,9 @@ export function createEmitter(): Emitter {
       // add listener for the eventCode
       this.listeners[eventCode] = listener
     },
+    off: function (eventCode) {
+      delete this.listeners[eventCode]
+    },
     emit: function (state) {
       if (this.listeners[state.eventCode]) {
         return this.listeners[state.eventCode](state)

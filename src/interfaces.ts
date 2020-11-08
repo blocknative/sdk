@@ -166,6 +166,7 @@ export interface Emitter {
     [key: string]: EmitterListener
   }
   on: (eventCode: TransactionEventCode, listener: EmitterListener) => void
+  off: (eventCode: TransactionEventCode) => void
   emit: (
     state: TransactionData | TransactionEventLog
   ) => boolean | void | NotificationObject
