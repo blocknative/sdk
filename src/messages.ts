@@ -1,7 +1,13 @@
-import { serverEcho, last, networkName, wait } from './utilities'
+import {
+  serverEcho,
+  last,
+  networkName,
+  wait,
+  jsonPreserveUndefined
+} from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
-import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './config'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
 
 export function sendMessage(this: any, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {
@@ -49,6 +55,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     reason,
     event,
     connectionId,
+    serverVersion,
     retryMs,
     limitRules,
     blockedMsg
@@ -64,7 +71,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   // handle any errors from the server
   if (status === 'error') {
-    if (reason.includes('ratelimit')) {
+    if (reason.includes('ratelimit') && !reason.includes('IP ratelimited')) {
       this._waitToRetry = wait(retryMs)
       this._limitRules = limitRules
 
@@ -155,6 +162,17 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    // handle config error
+    if (event && event.config) {
+      const configuration = this._configurations.get(event.config.scope)
+
+      if (configuration && configuration.subscription) {
+        configuration.subscription.error(reason)
+      }
+
+      return
+    }
+
     // throw error that comes back from the server without formatting the message
     if (this._onerror) {
       this._onerror({ message: reason })
@@ -164,24 +182,69 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
   }
 
+  if (event && event.config) {
+    const configuration = this._configurations.get(event.config.scope)
+
+    if (configuration && configuration.subscription) {
+      configuration.subscription.next()
+    }
+  }
+
   if (event && event.transaction) {
-    const { transaction, eventCode, contractCall } = event
+    const {
+      transaction,
+      eventCode,
+      contractCall,
+      timeStamp,
+      blockchain: { system, network }
+    } = event
 
     // flatten in to one object
     const newState =
       this._system === 'ethereum'
-        ? { ...transaction, eventCode, contractCall }
-        : { ...transaction, eventCode }
+        ? {
+            ...transaction,
+            serverVersion,
+            eventCode,
+            timeStamp,
+            system,
+            network,
+            contractCall
+          }
+        : {
+            ...transaction,
+            serverVersion,
+            eventCode,
+            timeStamp,
+            system,
+            network
+          }
 
     // ignore server echo and unsubscribe messages
     if (serverEcho(eventCode) || transaction.status === 'unsubscribed') {
       return
     }
 
+    // replace originalHash to match webhook API
+    if (newState.originalHash) {
+      newState.replaceHash = newState.originalHash
+      delete newState.originalHash
+    }
+
+    // replace status to match webhook API
+    if (eventCode === 'txSpeedUp' && newState.status !== 'speedup') {
+      newState.status = 'speedup'
+    }
+
+    // replace status to match webhook API
+    if (eventCode === 'txCancel' && newState.status !== 'cancel') {
+      newState.status = 'cancel'
+    }
+
     // handle change of hash in speedup and cancel events
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
       this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
-        if (tx.hash === transaction.originalHash) {
+        if (tx.hash === transaction.replaceHash) {
           // reassign hash parameter in transaction queue to new hash or txid
           tx.hash = transaction.hash || transaction.txid
         }
@@ -198,7 +261,8 @@ export function handleMessage(this: any, msg: { data: string }): void {
       const accountObj = this._watchedAccounts.find(
         (ac: Ac) => ac.address === watchedAddress
       )
-      const emitterResult = accountObj
+
+      const accountEmitterResult = accountObj
         ? last(
             accountObj.emitters.map((emitter: Emitter) =>
               emitter.emit(newState)
@@ -206,8 +270,18 @@ export function handleMessage(this: any, msg: { data: string }): void {
           )
         : false
 
+      const configuration = this._configurations.get(watchedAddress)
+
+      const configurationEmitterResult =
+        configuration &&
+        configuration.emitter &&
+        configuration.emitter.emit(newState)
+
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
-        handler({ transaction: newState, emitterResult })
+        handler({
+          transaction: newState,
+          emitterResult: accountEmitterResult || configurationEmitterResult
+        })
       )
     } else {
       const transactionObj = this._watchedTransactions.find(
@@ -225,16 +299,19 @@ export function handleMessage(this: any, msg: { data: string }): void {
 }
 
 export function createEventLog(this: any, msg: EventObject): string {
-  return JSON.stringify({
-    timeStamp: new Date(),
-    dappId: this._dappId,
-    version,
-    blockchain: {
-      system: this._system,
-      network: networkName(this._system, this._networkId) || 'local'
+  return JSON.stringify(
+    {
+      timeStamp: new Date().toISOString(),
+      dappId: this._dappId,
+      version,
+      blockchain: {
+        system: this._system,
+        network: networkName(this._system, this._networkId) || 'local'
+      },
+      ...msg
     },
-    ...msg
-  })
+    msg.categoryCode === 'configs' ? jsonPreserveUndefined : undefined
+  )
 }
 
 function waitForConnectionOpen(this: any) {

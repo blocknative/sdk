@@ -1,10 +1,5 @@
 import { createEmitter } from './utilities'
-import {
-  Emitter,
-  BitcoinTransactionLog,
-  EthereumTransactionLog,
-  TransactionHandler
-} from './interfaces'
+import { Emitter, TransactionHandler } from './interfaces'
 
 function transaction(this: any, hash: string, id?: string) {
   if (this._destroyed)
@@ -27,7 +22,7 @@ function transaction(this: any, hash: string, id?: string) {
     emitter
   })
 
-  const transaction: BitcoinTransactionLog | EthereumTransactionLog = {
+  const transaction = {
     [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
     id: id || hash,
     startTime,
@@ -47,7 +42,7 @@ function transaction(this: any, hash: string, id?: string) {
   })
 
   const transactionObj = {
-    details: transaction,
+    details: newState,
     emitter
   }
 

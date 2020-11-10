@@ -1,5 +1,5 @@
 import { Emitter, NotificationObject } from './interfaces'
-import { networks } from './config'
+import { networks } from './defaults'
 
 export function createEmitter(): Emitter {
   return {
@@ -28,6 +28,9 @@ export function createEmitter(): Emitter {
 
       // add listener for the eventCode
       this.listeners[eventCode] = listener
+    },
+    off: function (eventCode) {
+      delete this.listeners[eventCode]
     },
     emit: function (state) {
       if (this.listeners[state.eventCode]) {
@@ -98,3 +101,6 @@ export function wait(time: number) {
     setTimeout(resolve, time)
   })
 }
+
+export const jsonPreserveUndefined = (k: any, v: any) =>
+  v === undefined ? 'undefined' : v
