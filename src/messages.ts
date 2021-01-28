@@ -304,6 +304,8 @@ export function createEventLog(this: any, msg: EventObject): string {
       timeStamp: new Date().toISOString(),
       dappId: this._dappId,
       version,
+      appName: this._appName,
+      appVersion: this._appVersion,
       blockchain: {
         system: this._system,
         network: networkName(this._system, this._networkId) || 'local'
