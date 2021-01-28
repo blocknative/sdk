@@ -33,7 +33,8 @@ import {
   EnhancedConfig
 } from './interfaces'
 
-const DEFAULT_NAME = 'unknown'
+const DEFAULT_APP_NAME = 'unknown'
+const DEFAULT_APP_VERSION = 'unknown'
 const DEFAULT_SYSTEM = 'ethereum'
 
 class Blocknative {
@@ -42,6 +43,8 @@ class Blocknative {
   private _dappId: string
   private _system: string
   private _networkId: number
+  private _appName: string
+  private _appVersion: string
   private _transactionHandlers: TransactionHandler[]
   private _socket: any
   private _connected: boolean
@@ -71,7 +74,8 @@ class Blocknative {
     const {
       dappId,
       system = DEFAULT_SYSTEM,
-      name = DEFAULT_NAME,
+      name = DEFAULT_APP_NAME,
+      appVersion = DEFAULT_APP_VERSION,
       networkId,
       transactionHandlers = [],
       apiUrl,
@@ -112,6 +116,8 @@ class Blocknative {
     this._dappId = dappId
     this._system = system
     this._networkId = networkId
+    this._appName = name
+    this._appVersion = appVersion
     this._transactionHandlers = transactionHandlers
     this._socket = socket
     this._connected = false

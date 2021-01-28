@@ -144,6 +144,7 @@ export interface InitializationOptions {
   dappId: string
   system?: System
   name?: string
+  appVersion?: string
   transactionHandlers?: TransactionHandler[]
   apiUrl?: string
   ws?: any

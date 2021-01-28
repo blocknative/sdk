@@ -39,6 +39,7 @@ export function validateOptions(options: any): never | void {
     dappId,
     system,
     name,
+    appVersion,
     networkId,
     transactionHandlers,
     apiUrl,
@@ -57,6 +58,7 @@ export function validateOptions(options: any): never | void {
       'dappId',
       'system',
       'name',
+      'appVersion',
       'networkId',
       'transactionHandlers',
       'apiUrl',
@@ -81,6 +83,12 @@ export function validateOptions(options: any): never | void {
   })
 
   validateType({ name: 'name', value: name, type: 'string', optional: true })
+  validateType({
+    name: 'appVersion',
+    value: appVersion,
+    type: 'string',
+    optional: true
+  })
   validateType({ name: 'networkId', value: networkId, type: 'number' })
 
   validateType({
