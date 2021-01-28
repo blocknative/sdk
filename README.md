@@ -11,7 +11,7 @@ A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node
 ### Quick Start (client)
 
 ```javascript
-import blocknativeSdk from 'bnc-sdk'
+import BlocknativeSdk from 'bnc-sdk'
 import Web3 from 'web3'
 
 const web3 = new Web3(window.ethereum)
