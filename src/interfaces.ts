@@ -188,6 +188,7 @@ export type TransactionEventCode =
   | 'txSendFail'
   | 'txError'
   | 'txUnderPriced'
+  | 'txDropped'
   | 'all'
 
 export interface Ac {

@@ -13,11 +13,20 @@ export function createEmitter(): Emitter {
         case 'txSpeedUp':
         case 'txCancel':
         case 'txFailed':
+        case 'txDropped':
+        case 'txRequest':
+        case 'nsfFail':
+        case 'txRepeat':
+        case 'txAwaitingApproval':
+        case 'txConfirmReminder':
+        case 'txSendFail':
+        case 'txError':
+        case 'txUnderPriced':
         case 'all':
           break
         default:
           throw new Error(
-            `${eventCode} is not a valid event code, for a list of valid event codes see: https://github.com/blocknative/sdk`
+            `${eventCode} is not a valid event code, for a list of valid event codes see: https://docs.blocknative.com/notify-sdk#event-codes`
           )
       }
 
