@@ -83,6 +83,7 @@ export type Network =
   | 'goerli'
   | 'kovan'
   | 'xdai'
+  | 'bsc-main'
   | 'local'
 
 export type Status =
