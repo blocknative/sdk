@@ -190,6 +190,7 @@ export type TransactionEventCode =
   | 'txError'
   | 'txUnderPriced'
   | 'txDropped'
+  | 'txPoolSimulation'
   | 'all'
 
 export interface Ac {
