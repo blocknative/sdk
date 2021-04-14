@@ -22,6 +22,7 @@ export function createEmitter(): Emitter {
         case 'txSendFail':
         case 'txError':
         case 'txUnderPriced':
+        case 'txPoolSimulation':
         case 'all':
           break
         default:
