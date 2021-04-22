@@ -13,10 +13,11 @@ function configuration(
     )
   }
 
+  const casedScope =
+    this._system === 'ethereum' ? config.scope.toLowerCase() : config.scope
+
   // resolve previous configuration if exists
-  const previousConfiguration = this._configurations.get(
-    config.scope.toLowerCase()
-  )
+  const previousConfiguration = this._configurations.get(casedScope)
 
   previousConfiguration &&
     previousConfiguration.subscription &&
@@ -27,7 +28,7 @@ function configuration(
   // create emitter for transaction
   const emitter = config.watchAddress ? { emitter: createEmitter() } : {}
 
-  this._configurations.set(config.scope.toLowerCase(), {
+  this._configurations.set(casedScope, {
     ...config,
     ...emitter,
     subscription
@@ -42,7 +43,10 @@ function configuration(
   return new Promise((resolve, reject) => {
     subscription.pipe(take(1), timeout(5000)).subscribe({
       next: () => resolve({ ...emitter, details: { config } }),
-      error: reject
+      error: () =>
+        reject(
+          `Configuration with scope: ${config.scope} has been sent to the Blocknative server, but has not received a reply within 5 seconds.`
+        )
     })
   })
 }
