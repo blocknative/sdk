@@ -183,7 +183,12 @@ export function handleMessage(this: any, msg: { data: string }): void {
   }
 
   if (event && event.config) {
-    const configuration = this._configurations.get(event.config.scope)
+    const casedScope =
+      this._system === 'ethereum'
+        ? event.config.scope.toLowerCase()
+        : event.config.scope
+
+    const configuration = this._configurations.get(casedScope)
 
     if (configuration && configuration.subscription) {
       configuration.subscription.next()
