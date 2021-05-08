@@ -71,7 +71,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   // handle any errors from the server
   if (status === 'error') {
-    if (reason.includes('ratelimit') && !reason.match(/IP (PendingSimulation|Notification) ratelimit reached/)) {
+    if (
+      reason.includes('ratelimit') &&
+      !reason.match(/IP (PendingSimulation|Notification) ratelimit reached/)
+    ) {
       this._waitToRetry = wait(retryMs)
       this._limitRules = limitRules
 
