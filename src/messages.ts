@@ -252,7 +252,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     // handle change of hash in speedup and cancel events
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
       this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
-        if (tx.hash === transaction.replaceHash) {
+        if (tx.hash === newState.replaceHash) {
           // reassign hash parameter in transaction queue to new hash or txid
           tx.hash = transaction.hash || transaction.txid
         }

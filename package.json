@@ -1,6 +1,6 @@
 {
   "name": "bnc-sdk",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "SDK to connect to the blocknative backend via a websocket connection",
   "keywords": [
     "ethereum",
