@@ -280,15 +280,15 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
       const configuration = this._configurations.get(watchedAddress)
 
-      const configurationEmitterResult =
-        configuration &&
-        configuration.emitter &&
-        configuration.emitter.emit(newState)
+      const emitterResult =
+        configuration && configuration.emitter
+          ? configuration.emitter.emit(newState) || accountEmitterResult
+          : accountEmitterResult
 
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
         handler({
           transaction: newState,
-          emitterResult: accountEmitterResult || configurationEmitterResult
+          emitterResult
         })
       )
     } else {
