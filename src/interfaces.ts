@@ -258,7 +258,7 @@ export interface EmitterListener {
 
 export interface Config {
   scope: string
-  filters?: string[]
+  filters?: Filter[]
   abi?: any[]
   watchAddress?: boolean
 }
@@ -310,3 +310,40 @@ export interface LimitRules {
   points: number
   duration: number
 }
+
+interface FilterRange {
+  from?: number
+  to?: number
+  gt?: number
+  lt?: number
+  gte?: number
+  lte?: number
+}
+
+interface Primative {
+  [key: string]:
+    | string
+    | number
+    | Date
+    | string[]
+    | number[]
+    | boolean
+    | FilterRange
+    | undefined
+}
+
+interface Modifier {
+  _propertySearch?: boolean
+  _propertySearchDepth?: number
+  _join?: 'OR' | 'AND'
+  _not?: boolean
+  _text?: boolean
+  _word?: boolean
+  _start?: boolean
+  _end?: boolean
+  _regexp?: boolean
+  _separator?: string
+  terms?: Filter[]
+}
+
+type Filter = Primative | Modifier
