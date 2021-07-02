@@ -43,9 +43,11 @@ function configuration(
   return new Promise((resolve, reject) => {
     subscription.pipe(take(1), timeout(5000)).subscribe({
       next: () => resolve({ ...emitter, details: { config } }),
-      error: () =>
+      error: (error: { message: string }) =>
         reject(
-          `Configuration with scope: ${config.scope} has been sent to the Blocknative server, but has not received a reply within 5 seconds.`
+          error.message === 'Timeout has occurred'
+            ? `Configuration with scope: ${config.scope} has been sent to the Blocknative server, but has not received a reply within 5 seconds.`
+            : error.message
         )
     })
   })
