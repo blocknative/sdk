@@ -170,7 +170,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       const configuration = this._configurations.get(event.config.scope)
 
       if (configuration && configuration.subscription) {
-        configuration.subscription.error(reason)
+        configuration.subscription.error({ message: reason })
       }
 
       return
