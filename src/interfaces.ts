@@ -84,6 +84,7 @@ export type Network =
   | 'kovan'
   | 'xdai'
   | 'bsc-main'
+  | 'matic-main'
   | 'local'
 
 export type Status =
