@@ -10,7 +10,8 @@ export const networks: { [key: string]: { [key: string]: string } } = {
     '5': 'goerli',
     '42': 'kovan',
     '56': 'bsc-main',
-    '100': 'xdai'
+    '100': 'xdai',
+    '137': 'matic-main'
   }
 }
 

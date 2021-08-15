@@ -10,9 +10,7 @@ export interface NotificationObject {
 
 export interface ContractCall {
   methodName: string
-  params: {
-    [key: string]: string
-  }
+  params: Record<string, unknown>
   contractAddress?: string
   contractType?: string
   contractDecimals: number
@@ -47,6 +45,8 @@ export interface EthereumTransactionData extends CommonTransactionData {
   blockHash: string
   blockNumber: number
   contractCall: ContractCall
+  internalTransactions: InternalTransaction[]
+  netBalanceChanges: NetBalanceChange[]
   to: string
   from: string
   gas: string
@@ -67,6 +67,39 @@ export interface EthereumTransactionData extends CommonTransactionData {
   direction?: string
 }
 
+export interface InternalTransaction {
+  type: string
+  from: string
+  to: string
+  input: string
+  gas: number
+  gasUsed: number
+  value: string
+  contractCall: ContractCall
+}
+
+export interface NetBalanceChange {
+  address: string
+  balanceChanges: BalanceChange[]
+}
+
+export interface BalanceChange {
+  delta: string
+  asset: Asset
+  breakdown: BreakDown[]
+}
+
+export interface Asset {
+  type: string
+  symbol: string
+  contractAddress: string
+}
+
+export interface BreakDown {
+  counterparty: string
+  amount: string
+}
+
 export type TransactionData = BitcoinTransactionData | EthereumTransactionData
 
 export interface TransactionEvent {
@@ -84,6 +117,7 @@ export type Network =
   | 'kovan'
   | 'xdai'
   | 'bsc-main'
+  | 'matic-main'
   | 'local'
 
 export type Status =
