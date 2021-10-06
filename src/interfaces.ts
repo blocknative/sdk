@@ -9,13 +9,13 @@ export interface NotificationObject {
 }
 
 export interface ContractCall {
+  contractType?: string
+  contractAddress?: string
   methodName: string
   params: Record<string, unknown>
-  contractAddress?: string
-  contractType?: string
-  contractDecimals: number
   contractName: string
-  decimalValue: string
+  contractDecimals?: number
+  decimalValue?: string
 }
 
 export interface CommonTransactionData {
@@ -42,14 +42,14 @@ export interface BitcoinTransactionData extends CommonTransactionData {
 export interface EthereumTransactionData extends CommonTransactionData {
   hash: string
   asset: string
-  blockHash: string
-  blockNumber: number
-  contractCall: ContractCall
-  internalTransactions: InternalTransaction[]
-  netBalanceChanges: NetBalanceChange[]
+  blockHash: string | null
+  blockNumber: number | null
+  contractCall?: ContractCall
+  internalTransactions?: InternalTransaction[]
+  netBalanceChanges?: NetBalanceChange[]
   to: string
   from: string
-  gas: string
+  gas: number
   gasPrice: string
   gasUsed?: string
   input: string
@@ -57,7 +57,7 @@ export interface EthereumTransactionData extends CommonTransactionData {
   v: string
   r: string
   s: string
-  transactionIndex: number
+  transactionIndex?: number
   value: string
   startTime?: number
   timePending?: string
