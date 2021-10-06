@@ -71,6 +71,7 @@ class Blocknative {
 
   constructor(options: InitializationOptions) {
     validateOptions(options)
+
     const {
       dappId,
       system = DEFAULT_SYSTEM,
@@ -87,13 +88,17 @@ class Blocknative {
       onclose
     } = options
 
+    // override default timeout to allow for slow connections
+    const timeout = { connectTimeout: 10000 }
+
     const socket = new SturdyWebSocket(
       apiUrl || 'wss://api.blocknative.com/v0',
       ws
         ? {
-            wsConstructor: ws
+            wsConstructor: ws,
+            ...timeout
           }
-        : {}
+        : { ...timeout }
     )
 
     socket.onopen = onOpen.bind(this, onopen)
