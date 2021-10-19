@@ -58,7 +58,8 @@ export function handleMessage(this: any, msg: { data: string }): void {
     serverVersion,
     retryMs,
     limitRules,
-    blockedMsg
+    blockedMsg,
+    dispatchTimestamp
   } = JSON.parse(msg.data)
 
   if (connectionId) {
@@ -215,6 +216,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
             serverVersion,
             eventCode,
             timeStamp,
+            dispatchTimestamp,
             system,
             network,
             contractCall
@@ -224,6 +226,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
             serverVersion,
             eventCode,
             timeStamp,
+            dispatchTimestamp,
             system,
             network
           }
