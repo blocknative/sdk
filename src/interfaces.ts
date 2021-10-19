@@ -28,6 +28,7 @@ export interface CommonTransactionData {
   serverVersion: string
   monitorId: string
   monitorVersion: string
+  dispatchTimestamp: string
 }
 
 export interface BitcoinTransactionData extends CommonTransactionData {
