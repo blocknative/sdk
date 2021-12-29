@@ -265,7 +265,7 @@ async function onReopen(this: any, handler: (() => void) | undefined) {
     handler()
   }
 
-  if (this._socket.ws.on) {
+  if (this._socket.ws && this._socket.ws.on) {
     // need to re-register ping event since new connection
     this._socket.ws.on('ping', () => {
       this._heartbeat && this._heartbeat()
