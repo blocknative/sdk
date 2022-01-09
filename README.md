@@ -8,7 +8,7 @@ A lightweight JavaScript sdk to connect to the Blocknative backend Ethereum node
 
 `npm install bnc-sdk`
 
-### Quick Start (node js)
+### Quick Start (Node.js)
 
 #### Transaction Monitor
 
@@ -17,7 +17,7 @@ import WebSocket from 'ws'
 import BlocknativeSdk from 'bnc-sdk'
 import Web3 from 'web3'
 
-const web3 = new Web3('ws://some.local-or-remote.node:8546')
+const web3 = new Web3('<ws://some.local-or-remote.node:8546>')
 
 // create options object
 const options = {
@@ -64,7 +64,7 @@ import WebSocket from 'ws'
 import BlocknativeSdk from 'bnc-sdk'
 import Web3 from 'web3'
 
-const web3 = new Web3('ws://some.local-or-remote.node:8546')
+const web3 = new Web3('<ws://some.local-or-remote.node:8546>')
 
 // create options object
 const options = {
@@ -87,7 +87,7 @@ emitter.on('all', transaction => {
 })
 ```
 
-### Quick Start (browser)
+### Quick Start (Browser)
 
 #### Transaction Monitor
 
@@ -132,7 +132,6 @@ web3.eth.sendTransaction(txOptions).on('transactionHash', hash => {
     console.log(`Transaction event: ${transaction.eventCode}`)
   })
 })
-```
 
 #### Address Listener
 
