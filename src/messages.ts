@@ -238,7 +238,8 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     // replace originalHash to match webhook API
     if (newState.originalHash) {
-      newState.replaceHash = newState.originalHash
+      newState.replaceHash = newState.hash
+      newState.hash = newState.originalHash
       delete newState.originalHash
     }
 
@@ -296,7 +297,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       )
     } else {
       const transactionObj = this._watchedTransactions.find(
-        (tx: Tx) => tx.hash === transaction.hash || transaction.txid
+        (tx: Tx) => tx.hash === newState.hash || newState.txid
       )
 
       const emitterResult =
@@ -305,6 +306,17 @@ export function handleMessage(this: any, msg: { data: string }): void {
       this._transactionHandlers.forEach((handler: TransactionHandler) =>
         handler({ transaction: newState, emitterResult })
       )
+
+      // replace the emitter hash to the replace hash on replacement txs
+      if (newState.status === 'speedup' || newState.status === 'cancel') {
+        this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
+          if (tx.hash === newState.hash || newState.txid) {
+            return { ...tx, hash: newState.replaceHash }
+          }
+
+          return tx
+        })
+      }
     }
   }
 }
