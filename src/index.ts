@@ -32,6 +32,7 @@ import {
   LimitRules,
   EnhancedConfig
 } from './interfaces'
+import { isLocalStorageAvailable } from './utilities'
 
 const DEFAULT_APP_NAME = 'unknown'
 const DEFAULT_APP_VERSION = 'unknown'
@@ -114,7 +115,7 @@ class Blocknative {
 
     const storageKey = CryptoEs.SHA1(`${dappId} - ${name}`).toString()
     const storedConnectionId =
-      typeof window !== 'undefined' && window.localStorage.getItem(storageKey)
+      isLocalStorageAvailable() && window.localStorage.getItem(storageKey)
 
     this._storageKey = storageKey
     this._connectionId = storedConnectionId || undefined

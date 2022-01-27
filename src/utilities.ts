@@ -114,3 +114,26 @@ export function wait(time: number) {
 
 export const jsonPreserveUndefined = (k: any, v: any) =>
   v === undefined ? 'undefined' : v
+
+/**
+ * Tests if LocalStorage may be used. Accounts for environments where
+ * LocalStorage is not supported, as well as those where it is blocked.
+ *
+ * @returns `true` if LocalStorage is supported and accessible, `false` otherwise.
+ */
+export function isLocalStorageAvailable(): boolean {
+  const isSupported = typeof window !== 'undefined' && 'localStorage' in window
+
+  if (isSupported) {
+    const testKey = '__testLocalStorage'
+    try {
+      window.localStorage.setItem(testKey, '1')
+      window.localStorage.removeItem(testKey)
+      return true
+    } catch (err) {
+      return false
+    }
+  }
+
+  return false
+}
