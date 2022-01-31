@@ -119,6 +119,7 @@ export type Network =
   | 'xdai'
   | 'bsc-main'
   | 'matic-main'
+  | 'fantom-main'
   | 'local'
 
 export type Status =
