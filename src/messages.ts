@@ -3,7 +3,8 @@ import {
   last,
   networkName,
   wait,
-  jsonPreserveUndefined
+  jsonPreserveUndefined,
+  isLocalStorageAvailable
 } from './utilities'
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
@@ -63,7 +64,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
   } = JSON.parse(msg.data)
 
   if (connectionId) {
-    if (typeof window !== 'undefined') {
+    if (isLocalStorageAvailable()) {
       window.localStorage.setItem(this._storageKey, connectionId)
     }
 
