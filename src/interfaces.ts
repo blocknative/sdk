@@ -66,6 +66,10 @@ export interface EthereumTransactionData extends CommonTransactionData {
   replaceHash?: string
   counterparty?: string
   direction?: string
+  baseFeePerGasGwei?: number
+  maxPriorityFeePerGasGwei?: number
+  maxFeePerGasGwei?: number
+  gasPriceGwei?: number
 }
 
 export interface InternalTransaction {
@@ -119,6 +123,7 @@ export type Network =
   | 'xdai'
   | 'bsc-main'
   | 'matic-main'
+  | 'fantom-main'
   | 'local'
 
 export type Status =
