@@ -267,10 +267,23 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
+export interface SimulationEventLog extends BaseTransactionLog {
+  system: string
+  network: string
+  from?: string
+  to?: string
+  value?: number | string
+  input?: string
+  gas?: string
+  gasPrice?: string
+  nonce?: number
+}
+
 export interface EventObject {
   eventCode: string
   categoryCode: string
   transaction?: TransactionEventLog
+  simulation?: SimulationEventLog
   wallet?: {
     balance: string
   }
