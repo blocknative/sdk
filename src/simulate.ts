@@ -1,5 +1,4 @@
 import { EventObject } from './interfaces'
-import { isAddress, isTxid } from './utilities'
 
 function simulate(this: any, payload: any) {
   if (this._destroyed)
@@ -12,7 +11,7 @@ function simulate(this: any, payload: any) {
     this._sendMessage({
       categoryCode: 'simulate',
       eventCode: 'txSimulation',
-      account: payload // ???????
+      payload: payload // ???????
     })
   } else {
     throw new Error(
