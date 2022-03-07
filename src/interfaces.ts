@@ -257,6 +257,8 @@ export interface EthereumTransactionLog extends BaseTransactionLog {
   value?: number | string
   gas?: string
   gasPrice?: string
+  maxPriorityFeePerGas?: string
+  maxFeePerGas?: string
   nonce?: number
 }
 
