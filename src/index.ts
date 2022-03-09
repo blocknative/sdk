@@ -27,6 +27,7 @@ import {
   Account,
   Event,
   Unsubscribe,
+  Simulate,
   Destroy,
   Configuration,
   SDKError,
