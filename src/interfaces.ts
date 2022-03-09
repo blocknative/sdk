@@ -269,11 +269,17 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
-export interface SimulationEventLog extends BaseTransactionLog {
+export interface Simulate extends BaseTransactionLog {
+  // jm TODO
   system: string
   network: string
   transaction: EthereumTransactionLog
 }
+
+// export interface Simulate {
+//   // jm TODO
+//   (): void
+// }
 
 export interface EventObject {
   eventCode: string
@@ -350,6 +356,7 @@ export interface API {
   transaction: Transaction
   account: Account
   event: Event
+  simulate: Simulate
   unsubscribe: Unsubscribe
   destroy: Destroy
   config: Configuration
