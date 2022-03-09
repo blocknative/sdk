@@ -1,6 +1,6 @@
-import { Simulate } from './interfaces'
+import { Simulate, EthereumTransactionLog } from './interfaces'
 
-function simulate(this: any, system: any, network: any, transaction: any) {
+function simulate(this: any, system: string, network: string, transaction: EthereumTransactionLog) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
