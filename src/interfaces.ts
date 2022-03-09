@@ -271,21 +271,16 @@ export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
 export interface Simulate extends BaseTransactionLog {
   // jm TODO
+  // categoryCode: string
   system: string
   network: string
   transaction: EthereumTransactionLog
 }
 
-// export interface Simulate {
-//   // jm TODO
-//   (): void
-// }
-
 export interface EventObject {
   eventCode: string
   categoryCode: string
   transaction?: TransactionEventLog
-  simulation?: SimulationEventLog
   wallet?: {
     balance: string
   }

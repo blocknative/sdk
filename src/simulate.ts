@@ -1,21 +1,22 @@
-import { EventObject } from './interfaces'
+import { Simulate } from './interfaces'
 
-function simulate(this: any, payload: any) {
+function simulate(this: any, system: any, network: any, transaction: any) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
     )
 
-  if (payload) {
+  if (transaction) {
     // send payload to server
+    // jm TODO
     this._sendMessage({
       categoryCode: 'simulate',
       eventCode: 'txSimulation',
-      payload: payload // ???????
+      transaction: transaction
     })
   } else {
     throw new Error(
-      `Error trying to simulate ${payload}`
+      `Error trying to simulate ${transaction}`
     )
   }
 }
