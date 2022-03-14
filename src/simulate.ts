@@ -8,17 +8,18 @@ function simulate(this: any, system: string, network: string, transaction: Simul
 
   if (transaction) {
     // send payload to server
-    // jm TODO
     this._sendMessage({
       categoryCode: 'simulate',
       eventCode: 'txSimulation',
       transaction: transaction
     })
+    // return a promise that resolves
   } else {
     throw new Error(
-      `Error trying to simulate ${transaction}`
+      `Error trying to simulate ${transaction}. System: ${system}, Network: ${network}`
     )
   }
+
 }
 
 export default simulate

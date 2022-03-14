@@ -269,15 +269,6 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
-export interface SimulationTransaction {
-  from: string
-  to: string
-  value: number
-  gas: number
-  gasPrice?: string
-  maxPriorityFeePerGas?: string
-  maxFeePerGas?: string
-}
 
 // export interface testTransaction {
 //   simBlockNumber?: string
@@ -293,6 +284,15 @@ export interface SimulationTransaction {
 
 // export type testTransactionType = testTransaction
 
+export interface SimulationTransaction {
+  from: string
+  to: string
+  value: number
+  gas: number
+  gasPrice?: string
+  maxPriorityFeePerGas?: string
+  maxFeePerGas?: string
+}
 
 export interface Simulate {
   (system: string, network: string, transaction: SimulationTransaction): void
