@@ -9,6 +9,7 @@ import {
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
 import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
+import { simulations$ } from './streams'
 
 export function sendMessage(this: any, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {
@@ -83,6 +84,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
       // add blocked msg to the front of the queue
       blockedMsg && this._queuedMessages.unshift(blockedMsg)
       return
+    }
+
+    if (event.categoryCode === 'simulate') {
+      simulations$.error(event)
     }
 
     if (reason.includes('not a valid API key')) {
@@ -200,6 +205,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
   }
 
+
   if (event && event.transaction) {
     const {
       transaction,
@@ -263,6 +269,12 @@ export function handleMessage(this: any, msg: { data: string }): void {
         }
         return tx
       })
+    }
+
+    if (event && event.categoryCode === 'simulate') {
+      newState.contractCall = event.transaction.contractCall
+      delete newState.dispatchTimestamp
+      simulations$.next(newState)
     }
 
     const watchedAddress =
