@@ -68,7 +68,7 @@ class Blocknative {
   public transaction: Transaction
   public account: Account
   public event: Event
-  public simulate: Simulate // Simulate
+  public simulate: Simulate
   public unsubscribe: Unsubscribe
   public destroy: Destroy
   public configuration: Configuration
