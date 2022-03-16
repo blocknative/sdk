@@ -32,6 +32,11 @@ export function validateType(options: {
   }
 }
 
+// export function validateSimulationObject(simulationObject: any): never | void {
+//   // TODO JULIE
+//   validateType({system: system, network: network, transaction: transaction})
+// }
+
 export function validateOptions(options: any): never | void {
   validateType({ name: 'sdk options', value: options, type: 'object' })
 
