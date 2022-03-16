@@ -16,6 +16,18 @@ export interface ContractCall {
   contractName: string
   contractDecimals?: number
   decimalValue?: string
+  /*
+  // TODO julie: simulation ContractCall object
+    methodName
+    params
+      amountOut
+      deadline
+      path [array of addresses]
+      to
+    contractAddress
+    contractType
+
+  */
 }
 
 export interface CommonTransactionData {
@@ -133,6 +145,7 @@ export type Status =
   | 'cancel'
   | 'failed'
   | 'dropped'
+  | 'simulated'
 
 export interface InputOutput {
   address: string
@@ -269,46 +282,55 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
-
-// export interface testTransaction {
-//   simBlockNumber?: string
-//   tx: string
-//   gasUsed: number
-//   traceError: string
-//   timings: string
-//   system: System
-//   network: Network
-//   eventCode: string
-//   categoryCode: string
-// }
-
-// export type testTransactionType = testTransaction
-
 export interface SimulationTransaction {
+  // id: string
   from: string
   to: string
-  value: number
+  value: number | string
   gas: number
-  gasPrice?: string
-  maxPriorityFeePerGas?: string
-  maxFeePerGas?: string
+  input: string,
+  gasPrice?: number | string
+  maxPriorityFeePerGas?: number | string
+  maxFeePerGas?: number | string
+}
+
+export interface SimDetails {
+  blockNumber: number
+  e2eMs: number
+  // performanceProfile: any
+  /* // TODO: julie - do performance metrics need to be included or is it used internally
+  performanceProfile {
+    breakdown: [array of timestamps and labels objects]
+
+  }
+  */
+}
+
+export interface SimulationTransactionOutput {
+  id: string //TODO:  julie nano ID
+  from: string
+  to: string
+  value: number | string
+  gas: number
+  gasPrice: string
+  input: string
+  type: number
+  gasUsed: string
+  internalTransactions?: InternalTransaction[]
+  netBalanceChanges?: BalanceChange[]
+  serverVersion: string
+  simulatedBlockNumber: number
+  simDetails: SimDetails
+  status: Status
+  system: System
+  network: Network
+  error?: any
+  contractCall: ContractCall
 }
 
 export interface Simulate {
-  (system: string, network: string, transaction: SimulationTransaction): void
-  // {
-  //   simBlockNumber?: string
-  //   tx: string
-  //   gasUsed: number
-  //   traceError: string
-  //   timings: string
-  //   system: System
-  //   network: Network
-  //   eventCode: string
-  //   categoryCode: string
-  // }
+  (system: System, network: Network, transaction: SimulationTransaction): Promise<SimulationTransactionOutput>
 }
-
 
 export interface EventObject {
   eventCode: string
