@@ -272,10 +272,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
 
     if (event && event.categoryCode === 'simulate') {
-      newState.contractCall = event.transaction.contractCall
-      newState.id = event.transaction.id
-      delete newState.dispatchTimestamp
+      console.log(' ###################### IN RECEIVING BLOCK ############################# ')
       console.log({ event })
+      newState.contractCall = event.transaction.contractCall
+      delete newState.dispatchTimestamp
       simulations$.next(newState)
     }
 

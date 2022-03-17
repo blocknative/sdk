@@ -16,18 +16,6 @@ export interface ContractCall {
   contractName: string
   contractDecimals?: number
   decimalValue?: string
-  /*
-  // TODO julie: simulation ContractCall object
-    methodName
-    params
-      amountOut
-      deadline
-      path [array of addresses]
-      to
-    contractAddress
-    contractType
-
-  */
 }
 
 export interface CommonTransactionData {
@@ -283,7 +271,7 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
 export interface SimulationTransaction {
-  // id: string
+  id: string
   from: string
   to: string
   value: number | string
@@ -297,17 +285,11 @@ export interface SimulationTransaction {
 export interface SimDetails {
   blockNumber: number
   e2eMs: number
-  // performanceProfile: any
-  /* // TODO: julie - do performance metrics need to be included or is it used internally
-  performanceProfile {
-    breakdown: [array of timestamps and labels objects]
-
-  }
-  */
+  performanceProfile: any
 }
 
 export interface SimulationTransactionOutput {
-  id: string //TODO:  julie nano ID
+  id: string
   from: string
   to: string
   value: number | string
