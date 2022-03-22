@@ -88,6 +88,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     if (event.categoryCode === 'simulate') {
       simulations$.error(event)
+      return
     }
 
     if (reason.includes('not a valid API key')) {
@@ -275,6 +276,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       newState.contractCall = event.transaction.contractCall
       delete newState.dispatchTimestamp
       simulations$.next(newState)
+      return
     }
 
     const watchedAddress =
