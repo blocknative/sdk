@@ -277,9 +277,9 @@ export interface SimulationTransaction {
   value: number
   gas: number
   input: string,
-  gasPrice?: number | string
-  maxPriorityFeePerGas?: number | string
-  maxFeePerGas?: number | string
+  gasPrice?: number
+  maxPriorityFeePerGas?: number
+  maxFeePerGas?: number
 }
 
 export interface SimDetails {
