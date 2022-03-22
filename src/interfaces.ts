@@ -274,7 +274,7 @@ export interface SimulationTransaction {
   id: string
   from: string
   to: string
-  value: number | string
+  value: number
   gas: number
   input: string,
   gasPrice?: number | string
@@ -292,7 +292,7 @@ export interface SimulationTransactionOutput {
   id: string
   from: string
   to: string
-  value: number | string
+  value: number
   gas: number
   gasPrice: string
   input: string
