@@ -4,6 +4,7 @@ import CryptoEs from 'crypto-es'
 import transaction from './transaction'
 import account from './account'
 import event from './event'
+import simulate from './simulate'
 import unsubscribe from './unsubscribe'
 import configuration from './configuration'
 
@@ -26,6 +27,7 @@ import {
   Account,
   Event,
   Unsubscribe,
+  Simulate,
   Destroy,
   Configuration,
   SDKError,
@@ -66,6 +68,7 @@ class Blocknative {
   public transaction: Transaction
   public account: Account
   public event: Event
+  public simulate: Simulate
   public unsubscribe: Unsubscribe
   public destroy: Destroy
   public configuration: Configuration
@@ -160,6 +163,7 @@ class Blocknative {
     this.transaction = transaction.bind(this)
     this.account = account.bind(this)
     this.event = event.bind(this)
+    this.simulate = simulate.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
     this.configuration = configuration.bind(this)
     this.destroy = () => {
