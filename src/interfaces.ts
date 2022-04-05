@@ -133,6 +133,7 @@ export type Status =
   | 'cancel'
   | 'failed'
   | 'dropped'
+  | 'simulated'
 
 export interface InputOutput {
   address: string
@@ -257,6 +258,8 @@ export interface EthereumTransactionLog extends BaseTransactionLog {
   value?: number | string
   gas?: string
   gasPrice?: string
+  maxPriorityFeePerGas?: string
+  maxFeePerGas?: string
   nonce?: number
 }
 
@@ -266,6 +269,50 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 }
 
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
+
+export interface SimulationTransaction {
+  id: string
+  from: string
+  to: string
+  value: number
+  gas: number
+  input: string,
+  gasPrice?: number
+  maxPriorityFeePerGas?: number
+  maxFeePerGas?: number
+}
+
+export interface SimDetails {
+  blockNumber: number
+  e2eMs: number
+  performanceProfile: any
+}
+
+export interface SimulationTransactionOutput {
+  id: string
+  from: string
+  to: string
+  value: number
+  gas: number
+  gasPrice: string
+  input: string
+  type: number
+  gasUsed: string
+  internalTransactions?: InternalTransaction[]
+  netBalanceChanges?: BalanceChange[]
+  serverVersion: string
+  simulatedBlockNumber: number
+  simDetails: SimDetails
+  status: Status
+  system: System
+  network: Network
+  error?: any
+  contractCall: ContractCall
+}
+
+export interface Simulate {
+  (system: System, network: Network, transaction: SimulationTransaction): Promise<SimulationTransactionOutput>
+}
 
 export interface EventObject {
   eventCode: string
@@ -341,6 +388,7 @@ export interface API {
   transaction: Transaction
   account: Account
   event: Event
+  simulate: Simulate
   unsubscribe: Unsubscribe
   destroy: Destroy
   config: Configuration
