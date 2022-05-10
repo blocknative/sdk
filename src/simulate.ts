@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid'
 
 export default function simulate(
   this: any,
-  transactions: SimulationTransaction[]
+  transaction: SimulationTransaction[]
 ): Promise<SimulationTransactionResult> {
   if (this._destroyed)
     throw new Error(
@@ -16,13 +16,14 @@ export default function simulate(
     )
 
   const payloadId = nanoid()
+  console.log('00 Transaction: ', transaction)
   // send payload to server
   this._sendMessage({
     categoryCode: 'simulate',
     eventCode: 'txSimulation',
     simPayload: {
       id: payloadId,
-      transactions
+      transaction
     }
   })
 
@@ -30,14 +31,21 @@ export default function simulate(
     simulations$
       .pipe(
         filter(({ id }) => {
+          console.log('0 Id: ', id, payloadId)
           return id === payloadId
         }),
         map(({ id, ...restOfPayload }) => restOfPayload),
         take(1)
       )
       .subscribe({
-        next: transaction => resolve(transaction),
-        error: event => reject(event.error.message)
+        next: transaction => {
+          console.log('1 Transaction: ', transaction)
+          resolve(transaction)
+        },
+        error: event => {
+          console.log('2 error: ', event)
+          reject(event)
+        }
       })
   })
 }

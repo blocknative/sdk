@@ -288,6 +288,11 @@ export interface SimDetails {
   performanceProfile: any
 }
 
+export type SimulationTransactionResult = Omit<
+  SimulationTransactionResponse,
+  'id'
+>
+
 export interface SimulationTransactionResponse {
   id: string
   from: string
@@ -309,11 +314,6 @@ export interface SimulationTransactionResponse {
   error?: any
   contractCall: ContractCall
 }
-
-export type SimulationTransactionResult = Omit<
-  SimulationTransactionResponse,
-  'id'
->
 
 export interface Simulate {
   (transactions: SimulationTransaction[]): Promise<SimulationTransactionResult>
