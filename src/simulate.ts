@@ -8,20 +8,20 @@ import { nanoid } from 'nanoid'
 
 export default function simulate(
   this: any,
-  transactions: SimulationTransaction
+  transactions: SimulationTransaction[]
 ): Promise<SimulationTransactionOutput> {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
     )
 
-  const id = nanoid()
+  const payloadId = nanoid()
   // send payload to server
   this._sendMessage({
     categoryCode: 'simulate',
     eventCode: 'txSimulation',
     simPayload: {
-      id,
+      id: payloadId,
       transactions
     }
   })
@@ -30,7 +30,7 @@ export default function simulate(
     simulations$
       .pipe(
         filter(({ id }) => {
-          return id === transaction.id
+          return id === payloadId
         }),
         take(1)
       )
