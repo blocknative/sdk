@@ -16,7 +16,7 @@ export default function simulate(
     )
 
   const payloadId = nanoid()
-  console.log('00 Transaction: ', transaction)
+
   // send payload to server
   this._sendMessage({
     categoryCode: 'simulate',
@@ -31,7 +31,6 @@ export default function simulate(
     simulations$
       .pipe(
         filter(({ id }) => {
-          console.log('0 Id: ', id, payloadId)
           return id === payloadId
         }),
         map(({ id, ...restOfPayload }) => restOfPayload),
@@ -39,12 +38,10 @@ export default function simulate(
       )
       .subscribe({
         next: transaction => {
-          console.log('1 Transaction: ', transaction)
           resolve(transaction)
         },
         error: event => {
-          console.log('2 error: ', event)
-          reject(event)
+          reject(event.error.message)
         }
       })
   })
