@@ -206,6 +206,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
   }
 
+
   if (event && event.transaction) {
     const {
       transaction,
