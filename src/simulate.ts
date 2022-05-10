@@ -1,15 +1,15 @@
 import {
   SimulationTransaction,
-  SimulationTransactionOutput
+  SimulationTransactionResult
 } from './interfaces'
 import { simulations$ } from './streams'
-import { take, filter } from 'rxjs/operators'
+import { take, filter, map } from 'rxjs/operators'
 import { nanoid } from 'nanoid'
 
 export default function simulate(
   this: any,
   transactions: SimulationTransaction[]
-): Promise<SimulationTransactionOutput> {
+): Promise<SimulationTransactionResult> {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
@@ -32,6 +32,7 @@ export default function simulate(
         filter(({ id }) => {
           return id === payloadId
         }),
+        map(({ id, ...restOfPayload }) => restOfPayload),
         take(1)
       )
       .subscribe({

@@ -1,4 +1,4 @@
 import { Subject } from 'rxjs'
-import { SimulationTransactionOutput } from './interfaces'
+import { SimulationTransactionResponse } from './interfaces'
 
-export const simulations$ = new Subject<SimulationTransactionOutput>()
+export const simulations$ = new Subject<SimulationTransactionResponse>()
