@@ -276,7 +276,7 @@ export interface SimulationTransaction {
   to: string
   value: number
   gas: number
-  input: string,
+  input: string
   gasPrice?: number
   maxPriorityFeePerGas?: number
   maxFeePerGas?: number
@@ -311,7 +311,7 @@ export interface SimulationTransactionOutput {
 }
 
 export interface Simulate {
-  (system: System, network: Network, transaction: SimulationTransaction): Promise<SimulationTransactionOutput>
+  (transactions: SimulationTransaction[]): Promise<SimulationTransactionOutput>
 }
 
 export interface EventObject {
