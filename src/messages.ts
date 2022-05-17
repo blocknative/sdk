@@ -178,7 +178,6 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
 
     if (event.categoryCode === 'simulate') {
-      console.log('You got an error..... ', event)
       simulations$.error(event)
       return
     }
