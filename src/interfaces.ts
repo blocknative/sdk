@@ -124,6 +124,7 @@ export type Network =
   | 'bsc-main'
   | 'matic-main'
   | 'fantom-main'
+  | 'matic-mumbai'
   | 'local'
 
 export type Status =
