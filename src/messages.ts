@@ -86,9 +86,13 @@ export function handleMessage(this: any, msg: { data: string }): void {
       return
     }
 
-    if (event.categoryCode === 'simulate') {
-      simulations$.error(event)
-      return
+    if (reason.includes('upgrade your plan')) {
+      if (this._onerror) {
+        this._onerror({ message: reason })
+        return
+      } else {
+        throw new Error(reason)
+      }
     }
 
     if (reason.includes('not a valid API key')) {
@@ -171,6 +175,11 @@ export function handleMessage(this: any, msg: { data: string }): void {
       } else {
         throw new Error(reason)
       }
+    }
+
+    if (event.categoryCode === 'simulate') {
+      simulations$.error(event)
+      return
     }
 
     // handle config error
