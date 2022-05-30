@@ -9,6 +9,7 @@ import {
 import { version } from '../package.json'
 import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
 import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
+import { simulations$ } from './streams'
 
 export function sendMessage(this: any, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {
@@ -83,6 +84,15 @@ export function handleMessage(this: any, msg: { data: string }): void {
       // add blocked msg to the front of the queue
       blockedMsg && this._queuedMessages.unshift(blockedMsg)
       return
+    }
+
+    if (reason.includes('upgrade your plan')) {
+      if (this._onerror) {
+        this._onerror({ message: reason })
+        return
+      } else {
+        throw new Error(reason)
+      }
     }
 
     if (reason.includes('not a valid API key')) {
@@ -167,6 +177,11 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
+    if (event.categoryCode === 'simulate') {
+      simulations$.error(event)
+      return
+    }
+
     // handle config error
     if (event && event.config) {
       const configuration = this._configurations.get(event.config.scope)
@@ -199,6 +214,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       configuration.subscription.next()
     }
   }
+
 
   if (event && event.transaction) {
     const {
@@ -263,6 +279,13 @@ export function handleMessage(this: any, msg: { data: string }): void {
         }
         return tx
       })
+    }
+
+    if (event && event.categoryCode === 'simulate') {
+      newState.contractCall = event.transaction.contractCall
+      delete newState.dispatchTimestamp
+      simulations$.next(newState)
+      return
     }
 
     const watchedAddress =
