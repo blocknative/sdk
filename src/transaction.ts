@@ -1,7 +1,8 @@
 import { createEmitter } from './utilities'
 import { Emitter, TransactionHandler } from './interfaces'
+import Blocknative from '.'
 
-function transaction(this: any, hash: string, id?: string) {
+function transaction(this: Blocknative, hash: string, id?: string) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
@@ -17,13 +18,15 @@ function transaction(this: any, hash: string, id?: string) {
   const eventCode = 'txSent'
 
   // put in queue
-  this._watchedTransactions.push({
+  this.watchedTransactions.push({
     hash,
     emitter
   })
 
+  const transactionId = this._system === 'ethereum' ? { hash } : { txid: hash }
+
   const transaction = {
-    [this._system === 'ethereum' ? 'hash' : 'txid']: hash,
+    ...transactionId,
     id: id || hash,
     startTime,
     status: 'sent'

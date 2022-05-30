@@ -1,8 +1,9 @@
 import { createEmitter } from './utilities'
 import { Emitter, Ac } from './interfaces'
+import Blocknative from '.'
 
 function account(
-  this: any,
+  this: Blocknative,
   address: string
 ): { emitter: Emitter; details: { address: string } } {
   if (this._destroyed)
@@ -19,7 +20,7 @@ function account(
   // create eventCode for transaction
   const eventCode = 'watch'
 
-  const existingAddressWatcher = this._watchedAccounts.find(
+  const existingAddressWatcher = this.watchedAccounts.find(
     (ac: Ac) => ac.address === address
   )
 
@@ -28,7 +29,7 @@ function account(
     existingAddressWatcher.emitters.push(emitter)
   } else {
     // put in accounts queue
-    this._watchedAccounts.push({
+    this.watchedAccounts.push({
       address,
       emitters: [emitter]
     })

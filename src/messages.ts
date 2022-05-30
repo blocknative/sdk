@@ -184,7 +184,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     // handle config error
     if (event && event.config) {
-      const configuration = this._configurations.get(event.config.scope)
+      const configuration = this.configurations.get(event.config.scope)
 
       if (configuration && configuration.subscription) {
         configuration.subscription.error({ message: reason })
@@ -208,13 +208,12 @@ export function handleMessage(this: any, msg: { data: string }): void {
         ? event.config.scope.toLowerCase()
         : event.config.scope
 
-    const configuration = this._configurations.get(casedScope)
+    const configuration = this.configurations.get(casedScope)
 
     if (configuration && configuration.subscription) {
       configuration.subscription.next()
     }
   }
-
 
   if (event && event.transaction) {
     const {
@@ -272,7 +271,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
     // handle change of hash in speedup and cancel events
     if (eventCode === 'txSpeedUp' || eventCode === 'txCancel') {
-      this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
+      this.watchedTransactions = this.watchedTransactions.map((tx: Tx) => {
         if (tx.hash === newState.replaceHash) {
           // reassign hash parameter in transaction queue to new hash or txid
           tx.hash = transaction.hash || transaction.txid
@@ -294,7 +293,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
         : transaction.watchedAddress
 
     if (watchedAddress) {
-      const accountObj = this._watchedAccounts.find(
+      const accountObj = this.watchedAccounts.find(
         (ac: Ac) => ac.address === watchedAddress
       )
 
@@ -306,7 +305,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
           )
         : false
 
-      const configuration = this._configurations.get(watchedAddress)
+      const configuration = this.configurations.get(watchedAddress)
 
       const emitterResult =
         configuration && configuration.emitter
@@ -320,7 +319,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
         })
       )
     } else {
-      const transactionObj = this._watchedTransactions.find(
+      const transactionObj = this.watchedTransactions.find(
         (tx: Tx) => tx.hash === newState.hash || newState.txid
       )
 
@@ -333,7 +332,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
       // replace the emitter hash to the replace hash on replacement txs
       if (newState.status === 'speedup' || newState.status === 'cancel') {
-        this._watchedTransactions = this._watchedTransactions.map((tx: Tx) => {
+        this.watchedTransactions = this.watchedTransactions.map((tx: Tx) => {
           if (tx.hash === newState.hash || newState.txid) {
             return { ...tx, hash: newState.replaceHash }
           }
