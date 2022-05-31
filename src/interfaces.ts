@@ -277,7 +277,7 @@ export interface SimulationTransaction {
   to: string
   value: number
   gas: number
-  input: string,
+  input: string
   gasPrice?: number
   maxPriorityFeePerGas?: number
   maxFeePerGas?: number
@@ -312,25 +312,68 @@ export interface SimulationTransactionOutput {
 }
 
 export interface Simulate {
-  (system: System, network: Network, transaction: SimulationTransaction): Promise<SimulationTransactionOutput>
+  (
+    system: System,
+    network: Network,
+    transaction: SimulationTransaction
+  ): Promise<SimulationTransactionOutput>
 }
 
-export interface EventObject {
+export type BaseEventObject = {
   eventCode: string
   categoryCode: string
-  transaction?: TransactionEventLog
-  wallet?: {
-    balance: string
-  }
-  contract?: {
+}
+
+export type BaseTransactionEventObject = {
+  startTime?: number
+  status?: string
+  id?: string
+}
+
+export type BitcoinTransactionEventObject = BaseTransactionEventObject & {
+  txid: string
+}
+
+export type EthereumTransactionEventObject = BaseTransactionEventObject & {
+  hash: string
+}
+
+export type TransactionEventObject = BaseEventObject & {
+  transaction:
+    | BitcoinTransactionEventObject
+    | EthereumTransactionEventObject
+    | SimulationTransaction
+}
+
+export type WalletEventObject = BaseEventObject & {
+  balance: { balance: string }
+}
+export type ContractEventObject = BaseEventObject & {
+  contract: {
     methodName: string
     parameters: any[]
   }
-  account?: {
+}
+
+export type AccountEventObject = BaseEventObject & {
+  account: {
     address: string
   }
-  connectionId?: string
 }
+
+export type InitializeEventObject = BaseEventObject & { connectionId: string }
+
+export type ConfigEventObject = BaseEventObject & {
+  config: Config
+}
+
+export type EventObject =
+  | TransactionEventObject
+  | WalletEventObject
+  | ContractEventObject
+  | AccountEventObject
+  | InitializeEventObject
+  | ConfigEventObject
 
 export interface TransactionHandler {
   (transaction: TransactionEvent): void

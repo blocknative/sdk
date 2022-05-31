@@ -1,7 +1,8 @@
+import Blocknative from '.'
 import { Ac, Tx } from './interfaces'
 import { isAddress, isTxid } from './utilities'
 
-function unsubscribe(this: any, addressOrHash: string) {
+function unsubscribe(this: Blocknative, addressOrHash: string) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
@@ -14,10 +15,14 @@ function unsubscribe(this: any, addressOrHash: string) {
   if (address) {
     const normalizedAddress =
       this._system === 'ethereum' ? addressOrHash.toLowerCase() : addressOrHash
+
     // remove address from accounts
-    this._watchedAccounts = this._watchedAccounts.filter(
+    this.watchedAccounts = this.watchedAccounts.filter(
       (ac: Ac) => ac.address !== normalizedAddress
     )
+
+    // remove configuration from memory
+    this.configurations.delete(normalizedAddress)
 
     // logEvent to server
     this._sendMessage({
@@ -29,19 +34,26 @@ function unsubscribe(this: any, addressOrHash: string) {
     })
   } else if (txid) {
     // remove transaction from transactions
-    this._watchedTransactions = this._watchedTransactions.filter(
+    this.watchedTransactions = this.watchedTransactions.filter(
       (tx: Tx) => tx.hash !== addressOrHash
     )
+
+    const transactionId =
+      this._system === 'ethereum'
+        ? { hash: addressOrHash }
+        : { txid: addressOrHash }
+
+    const transaction = {
+      ...transactionId,
+      id: addressOrHash,
+      status: 'unsubscribed'
+    }
 
     // logEvent to server
     this._sendMessage({
       categoryCode: 'activeTransaction',
       eventCode: 'unwatch',
-      transaction: {
-        [this._system === 'ethereum' ? 'hash' : 'txid']: addressOrHash,
-        id: addressOrHash,
-        status: 'unsubscribed'
-      }
+      transaction
     })
   } else {
     throw new Error(
