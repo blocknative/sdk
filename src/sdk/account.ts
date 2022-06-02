@@ -1,9 +1,9 @@
-import { createEmitter } from './utilities'
-import { Emitter, Ac } from './interfaces'
-import Blocknative from '.'
+import { createEmitter } from '../utilities'
+import { Emitter, Ac } from '../types'
+import SDK from '.'
 
 function account(
-  this: Blocknative,
+  this: SDK,
   address: string
 ): { emitter: Emitter; details: { address: string } } {
   if (this._destroyed)

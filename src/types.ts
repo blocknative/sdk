@@ -196,6 +196,7 @@ export interface InitializationOptions {
   onreopen?: () => void
   onerror?: (error: SDKError) => void
   onclose?: () => void
+  multichain?: boolean
 }
 
 export interface SDKError {
@@ -479,3 +480,27 @@ interface Modifier {
 }
 
 type Filter = Primative | Modifier
+
+export type Subscription = TransactionSubscription | AccountSubscription
+
+export type BaseSubscription = {
+  id: string
+  chainId: ChainId
+}
+
+export type TransactionSubscription = BaseSubscription & {
+  type: 'transaction'
+}
+
+export type AccountSubscription = BaseSubscription & {
+  type: 'account'
+  filters?: Config['filters']
+  abi?: Config['abi']
+}
+
+/**
+ * A hex encoded string
+ */
+export type ChainId = string
+export type Address = string
+export type Hash = string

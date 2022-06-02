@@ -1,8 +1,8 @@
-import { createEmitter } from './utilities'
-import { Emitter, TransactionHandler } from './interfaces'
-import Blocknative from '.'
+import { createEmitter } from '../utilities'
+import { Emitter, TransactionHandler } from '../types'
+import SDK from '.'
 
-function transaction(this: Blocknative, hash: string, id?: string) {
+function transaction(this: SDK, hash: string, id?: string) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'

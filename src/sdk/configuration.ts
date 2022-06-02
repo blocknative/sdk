@@ -1,11 +1,11 @@
 import { Subject } from 'rxjs'
 import { take, timeout } from 'rxjs/operators'
-import Blocknative from '.'
-import { Config, Emitter } from './interfaces'
-import { createEmitter } from './utilities'
+import { Config, Emitter } from '../types'
+import { createEmitter } from '../utilities'
+import SDK from '.'
 
 function configuration(
-  this: Blocknative,
+  this: SDK,
   config: Config
 ): Promise<string | { details: { config: Config }; emitter?: Emitter }> {
   if (this._destroyed) {

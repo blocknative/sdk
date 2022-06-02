@@ -1,3 +1,9 @@
+import { version } from '../../package.json'
+import { Ac, Tx, Emitter, EventObject, TransactionHandler } from '../types'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from '../defaults'
+import { simulations$ } from '../streams'
+import SDK from '.'
+
 import {
   serverEcho,
   last,
@@ -5,13 +11,9 @@ import {
   wait,
   jsonPreserveUndefined,
   isLocalStorageAvailable
-} from './utilities'
-import { version } from '../package.json'
-import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './interfaces'
-import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
-import { simulations$ } from './streams'
+} from '../utilities'
 
-export function sendMessage(this: any, msg: EventObject) {
+export function sendMessage(this: SDK, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {
     throw new Error(`Queue limit of ${QUEUE_LIMIT} messages has been reached.`)
   }
