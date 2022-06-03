@@ -1,7 +1,7 @@
-import { version } from '../../package.json'
-import { Ac, Tx, Emitter, EventObject, TransactionHandler } from '../types'
-import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from '../defaults'
-import { simulations$ } from '../streams'
+import { version } from '../package.json'
+import { Ac, Tx, Emitter, EventObject, TransactionHandler } from './types'
+import { DEFAULT_RATE_LIMIT_RULES, QUEUE_LIMIT } from './defaults'
+import { simulations$ } from './streams'
 import SDK from '.'
 
 import {
@@ -11,7 +11,7 @@ import {
   wait,
   jsonPreserveUndefined,
   isLocalStorageAvailable
-} from '../utilities'
+} from './utilities'
 
 export function sendMessage(this: SDK, msg: EventObject) {
   if (this._queuedMessages.length > QUEUE_LIMIT) {

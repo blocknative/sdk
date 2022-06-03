@@ -1,6 +1,6 @@
 import SDK from '.'
-import { Ac, Tx } from '../types'
-import { isAddress, isTxid } from '../utilities'
+import { Ac, Tx } from './types'
+import { isAddress, isTxid } from './utilities'
 
 function unsubscribe(this: SDK, addressOrHash: string) {
   if (this._destroyed)

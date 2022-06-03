@@ -1,5 +1,5 @@
-import { createEmitter } from '../utilities'
-import { Emitter, TransactionHandler } from '../types'
+import { createEmitter } from './utilities'
+import { Emitter, TransactionHandler } from './types'
 import SDK from '.'
 
 function transaction(this: SDK, hash: string, id?: string) {

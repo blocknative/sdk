@@ -1,7 +1,7 @@
-import { SimulationTransaction, SimulationTransactionOutput } from '../types'
-import { simulations$ } from '../streams'
 import { take, filter } from 'rxjs/operators'
 import { nanoid } from 'nanoid'
+import { SimulationTransaction, SimulationTransactionOutput } from './types'
+import { simulations$ } from './streams'
 import SDK from '.'
 
 function simulate(

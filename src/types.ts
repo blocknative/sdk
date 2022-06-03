@@ -182,7 +182,12 @@ export interface Vout {
   }
 }
 
-export interface InitializationOptions {
+export type MultiChainOptions = {
+  apiKey: string
+  ws?: any
+}
+
+export type InitializationOptions = {
   networkId: number
   dappId: string
   system?: System
@@ -196,9 +201,7 @@ export interface InitializationOptions {
   onreopen?: () => void
   onerror?: (error: SDKError) => void
   onclose?: () => void
-  multichain?: boolean
 }
-
 export interface SDKError {
   message: string
   error?: any

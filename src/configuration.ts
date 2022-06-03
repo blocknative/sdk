@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs'
 import { take, timeout } from 'rxjs/operators'
-import { Config, Emitter } from '../types'
-import { createEmitter } from '../utilities'
+import { Config, Emitter } from './types'
+import { createEmitter } from './utilities'
 import SDK from '.'
 
 function configuration(

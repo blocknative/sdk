@@ -1,28 +1,28 @@
-import SDK from '../sdk'
+import Blocknative from '..'
 import { Subject } from 'rxjs'
 import subscribe from './subscribe'
 import unsubscribe from './unsubscribe'
-import { ChainId } from '../types'
 
 import {
+  ChainId,
+  MultiChainOptions,
   EthereumTransactionData,
-  InitializationOptions,
   SDKError
 } from '../types'
 
-class MultiChainWebSocket {
-  public dappId: string
-  public ws: WebSocket
-  public connections: Record<ChainId, SDK | null>
+class MultiChain {
+  public apiKey: string
+  public ws: WebSocket | void
+  public connections: Record<ChainId, Blocknative | null>
   public transactions$: Subject<EthereumTransactionData>
   public errors$: Subject<SDKError>
   public subscribe: typeof subscribe
   public unsubscribe: typeof unsubscribe
 
-  constructor(options: InitializationOptions) {
-    const { dappId, ws } = options
+  constructor(options: MultiChainOptions) {
+    const { apiKey, ws } = options
 
-    this.dappId = dappId
+    this.apiKey = apiKey
     this.ws = ws
     this.connections = {}
     this.transactions$ = new Subject()
@@ -32,4 +32,4 @@ class MultiChainWebSocket {
   }
 }
 
-export default MultiChainWebSocket
+export default MultiChain

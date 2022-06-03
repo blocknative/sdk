@@ -1,5 +1,5 @@
 import SDK from '.'
-import { EventObject } from '../types'
+import { EventObject } from './types'
 
 function event(this: SDK, eventObj: EventObject): void {
   if (this._destroyed)
