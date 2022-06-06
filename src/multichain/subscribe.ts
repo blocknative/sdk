@@ -22,8 +22,9 @@ function subscribe(
       dappId: this.apiKey,
       ws: this.ws,
       transactionHandlers: [
-        ({ transaction }) =>
-          this.transactions$.next(transaction as EthereumTransactionData)
+        ({ transaction }) => {
+          this.onTransaction$.next(transaction as EthereumTransactionData)
+        }
       ],
       onerror: error => this.errors$.next(error)
     })
@@ -32,7 +33,7 @@ function subscribe(
   const sdk = this.connections[chainId] as Blocknative
 
   if (type === 'account') {
-    const { filters, abi } = subscription as AccountSubscription
+    const { filters = [], abi = [] } = subscription as AccountSubscription
 
     sdk.configuration({
       scope: id,
@@ -41,7 +42,7 @@ function subscribe(
       watchAddress: true
     })
 
-    return this.transactions$.asObservable().pipe(
+    return this.transactions$.pipe(
       filter(({ watchedAddress }) => watchedAddress === id),
       finalize(() => {
         this.unsubscribe({ id, chainId })
