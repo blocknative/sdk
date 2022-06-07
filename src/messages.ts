@@ -177,7 +177,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
       }
     }
 
-    if (event.categoryCode === 'simulate') {
+    if (event && event.categoryCode === 'simulate') {
       simulations$.error(event)
       return
     }
