@@ -1,5 +1,5 @@
-import Blocknative from '..'
 import { Observable, Subject } from 'rxjs'
+import Blocknative from '../sdk'
 import subscribe from './subscribe'
 import unsubscribe from './unsubscribe'
 

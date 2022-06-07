@@ -39,12 +39,13 @@ export default [
     output: [
       {
         format: 'cjs',
-        dir: 'dist/cjs/'
+        dir: 'dist/cjs/',
+        exports: 'named'
       }
     ],
     plugins: [
       json(),
-      resolve(),
+      resolve({ preferBuiltins: true }),
       commonjs({ include: /node_modules/ }),
       typescript({ useTsconfigDeclarationDir: true, clean: true })
     ]

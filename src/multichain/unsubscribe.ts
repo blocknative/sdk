@@ -1,5 +1,5 @@
 import MultiChainWebSocket from '.'
-import Blocknative from '..'
+import Blocknative from '../sdk'
 import { Address, ChainId, Hash } from '../types'
 
 function unsubscribe(

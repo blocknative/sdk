@@ -1,7 +1,7 @@
 import { fromEvent, Observable } from 'rxjs'
 import { filter, finalize, takeWhile } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
-import Blocknative from '..'
+import Blocknative from '../sdk'
 
 import {
   AccountSubscription,
