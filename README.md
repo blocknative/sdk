@@ -132,6 +132,7 @@ web3.eth.sendTransaction(txOptions).on('transactionHash', hash => {
     console.log(`Transaction event: ${transaction.eventCode}`)
   })
 })
+```
 
 #### Address Listener
 
@@ -164,3 +165,51 @@ emitter.on('all', transaction => {
 ## Documentation
 
 For detailed documentation head to [docs.blocknative.com](https://docs.blocknative.com/notify-sdk)
+
+## Multichain SDK (experimental new beta API that may break until it is finalized)
+
+For apps that operate on multiple chains at once, you can use the Multichain SDK which provides a simple interface that abstracts away handling multiple WS connections at once and has a new API for subscribing to events.
+
+## Subscribing to events
+
+Currently a transaction hash or account address can be subscribed to for all events. The `subscribe` method requires an `id`, `chainId` and a `type` and returns an `Observable`. The `Observable` that is returned is specific for events on this subscription and on completion or unsubscribing from the observable will automatically unsubscribe within the SDK. Alternatively you can listen on the global transactions `Observable` at `sdk.transactions$`.
+
+```javascript
+import { MultichainSDK } from 'bnc-sdk'
+
+const blocknative = new MultichainSDK({ apiKey: '<YOUR_API_KEY>' })
+
+// subscribe to address events
+const addressSubscription = blocknative.subscribe({
+  id: '0x32ee303b76B27A1cd1013DE2eA4513aceB937c72',
+  chainId: '0x1',
+  type: 'account'
+})
+
+// can listen to the address subscription directly
+addressSubscription.subscribe(transaction => console.log(transaction))
+
+// subscribe to transaction events
+const transactionSubscription = blocknative.subscribe({
+  id: '0xbb1af436fd539a6282c6f45ed900abb5ac95ec435367f61fa8815a61bd2a7211',
+  chainId: '0x1',
+  type: 'transaction'
+})
+
+// can listen to the transaction subscription directly
+transactionSubscription.subscribe(transaction => console.log(transaction))
+
+// or can listen for all transaction events on the global transacations$ observable
+blocknative.transaction$.subscribe(transaction => console.log(transaction))
+```
+
+## Unsubscribing
+
+To stop listening to events on a transaction hash or account address, call the `unsubscribe` method. If called without a `chainId`, all networks will unsubscribe from the transaction or address. To only unsubscribe on a particular network, pass in the `chainId` of that network.
+
+```javascript
+blocknative.unsubscribe({
+  id: 'transactionHashOrAddress',
+  chainId: '0x1'
+})
+```

@@ -10,6 +10,7 @@ import {
   SDKError
 } from '../types'
 
+//**Experimental API that is not yet finalized and is in BETA*/
 class MultiChain {
   public apiKey: string
   public ws: WebSocket | void
