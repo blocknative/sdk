@@ -9,6 +9,7 @@ import {
   EthereumTransactionData,
   Subscription
 } from '../types'
+import { networkName } from '../utilities'
 
 function subscribe(
   this: MultiChainWebSocket,
@@ -16,7 +17,7 @@ function subscribe(
 ): Observable<EthereumTransactionData | null> {
   const { id, chainId, type } = subscription
 
-  if (!networks[parseInt(chainId, 16)]) {
+  if (!networkName('ethereum', parseInt(chainId, 16))) {
     throw new Error(`chainId: ${chainId} is an unsupported network`)
   }
 
