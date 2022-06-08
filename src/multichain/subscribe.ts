@@ -1,6 +1,7 @@
 import { fromEvent, Observable } from 'rxjs'
 import { filter, finalize, takeWhile } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
+import { networks } from '../defaults'
 import Blocknative from '../sdk'
 
 import {
@@ -12,8 +13,12 @@ import {
 function subscribe(
   this: MultiChainWebSocket,
   subscription: Subscription
-): Observable<EthereumTransactionData> {
+): Observable<EthereumTransactionData | null> {
   const { id, chainId, type } = subscription
+
+  if (!networks[parseInt(chainId, 16)]) {
+    throw new Error(`chainId: ${chainId} is an unsupported network`)
+  }
 
   if (!this.connections[chainId]) {
     this.connections[chainId] = new Blocknative({
