@@ -41,29 +41,26 @@ const DEFAULT_APP_VERSION = 'unknown'
 const DEFAULT_SYSTEM = 'ethereum'
 
 class Blocknative {
-  private _storageKey: string
-  private _connectionId: string | undefined
-  private _dappId: string
-  private _system: string
-  private _networkId: number
-  private _appName: string
-  private _appVersion: string
-  private _transactionHandlers: TransactionHandler[]
-  private _socket: any
-  private _connected: boolean
-  private _sendMessage: (msg: EventObject) => void
-  private _watchedTransactions: Tx[]
-  private _watchedAccounts: Ac[]
-  private _configurations: Map<string, EnhancedConfig>
-  private _pingTimeout?: NodeJS.Timeout
-  private _heartbeat?: () => void
-  private _destroyed: boolean
-  private _onerror: ((error: SDKError) => void) | undefined
-  private _queuedMessages: EventObject[]
-  private _limitRules: LimitRules
-  private _waitToRetry: null | Promise<void>
-  private _processingQueue: boolean
-  private _processQueue: () => Promise<void>
+  protected _storageKey: string
+  protected _connectionId: string | undefined
+  protected _dappId: string
+  protected _system: string
+  protected _networkId: number
+  protected _appName: string
+  protected _appVersion: string
+  protected _transactionHandlers: TransactionHandler[]
+  protected _socket: any
+  protected _connected: boolean
+  protected _sendMessage: (msg: EventObject) => void
+  protected _pingTimeout?: NodeJS.Timeout
+  protected _heartbeat?: () => void
+  protected _destroyed: boolean
+  protected _onerror: ((error: SDKError) => void) | undefined
+  protected _queuedMessages: EventObject[]
+  protected _limitRules: LimitRules
+  protected _waitToRetry: null | Promise<void>
+  protected _processingQueue: boolean
+  protected _processQueue: () => Promise<void>
 
   public transaction: Transaction
   public account: Account
@@ -72,6 +69,9 @@ class Blocknative {
   public unsubscribe: Unsubscribe
   public destroy: Destroy
   public configuration: Configuration
+  public watchedTransactions: Tx[]
+  public watchedAccounts: Ac[]
+  public configurations: Map<string, EnhancedConfig>
 
   constructor(options: InitializationOptions) {
     validateOptions(options)
@@ -131,9 +131,6 @@ class Blocknative {
     this._socket = socket
     this._connected = false
     this._sendMessage = sendMessage.bind(this)
-    this._watchedTransactions = []
-    this._watchedAccounts = []
-    this._configurations = new Map()
     this._pingTimeout = undefined
     this._destroyed = false
     this._onerror = onerror
@@ -160,6 +157,9 @@ class Blocknative {
     }
 
     // public API
+    this.watchedTransactions = []
+    this.watchedAccounts = []
+    this.configurations = new Map()
     this.transaction = transaction.bind(this)
     this.account = account.bind(this)
     this.event = event.bind(this)
@@ -219,11 +219,11 @@ async function onReopen(this: any, handler: (() => void) | undefined) {
 
   // re-register all configurations on re-connection
   const configurations: EnhancedConfig[] = Array.from(
-    this._configurations.values()
+    this.configurations.values()
   )
 
   // register global config first and wait for it to complete
-  const globalConfiguration = this._configurations.get('global')
+  const globalConfiguration = this.configurations.get('global')
 
   if (globalConfiguration) {
     try {
@@ -256,7 +256,7 @@ async function onReopen(this: any, handler: (() => void) | undefined) {
   // re-register all accounts to be watched by server upon
   // re-connection as they don't get transferred over automatically
   // to the new connection like tx hashes do
-  this._watchedAccounts.forEach((account: Ac) => {
+  this.watchedAccounts.forEach((account: Ac) => {
     this._sendMessage({
       eventCode: 'accountAddress',
       categoryCode: 'watch',

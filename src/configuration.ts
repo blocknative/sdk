@@ -1,10 +1,11 @@
 import { Subject } from 'rxjs'
 import { take, timeout } from 'rxjs/operators'
+import Blocknative from '.'
 import { Config, Emitter } from './interfaces'
 import { createEmitter } from './utilities'
 
 function configuration(
-  this: any,
+  this: Blocknative,
   config: Config
 ): Promise<string | { details: { config: Config }; emitter?: Emitter }> {
   if (this._destroyed) {
@@ -17,18 +18,18 @@ function configuration(
     this._system === 'ethereum' ? config.scope.toLowerCase() : config.scope
 
   // resolve previous configuration if exists
-  const previousConfiguration = this._configurations.get(casedScope)
+  const previousConfiguration = this.configurations.get(casedScope)
 
   previousConfiguration &&
     previousConfiguration.subscription &&
     previousConfiguration.subscription.next()
 
-  const subscription = new Subject()
+  const subscription = new Subject<string>()
 
   // create emitter for transaction
   const emitter = config.watchAddress ? { emitter: createEmitter() } : {}
 
-  this._configurations.set(casedScope, {
+  this.configurations.set(casedScope, {
     ...config,
     ...emitter,
     subscription
