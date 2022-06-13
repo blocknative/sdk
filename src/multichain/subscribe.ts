@@ -1,7 +1,6 @@
 import { fromEvent, Observable } from 'rxjs'
 import { filter, finalize, takeWhile } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
-import { networks } from '../defaults'
 import Blocknative from '../sdk'
 
 import {
