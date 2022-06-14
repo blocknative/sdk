@@ -1,14 +1,11 @@
-import {
-  SimulationTransaction,
-  SimulationTransactionOutput
-} from './interfaces'
-import { simulations$ } from './streams'
 import { take, filter } from 'rxjs/operators'
 import { nanoid } from 'nanoid'
-import Blocknative from '.'
+import { SimulationTransaction, SimulationTransactionOutput } from './types'
+import { simulations$ } from './streams'
+import SDK from '.'
 
 function simulate(
-  this: Blocknative,
+  this: SDK,
   system: string,
   network: string,
   transaction: SimulationTransaction

@@ -1,8 +1,8 @@
-import Blocknative from '.'
-import { Ac, Tx } from './interfaces'
+import SDK from '.'
+import { Ac, Tx } from './types'
 import { isAddress, isTxid } from './utilities'
 
-function unsubscribe(this: Blocknative, addressOrHash: string) {
+function unsubscribe(this: SDK, addressOrHash: string) {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'

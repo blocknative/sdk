@@ -10,7 +10,7 @@ export default [
       dir: 'dist/iife/',
       format: 'iife',
       name: 'bncSdk',
-      globals: ['SturdyWebSocket', 'crypto-es']
+      globals: ['SturdyWebSocket', 'crypto-es', 'nanoid', 'rxjs']
     },
     plugins: [
       json(),
@@ -27,7 +27,7 @@ export default [
         dir: 'dist/esm/'
       }
     ],
-    external: ['sturdy-websocket', 'crypto-es'],
+    external: ['sturdy-websocket', 'crypto-es', 'nanoid', 'rxjs'],
     plugins: [
       json(),
       resolve(),
@@ -39,12 +39,13 @@ export default [
     output: [
       {
         format: 'cjs',
-        dir: 'dist/cjs/'
+        dir: 'dist/cjs/',
+        exports: 'named'
       }
     ],
     plugins: [
       json(),
-      resolve(),
+      resolve({ preferBuiltins: true }),
       commonjs({ include: /node_modules/ }),
       typescript({ useTsconfigDeclarationDir: true, clean: true })
     ]

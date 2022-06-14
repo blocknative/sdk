@@ -182,7 +182,12 @@ export interface Vout {
   }
 }
 
-export interface InitializationOptions {
+export type MultiChainOptions = {
+  apiKey: string
+  ws?: any
+}
+
+export type InitializationOptions = {
   networkId: number
   dappId: string
   system?: System
@@ -197,7 +202,6 @@ export interface InitializationOptions {
   onerror?: (error: SDKError) => void
   onclose?: () => void
 }
-
 export interface SDKError {
   message: string
   error?: any
@@ -479,3 +483,27 @@ interface Modifier {
 }
 
 type Filter = Primative | Modifier
+
+export type Subscription = TransactionSubscription | AccountSubscription
+
+export type BaseSubscription = {
+  id: string
+  chainId: ChainId
+}
+
+export type TransactionSubscription = BaseSubscription & {
+  type: 'transaction'
+}
+
+export type AccountSubscription = BaseSubscription & {
+  type: 'account'
+  filters?: Config['filters']
+  abi?: Config['abi']
+}
+
+/**
+ * A hex encoded string
+ */
+export type ChainId = string
+export type Address = string
+export type Hash = string

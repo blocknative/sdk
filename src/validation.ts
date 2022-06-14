@@ -1,4 +1,4 @@
-import { TransactionHandler } from './interfaces'
+import { TransactionHandler } from './types'
 import { networks } from './defaults'
 
 export function validateType(options: {
@@ -49,6 +49,7 @@ export function validateOptions(options: any): never | void {
     onreopen,
     onerror,
     onclose,
+    multichain,
     ...otherParams
   } = options
 
@@ -67,7 +68,8 @@ export function validateOptions(options: any): never | void {
       'ondown',
       'onreopen',
       'onerror',
-      'onclose'
+      'onclose',
+      'multichain'
     ],
     'Initialization Options'
   )
@@ -149,6 +151,13 @@ export function validateOptions(options: any): never | void {
     name: 'onclose',
     value: onclose,
     type: 'function',
+    optional: true
+  })
+
+  validateType({
+    name: 'multichain',
+    value: multichain,
+    type: 'boolean',
     optional: true
   })
 }
