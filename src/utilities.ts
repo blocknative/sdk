@@ -1,4 +1,4 @@
-import { Emitter, NotificationObject } from './interfaces'
+import { Emitter, NotificationObject } from './types'
 import { networks } from './defaults'
 
 export function createEmitter(): Emitter {
