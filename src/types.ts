@@ -325,6 +325,7 @@ export interface Simulate {
 
 export type BaseEventObject = {
   eventCode: string
+  eventId?: string
   categoryCode: string
 }
 

@@ -15,27 +15,27 @@ function simulate(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
     )
 
-  // generate a nano ID, add into transaction object, instead of filtering() below, just match the nano id
-  transaction.id = nanoid()
+  const id = nanoid()
 
   // send payload to server
   this._sendMessage({
     categoryCode: 'simulate',
     eventCode: 'txSimulation',
+    eventId: id,
     transaction: transaction
   })
 
   return new Promise((resolve, reject) => {
     simulations$
       .pipe(
-        filter(({ id }) => {
-          return id === transaction.id
+        filter(({ eventId }) => {
+          return eventId === id
         }),
         take(1)
       )
       .subscribe({
-        next: transaction => resolve(transaction),
-        error: event => reject(event.error.message)
+        next: ({ transaction }) => resolve(transaction),
+        error: ({ error }) => reject(error.message)
       })
   })
 }
