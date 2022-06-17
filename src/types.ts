@@ -294,7 +294,7 @@ export interface SimDetails {
 }
 
 export interface SimulationTransactionOutput {
-  id: string
+  id?: string
   from: string
   to: string
   value: number
@@ -348,6 +348,7 @@ export type TransactionEventObject = BaseEventObject & {
     | BitcoinTransactionEventObject
     | EthereumTransactionEventObject
     | SimulationTransaction
+    | SimulationTransaction[]
 }
 
 export type WalletEventObject = BaseEventObject & {
