@@ -1,14 +1,14 @@
 import { fromEvent, Observable } from 'rxjs'
 import { filter, finalize, takeWhile } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
-import SDK from '../'
+import type SDK from '../'
+import { networkName } from '../utilities'
 
 import {
   AccountSubscription,
   EthereumTransactionData,
   Subscription
 } from '../types'
-import { networkName } from '../utilities'
 
 function subscribe(
   this: MultiChainWebSocket,
