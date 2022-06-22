@@ -1,7 +1,7 @@
 import { fromEvent, Observable } from 'rxjs'
 import { filter, finalize, takeWhile } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
-import Blocknative from '../sdk'
+import SDK from '../'
 
 import {
   AccountSubscription,
@@ -21,7 +21,7 @@ function subscribe(
   }
 
   if (!this.connections[chainId]) {
-    this.connections[chainId] = new Blocknative({
+    this.connections[chainId] = new this.Blocknative({
       system: 'ethereum',
       networkId: parseInt(chainId, 16),
       dappId: this.apiKey,
@@ -35,7 +35,7 @@ function subscribe(
     })
   }
 
-  const sdk = this.connections[chainId] as Blocknative
+  const sdk = this.connections[chainId] as SDK
 
   if (type === 'account') {
     const { filters = [], abi = [] } = subscription as AccountSubscription
