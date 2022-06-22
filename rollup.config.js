@@ -39,8 +39,7 @@ export default [
     output: [
       {
         format: 'cjs',
-        dir: 'dist/cjs/',
-        exports: 'named'
+        dir: 'dist/cjs/'
       }
     ],
     plugins: [
