@@ -1,7 +1,7 @@
 import { merge, timer } from 'rxjs'
 import { filter, take } from 'rxjs/operators'
 import MultiChainWebSocket from '.'
-import Blocknative from '../sdk'
+import SDK from '../'
 import { Address, ChainId, Hash } from '../types'
 
 type UnsubscribeOptions = {
@@ -31,7 +31,7 @@ function unsubscribe(
       if (typeof res === 'number') {
         const sdkConnections = Object.entries(this.connections).filter(
           ([chainId, sdk]) => sdk !== null
-        ) as [ChainId, Blocknative][]
+        ) as [ChainId, SDK][]
 
         sdkConnections.forEach(([connectionChainId, sdk]) => {
           // if chainId is passed and it doesn't match, then no unsub (return early)
