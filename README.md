@@ -199,7 +199,7 @@ const transactionSubscription = blocknative.subscribe({
 // can listen to the transaction subscription directly
 transactionSubscription.subscribe(transaction => console.log(transaction))
 
-// or can listen for all transaction events on the global transacations$ observable
+// or can listen for all transaction events on the global transactions$ observable
 blocknative.transaction$.subscribe(transaction => console.log(transaction))
 ```
 
