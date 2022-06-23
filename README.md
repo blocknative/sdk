@@ -175,9 +175,9 @@ For apps that operate on multiple chains at once, you can use the Multichain SDK
 Currently a transaction hash or account address can be subscribed to for all events. The `subscribe` method requires an `id`, `chainId` and a `type` and returns an `Observable`. The `Observable` that is returned is specific for events on this subscription and on completion or unsubscribing from the observable will automatically unsubscribe within the SDK. Alternatively you can listen on the global transactions `Observable` at `sdk.transactions$`.
 
 ```javascript
-import { MultichainSDK } from 'bnc-sdk'
+import Blocknative from 'bnc-sdk'
 
-const blocknative = new MultichainSDK({ apiKey: '<YOUR_API_KEY>' })
+const blocknative = Blocknative.multichain({ apiKey: '<YOUR_API_KEY>' })
 
 // subscribe to address events
 const addressSubscription = blocknative.subscribe({
@@ -199,7 +199,7 @@ const transactionSubscription = blocknative.subscribe({
 // can listen to the transaction subscription directly
 transactionSubscription.subscribe(transaction => console.log(transaction))
 
-// or can listen for all transaction events on the global transacations$ observable
+// or can listen for all transaction events on the global transactions$ observable
 blocknative.transaction$.subscribe(transaction => console.log(transaction))
 ```
 

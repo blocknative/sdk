@@ -1,5 +1,4 @@
 import { Subject } from 'rxjs'
-
 export interface NotificationObject {
   type?: 'pending' | 'success' | 'error' | 'hint'
   message?: string
