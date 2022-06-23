@@ -34,7 +34,8 @@ function simulate(
         take(1)
       )
       .subscribe({
-        next: ({ transaction }) => resolve(transaction),
+        next: ({ transaction }) =>
+          resolve(transaction as SimulationTransactionOutput),
         error: ({ error }) => reject(error.message)
       })
   })
