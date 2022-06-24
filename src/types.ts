@@ -275,7 +275,6 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
 export interface SimulationTransaction {
-  id: string
   from: string
   to: string
   value: number
