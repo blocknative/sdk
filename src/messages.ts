@@ -180,7 +180,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
 
     if (event && event.categoryCode === 'simulate') {
-      simulations$.error({ eventId: event.eventId, error: event.error })
+      simulations$.error({
+        eventId: event.eventId,
+        error: { message: reason }
+      })
       return
     }
 
