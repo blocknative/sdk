@@ -180,7 +180,10 @@ export function handleMessage(this: any, msg: { data: string }): void {
     }
 
     if (event && event.categoryCode === 'simulate') {
-      simulations$.error(event)
+      simulations$.error({
+        eventId: event.eventId,
+        error: { message: reason }
+      })
       return
     }
 
@@ -219,6 +222,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
 
   if (event && event.transaction) {
     const {
+      eventId,
       transaction,
       eventCode,
       contractCall,
@@ -285,7 +289,7 @@ export function handleMessage(this: any, msg: { data: string }): void {
     if (event && event.categoryCode === 'simulate') {
       newState.contractCall = event.transaction.contractCall
       delete newState.dispatchTimestamp
-      simulations$.next(newState)
+      simulations$.next({ eventId, transaction: newState })
       return
     }
 

@@ -5,6 +5,7 @@ import transaction from './transaction'
 import account from './account'
 import event from './event'
 import simulate from './simulate'
+import multiSim from './multi-sim'
 import unsubscribe from './unsubscribe'
 import configuration from './configuration'
 import { DEFAULT_RATE_LIMIT_RULES } from './defaults'
@@ -67,6 +68,7 @@ class SDK {
   public account: Account
   public event: Event
   public simulate: Simulate
+  public multiSim: typeof multiSim
   public unsubscribe: Unsubscribe
   public destroy: Destroy
   public configuration: Configuration
@@ -165,6 +167,7 @@ class SDK {
     this.account = account.bind(this)
     this.event = event.bind(this)
     this.simulate = simulate.bind(this)
+    this.multiSim = multiSim.bind(this)
     this.unsubscribe = unsubscribe.bind(this)
     this.configuration = configuration.bind(this)
     this.destroy = () => {
