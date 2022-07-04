@@ -275,7 +275,6 @@ export interface BitcoinTransactionLog extends BaseTransactionLog {
 export type TransactionEventLog = EthereumTransactionLog | BitcoinTransactionLog
 
 export interface SimulationTransaction {
-  id: string
   from: string
   to: string
   value: number
@@ -293,7 +292,7 @@ export interface SimDetails {
 }
 
 export interface SimulationTransactionOutput {
-  id: string
+  id?: string
   from: string
   to: string
   value: number
@@ -324,6 +323,7 @@ export interface Simulate {
 
 export type BaseEventObject = {
   eventCode: string
+  eventId?: string
   categoryCode: string
 }
 
@@ -346,6 +346,7 @@ export type TransactionEventObject = BaseEventObject & {
     | BitcoinTransactionEventObject
     | EthereumTransactionEventObject
     | SimulationTransaction
+    | SimulationTransaction[]
 }
 
 export type WalletEventObject = BaseEventObject & {

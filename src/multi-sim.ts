@@ -4,12 +4,10 @@ import { SimulationTransaction, SimulationTransactionOutput } from './types'
 import { simulations$ } from './streams'
 import SDK from '.'
 
-function simulate(
+function multiSim(
   this: SDK,
-  system: string,
-  network: string,
-  transaction: SimulationTransaction
-): Promise<SimulationTransactionOutput> {
+  transactions: SimulationTransaction[]
+): Promise<SimulationTransactionOutput[]> {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
@@ -22,7 +20,7 @@ function simulate(
     categoryCode: 'simulate',
     eventCode: 'txSimulation',
     eventId: id,
-    transaction: transaction
+    transaction: transactions
   })
 
   return new Promise((resolve, reject) => {
@@ -35,10 +33,10 @@ function simulate(
       )
       .subscribe({
         next: ({ transaction }) =>
-          resolve(transaction as SimulationTransactionOutput),
+          resolve(transaction as SimulationTransactionOutput[]),
         error: ({ error }) => reject(error.message)
       })
   })
 }
 
-export default simulate
+export default multiSim
