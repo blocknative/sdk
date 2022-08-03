@@ -74,7 +74,12 @@ export function validateOptions(options: any): never | void {
     'Initialization Options'
   )
 
-  validateType({ name: 'dappId', value: dappId, type: 'string' })
+  validateType({
+    name: 'dappId',
+    value: dappId,
+    type: 'string',
+    optional: true
+  })
 
   validateType({
     name: 'system',

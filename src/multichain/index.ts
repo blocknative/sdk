@@ -7,13 +7,16 @@ import {
   ChainId,
   MultiChainOptions,
   EthereumTransactionData,
-  SDKError
+  SDKError,
+  MultiChainOptionsApiKey,
+  MultiChainOptionsApiUrl
 } from '../types'
 
 //**Experimental API that is not yet finalized and is in BETA*/
 class MultiChain {
   public apiKey: string
-  public ws: WebSocket | void
+  public ws?: any
+  public apiUrl: string
   public connections: Record<ChainId, SDK | null>
   public transactions$: Observable<EthereumTransactionData>
   public errors$: Subject<SDKError>
@@ -24,9 +27,12 @@ class MultiChain {
   protected onTransaction$: Subject<EthereumTransactionData>
 
   constructor(options: MultiChainOptions, Blocknative: typeof SDK) {
-    const { apiKey, ws } = options
+    const { ws } = options
+    const { apiKey } = options as MultiChainOptionsApiKey
+    const { apiUrl } = options as MultiChainOptionsApiUrl
 
     this.apiKey = apiKey
+    this.apiUrl = apiUrl
     this.ws = ws
     this.connections = {}
     this.onTransaction$ = new Subject()
