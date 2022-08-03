@@ -211,6 +211,7 @@ export type BaseInitializationOptions = {
 
 export type InitializationOptionsDappId = BaseInitializationOptions & {
   dappId: string
+  apiUrl?: string
 }
 
 export type InitializationOptionsApiUrl = BaseInitializationOptions & {
