@@ -14,9 +14,9 @@ import {
 
 //**Experimental API that is not yet finalized and is in BETA*/
 class MultiChain {
-  public apiKey: string
+  public apiKey?: string
   public ws?: any
-  public apiUrl: string
+  public apiUrl?: string
   public connections: Record<ChainId, SDK | null>
   public transactions$: Observable<EthereumTransactionData>
   public errors$: Subject<SDKError>
