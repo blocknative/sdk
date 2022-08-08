@@ -181,19 +181,26 @@ export interface Vout {
   }
 }
 
-export type MultiChainOptions = {
+export type MultiChainOptionsApiKey = {
   apiKey: string
   ws?: any
 }
 
-export type InitializationOptions = {
+export type MultiChainOptionsApiUrl = {
+  apiUrl: string
+  ws?: any
+}
+
+export type MultiChainOptions =
+  | MultiChainOptionsApiUrl
+  | MultiChainOptionsApiKey
+
+export type BaseInitializationOptions = {
   networkId: number
-  dappId: string
   system?: System
   name?: string
   appVersion?: string
   transactionHandlers?: TransactionHandler[]
-  apiUrl?: string
   ws?: any
   onopen?: () => void
   ondown?: (closeEvent: CloseEvent) => void
@@ -201,6 +208,21 @@ export type InitializationOptions = {
   onerror?: (error: SDKError) => void
   onclose?: () => void
 }
+
+export type InitializationOptionsDappId = BaseInitializationOptions & {
+  dappId: string
+  apiUrl?: string
+}
+
+export type InitializationOptionsApiUrl = BaseInitializationOptions & {
+  apiUrl: string
+}
+
+/** Requires a dappId or an apiUrl with the apikey in the query parameter */
+export type InitializationOptions =
+  | InitializationOptionsApiUrl
+  | InitializationOptionsDappId
+
 export interface SDKError {
   message: string
   error?: any

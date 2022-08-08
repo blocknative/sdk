@@ -35,7 +35,9 @@ import {
   SDKError,
   LimitRules,
   EnhancedConfig,
-  MultiChainOptions
+  MultiChainOptions,
+  InitializationOptionsApiUrl,
+  InitializationOptionsDappId
 } from './types'
 
 const DEFAULT_APP_NAME = 'unknown'
@@ -45,7 +47,7 @@ const DEFAULT_SYSTEM = 'ethereum'
 class SDK {
   protected _storageKey: string
   protected _connectionId: string | undefined
-  protected _dappId: string
+  protected _dappId?: string
   protected _system: string
   protected _networkId: number
   protected _appName: string
@@ -80,13 +82,11 @@ class SDK {
     validateOptions(options)
 
     const {
-      dappId,
       system = DEFAULT_SYSTEM,
       name = DEFAULT_APP_NAME,
       appVersion = DEFAULT_APP_VERSION,
       networkId,
       transactionHandlers = [],
-      apiUrl,
       ws,
       onopen,
       ondown,
@@ -94,6 +94,9 @@ class SDK {
       onerror,
       onclose
     } = options
+
+    const { apiUrl } = options as InitializationOptionsApiUrl
+    const { dappId } = options as InitializationOptionsDappId
 
     // override default timeout to allow for slow connections
     const timeout = { connectTimeout: 10000 }
