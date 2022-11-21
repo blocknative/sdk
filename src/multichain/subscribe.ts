@@ -26,6 +26,7 @@ function subscribe(
       networkId: parseInt(chainId, 16),
       dappId: this.apiKey,
       ws: this.ws,
+      apiUrl: this.apiUrl,
       transactionHandlers: [
         ({ transaction }) => {
           this.onTransaction$.next(transaction as EthereumTransactionData)
@@ -38,12 +39,12 @@ function subscribe(
   const sdk = this.connections[chainId] as SDK
 
   if (type === 'account') {
-    const { filters = [], abi = [] } = subscription as AccountSubscription
+    const { filters = [], abi } = subscription as AccountSubscription
 
     sdk.configuration({
       scope: id,
       filters,
-      abi,
+      ...(abi ? { abi } : {}),
       watchAddress: true
     })
 
