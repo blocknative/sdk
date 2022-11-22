@@ -7,7 +7,7 @@ import SDK from '.'
 function multiSim(
   this: SDK,
   transactions: SimulationTransaction[]
-): Promise<SimulationTransactionOutput[]> {
+): Promise<SimulationTransactionOutput> {
   if (this._destroyed)
     throw new Error(
       'The WebSocket instance has been destroyed, re-initialize to continue making requests.'
@@ -33,7 +33,7 @@ function multiSim(
       )
       .subscribe({
         next: ({ transaction }) =>
-          resolve(transaction as SimulationTransactionOutput[]),
+          resolve(transaction as SimulationTransactionOutput),
         error: ({ error }) => reject(error.message)
       })
   })
