@@ -111,7 +111,8 @@ export interface TransactionEvent {
   transaction: TransactionData | TransactionEventLog
 }
 
-export type System = 'bitcoin' | 'ethereum'
+export type System = 'ethereum'
+
 export type Network =
   | 'main'
   | 'ropsten'
