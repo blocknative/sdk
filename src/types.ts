@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs'
+import type { Subject } from 'rxjs'
 export interface NotificationObject {
   type?: 'pending' | 'success' | 'error' | 'hint'
   message?: string
@@ -12,7 +12,7 @@ export interface ContractCall {
   contractAddress?: string
   methodName: string
   params: Record<string, unknown>
-  contractName: string
+  contractName?: string
   contractDecimals?: number
   decimalValue?: string
 }
@@ -50,7 +50,7 @@ export interface EthereumTransactionData extends CommonTransactionData {
   to: string
   from: string
   gas: number
-  gasPrice: string
+  gasPrice?: string
   gasUsed?: string
   input: string
   nonce: number
@@ -422,7 +422,7 @@ export interface Config {
 
 export interface EnhancedConfig extends Config {
   emitter?: Emitter
-  subscription?: Subject<string>
+  subscription?: Subject<void>
 }
 
 export interface Transaction {
