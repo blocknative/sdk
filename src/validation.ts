@@ -1,5 +1,5 @@
 import { TransactionHandler } from './types'
-import { networks } from './defaults'
+import { DEPRECATED_NETWORK_IDS, networks } from './defaults'
 
 export function validateType(options: {
   name: string
@@ -49,7 +49,6 @@ export function validateOptions(options: any): never | void {
     onreopen,
     onerror,
     onclose,
-    multichain,
     ...otherParams
   } = options
 
@@ -68,8 +67,7 @@ export function validateOptions(options: any): never | void {
       'ondown',
       'onreopen',
       'onerror',
-      'onclose',
-      'multichain'
+      'onclose'
     ],
     'Initialization Options'
   )
@@ -96,7 +94,14 @@ export function validateOptions(options: any): never | void {
     type: 'string',
     optional: true
   })
+
   validateType({ name: 'networkId', value: networkId, type: 'number' })
+
+  if (DEPRECATED_NETWORK_IDS.includes(networkId)) {
+    console.error(
+      `Blocknative SDK: Network with ID: ${networkId} has been deprecated and you will no longer receive transaction events on this network.`
+    )
+  }
 
   validateType({
     name: 'transactionHandler',
@@ -156,13 +161,6 @@ export function validateOptions(options: any): never | void {
     name: 'onclose',
     value: onclose,
     type: 'function',
-    optional: true
-  })
-
-  validateType({
-    name: 'multichain',
-    value: multichain,
-    type: 'boolean',
     optional: true
   })
 }

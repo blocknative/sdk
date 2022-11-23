@@ -24,7 +24,7 @@ function configuration(
     previousConfiguration.subscription &&
     previousConfiguration.subscription.next()
 
-  const subscription = new Subject<string>()
+  const subscription = new Subject<void>()
 
   // create emitter for transaction
   const emitter = config.watchAddress ? { emitter: createEmitter() } : {}

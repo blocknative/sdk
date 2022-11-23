@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs'
+import type { Subject } from 'rxjs'
 export interface NotificationObject {
   type?: 'pending' | 'success' | 'error' | 'hint'
   message?: string
@@ -12,7 +12,7 @@ export interface ContractCall {
   contractAddress?: string
   methodName: string
   params: Record<string, unknown>
-  contractName: string
+  contractName?: string
   contractDecimals?: number
   decimalValue?: string
 }
@@ -50,7 +50,7 @@ export interface EthereumTransactionData extends CommonTransactionData {
   to: string
   from: string
   gas: number
-  gasPrice: string
+  gasPrice?: string
   gasUsed?: string
   input: string
   nonce: number
@@ -111,18 +111,15 @@ export interface TransactionEvent {
   transaction: TransactionData | TransactionEventLog
 }
 
-export type System = 'bitcoin' | 'ethereum'
+export type System = 'ethereum'
+
 export type Network =
   | 'main'
-  | 'testnet'
   | 'ropsten'
   | 'rinkeby'
   | 'goerli'
-  | 'kovan'
   | 'xdai'
-  | 'bsc-main'
   | 'matic-main'
-  | 'fantom-main'
   | 'matic-mumbai'
   | 'local'
 
@@ -322,7 +319,7 @@ export interface SimulationTransactionOutput {
   gasPrice: string
   input: string
   type: number
-  gasUsed: string
+  gasUsed: number
   internalTransactions?: InternalTransaction[]
   netBalanceChanges?: BalanceChange[]
   serverVersion: string
@@ -333,6 +330,22 @@ export interface SimulationTransactionOutput {
   network: Network
   error?: any
   contractCall: ContractCall
+}
+
+export type MultiSimOutput = {
+  id?: string
+  contractCall: ContractCall[]
+  error?: any
+  gasUsed: number[]
+  internalTransactions: InternalTransaction[][]
+  netBalanceChanges: NetBalanceChange[][]
+  network: Network
+  simDetails: SimDetails
+  serverVersion: string
+  system: System
+  status: Status
+  simulatedBlockNumber: number
+  transactions: InternalTransaction[]
 }
 
 export interface Simulate {
@@ -422,7 +435,7 @@ export interface Config {
 
 export interface EnhancedConfig extends Config {
   emitter?: Emitter
-  subscription?: Subject<string>
+  subscription?: Subject<void>
 }
 
 export interface Transaction {
