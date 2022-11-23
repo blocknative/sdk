@@ -111,19 +111,15 @@ export interface TransactionEvent {
   transaction: TransactionData | TransactionEventLog
 }
 
-export type System = 'bitcoin' | 'ethereum'
+export type System = 'ethereum'
 
 export type Network =
   | 'main'
-  | 'testnet'
   | 'ropsten'
   | 'rinkeby'
   | 'goerli'
-  | 'kovan'
   | 'xdai'
-  | 'bsc-main'
   | 'matic-main'
-  | 'fantom-main'
   | 'matic-mumbai'
   | 'local'
 
