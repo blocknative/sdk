@@ -319,7 +319,7 @@ export interface SimulationTransactionOutput {
   gasPrice: string
   input: string
   type: number
-  gasUsed: string
+  gasUsed: number
   internalTransactions?: InternalTransaction[]
   netBalanceChanges?: BalanceChange[]
   serverVersion: string
@@ -330,6 +330,22 @@ export interface SimulationTransactionOutput {
   network: Network
   error?: any
   contractCall: ContractCall
+}
+
+export type MultiSimOutput = {
+  id?: string
+  contractCall: ContractCall[]
+  error?: any
+  gasUsed: number[]
+  internalTransactions: InternalTransaction[][]
+  netBalanceChanges: NetBalanceChange[][]
+  network: Network
+  simDetails: SimDetails
+  serverVersion: string
+  system: System
+  status: Status
+  simulatedBlockNumber: number
+  transactions: InternalTransaction[]
 }
 
 export interface Simulate {
