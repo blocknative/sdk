@@ -1,5 +1,5 @@
 import { TransactionHandler } from './types'
-import { DEPRECATED_NETWORK_IDS, networks } from './defaults'
+import { networks } from './defaults'
 
 export function validateType(options: {
   name: string
@@ -96,12 +96,6 @@ export function validateOptions(options: any): never | void {
   })
 
   validateType({ name: 'networkId', value: networkId, type: 'number' })
-
-  if (DEPRECATED_NETWORK_IDS.includes(networkId)) {
-    console.error(
-      `Blocknative SDK: Network with ID: ${networkId} has been deprecated and you will no longer receive transaction events on this network.`
-    )
-  }
 
   validateType({
     name: 'transactionHandler',
