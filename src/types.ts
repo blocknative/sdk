@@ -115,8 +115,6 @@ export type System = 'ethereum'
 
 export type Network =
   | 'main'
-  | 'ropsten'
-  | 'rinkeby'
   | 'goerli'
   | 'xdai'
   | 'matic-main'
