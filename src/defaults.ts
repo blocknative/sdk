@@ -1,8 +1,6 @@
 export const networks: { [key: string]: { [key: string]: string } } = {
   ethereum: {
     '1': 'main',
-    '3': 'ropsten',
-    '4': 'rinkeby',
     '5': 'goerli',
     '100': 'xdai',
     '137': 'matic-main',
@@ -10,7 +8,7 @@ export const networks: { [key: string]: { [key: string]: string } } = {
   }
 }
 
-export const DEPRECATED_NETWORK_IDS = [2, 42, 56, 250]
+export const DEPRECATED_NETWORK_IDS = [2, 3, 4, 42, 56, 250]
 
 export const DEFAULT_RATE_LIMIT_RULES = {
   points: 150,

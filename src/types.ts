@@ -51,7 +51,7 @@ export interface EthereumTransactionData extends CommonTransactionData {
   from: string
   gas: number
   gasPrice?: string
-  gasUsed?: string
+  gasUsed?: number
   input: string
   nonce: number
   v: string
@@ -115,8 +115,6 @@ export type System = 'ethereum'
 
 export type Network =
   | 'main'
-  | 'ropsten'
-  | 'rinkeby'
   | 'goerli'
   | 'xdai'
   | 'matic-main'
@@ -130,7 +128,8 @@ export type Status =
   | 'cancel'
   | 'failed'
   | 'dropped'
-  | 'simulated'
+  | 'pending-simulation'
+  | 'stuck'
 
 export interface InputOutput {
   address: string
