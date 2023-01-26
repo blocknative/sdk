@@ -130,6 +130,7 @@ export type Status =
   | 'dropped'
   | 'pending-simulation'
   | 'stuck'
+  | 'simulated'
 
 export interface InputOutput {
   address: string
