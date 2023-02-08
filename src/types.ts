@@ -10,6 +10,7 @@ export interface NotificationObject {
 export interface ContractCall {
   contractType?: string
   contractAddress?: string
+  contractAlias?: string
   methodName: string
   params: Record<string, unknown>
   contractName?: string
@@ -80,6 +81,8 @@ export interface InternalTransaction {
   gasUsed: number
   value: string
   contractCall: ContractCall
+  error?: string
+  errorReason?: string
 }
 
 export interface NetBalanceChange {
