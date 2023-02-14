@@ -73,16 +73,20 @@ export interface EthereumTransactionData extends CommonTransactionData {
 }
 
 export interface InternalTransaction {
-  type: string
+  type: string | number
   from: string
   to: string
   input: string
   gas: number
+  gasPrice?: number
   gasUsed: number
-  value: string
+  value: string | number
   contractCall: ContractCall
   error?: string
   errorReason?: string
+  baseFeePerGasGwei?: number
+  maxFeePerGas?: number
+  maxPriorityFeePerGasGwei?: number
 }
 
 export interface NetBalanceChange {
@@ -335,9 +339,14 @@ export interface SimulationTransactionOutput {
   contractCall: ContractCall
 }
 
+export type MultiSimContractCallData = {
+  value: ContractCall
+  status: string
+}
+
 export type MultiSimOutput = {
   id?: string
-  contractCall: ContractCall[]
+  contractCall: MultiSimContractCallData[]
   error?: any
   gasUsed: number[]
   internalTransactions: InternalTransaction[][]
