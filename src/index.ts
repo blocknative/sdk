@@ -1,6 +1,6 @@
 import { validateOptions } from './validation'
 import SturdyWebSocket from 'sturdy-websocket'
-import CryptoEs from 'crypto-es'
+import CryptoJS from 'crypto-js'
 import transaction from './transaction'
 import account from './account'
 import event from './event'
@@ -122,7 +122,7 @@ class SDK {
       onclose && onclose()
     }
 
-    const storageKey = CryptoEs.SHA1(`${dappId} - ${name}`).toString()
+    const storageKey = CryptoJS.SHA1(`${dappId} - ${name}`).toString()
     const storedConnectionId =
       isLocalStorageAvailable() && window.localStorage.getItem(storageKey)
 
