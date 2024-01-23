@@ -10,7 +10,7 @@ export default [
       dir: 'dist/iife/',
       format: 'iife',
       name: 'bncSdk',
-      globals: ['SturdyWebSocket', 'crypto-es', 'nanoid', 'rxjs']
+      globals: ['SturdyWebSocket', 'crypto-js', 'nanoid', 'rxjs']
     },
     plugins: [
       json(),
@@ -27,7 +27,7 @@ export default [
         dir: 'dist/esm/'
       }
     ],
-    external: ['sturdy-websocket', 'crypto-es', 'nanoid', 'rxjs'],
+    external: ['sturdy-websocket', 'crypto-js', 'nanoid', 'rxjs'],
     plugins: [
       json(),
       resolve(),
