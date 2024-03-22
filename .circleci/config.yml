@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/node:10.18.1-browsers
+      - image: cimg/node:16.20.2-browsers
     steps:
       - checkout
       - restore_cache:
@@ -18,7 +18,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
   deploy_stage:
     docker:
-      - image: circleci/node:10.18.1-browsers
+      - image: cimg/node:16.20.2-browsers
         user: root
     steps:
       - checkout
@@ -39,7 +39,7 @@ jobs:
       - run: aws s3 sync /root/project/deploy-temp/${VERSION}/ s3://staging.sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   deploy_prod:
     docker:
-      - image: circleci/node:10.18.1-browsers
+      - image: cimg/node:16.20.2-browsers
         user: root
     steps:
       - checkout
@@ -58,7 +58,7 @@ jobs:
       - run: aws s3 sync /root/project/deploy-temp/${VERSION}/ s3://sdk.blocknative.com/${VERSION}/ --content-type "text/javascript" --content-encoding "gzip" --cache-control "max-age=31536000" --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
   deploy_workbench_staging:
     docker:
-      - image: circleci/node:10.18.1-browsers
+      - image: cimg/node:16.20.2-browsers
         user: root
     steps:
       - checkout
