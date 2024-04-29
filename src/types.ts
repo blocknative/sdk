@@ -120,14 +120,7 @@ export interface TransactionEvent {
 
 export type System = 'ethereum'
 
-export type Network =
-  | 'main'
-  | 'goerli'
-  | 'sepolia'
-  | 'xdai'
-  | 'matic-main'
-  | 'matic-mumbai'
-  | 'local'
+export type Network = 'main' | 'sepolia' | 'xdai' | 'matic-main' | 'local'
 
 export type Status =
   | 'pending'
