@@ -3,7 +3,8 @@ export const networks: { [key: string]: { [key: string]: string } } = {
     '1': 'main',
     '11155111': 'sepolia',
     '100': 'xdai',
-    '137': 'matic-main'
+    '137': 'matic-main',
+    '80002': 'matic-amoy'
   }
 }
 
