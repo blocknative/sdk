@@ -1,11 +1,9 @@
 export const networks: { [key: string]: { [key: string]: string } } = {
   ethereum: {
     '1': 'main',
-    '5': 'goerli',
     '11155111': 'sepolia',
     '100': 'xdai',
-    '137': 'matic-main',
-    '80001': 'matic-mumbai'
+    '137': 'matic-main'
   }
 }
 
