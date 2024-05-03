@@ -122,11 +122,10 @@ export type System = 'ethereum'
 
 export type Network =
   | 'main'
-  | 'goerli'
   | 'sepolia'
   | 'xdai'
   | 'matic-main'
-  | 'matic-mumbai'
+  | 'matic-amoy'
   | 'local'
 
 export type Status =
